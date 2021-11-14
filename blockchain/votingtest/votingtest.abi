@@ -1,0 +1,76 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "addcandidate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "new_candidate",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "clear",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "vote",
+            "base": "",
+            "fields": [
+                {
+                    "name": "candidate",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "voting_result",
+            "base": "",
+            "fields": [
+                {
+                    "name": "candidate",
+                    "type": "name"
+                },
+                {
+                    "name": "vote_count",
+                    "type": "uint64"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addcandidate",
+            "type": "addcandidate",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clear",
+            "type": "clear",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "vote",
+            "type": "vote",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "votingresult",
+            "type": "voting_result",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}

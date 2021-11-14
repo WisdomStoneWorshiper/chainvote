@@ -1,37 +1,35 @@
 #include <votingtest.hpp>
 
-ACTION votingtest::hi(name from, string message) {
-  require_auth(from);
+ACTION votingtest::addcandidate(name new_candidate) {
+  require_auth(get_self());
+  voting_result_table _voting(get_self(), get_self().value);
+  auto voting_itr = _voting.find(new_candidate.value);
+  check(voting_itr == _voting.end(), "candidate exist");
+  _voting.emplace(get_self(), [&](auto& new_candidate_record) {
+    new_candidate_record.candidate = new_candidate;
+    new_candidate_record.vote_count = 0;
+  });
+}
 
-  // Init the _message table
-  messages_table _messages(get_self(), get_self().value);
+ACTION votingtest::vote(name candidate) {
+  voting_result_table _voting(get_self(), get_self().value);
+  auto voting_itr = _voting.find(candidate.value);
+  check(voting_itr != _voting.end(), "candidate is not exist");
 
-  // Find the record from _messages table
-  auto msg_itr = _messages.find(from.value);
-  if (msg_itr == _messages.end()) {
-    // Create a message record if it does not exist
-    _messages.emplace(from, [&](auto& msg) {
-      msg.user = from;
-      msg.text = message;
-    });
-  } else {
-    // Modify a message record if it exists
-    _messages.modify(msg_itr, from, [&](auto& msg) {
-      msg.text = message;
-    });
-  }
+  _voting.modify(voting_itr, get_self(),
+                 [&](auto& ballot) { ++ballot.vote_count; });
 }
 
 ACTION votingtest::clear() {
   require_auth(get_self());
 
-  messages_table _messages(get_self(), get_self().value);
+  voting_result_table _voting(get_self(), get_self().value);
 
   // Delete all records in _messages table
-  auto msg_itr = _messages.begin();
-  while (msg_itr != _messages.end()) {
-    msg_itr = _messages.erase(msg_itr);
+  auto voting_itr = _voting.begin();
+  while (voting_itr != _voting.end()) {
+    voting_itr = _voting.erase(voting_itr);
   }
 }
 
-EOSIO_DISPATCH(votingtest, (hi)(clear))
+EOSIO_DISPATCH(votingtest, (addcandidate)(vote)(clear))

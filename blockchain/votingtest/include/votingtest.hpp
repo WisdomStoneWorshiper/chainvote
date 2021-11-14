@@ -4,17 +4,18 @@ using namespace std;
 using namespace eosio;
 
 CONTRACT votingtest : public contract {
-  public:
-    using contract::contract;
+ public:
+  using contract::contract;
 
-    ACTION hi(name from, string message);
-    ACTION clear();
+  ACTION addcandidate(name new_candidate);
+  ACTION vote(name candidate);
+  ACTION clear();
 
-  private:
-    TABLE messages {
-      name    user;
-      string  text;
-      auto primary_key() const { return user.value; }
-    };
-    typedef multi_index<name("messages"), messages> messages_table;
+ private:
+  TABLE voting_result {
+    name candidate;
+    uint64_t vote_count;
+    auto primary_key() const { return candidate.value; }
+  };
+  typedef multi_index<name("votingresult"), voting_result> voting_result_table;
 };
