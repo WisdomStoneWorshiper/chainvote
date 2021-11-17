@@ -11,7 +11,6 @@ CONTRACT votingtest : public contract {
   ACTION vote(name candidate);
   ACTION clear();
 
- private:
   TABLE voting_result {
     name candidate;
     uint64_t vote_count;

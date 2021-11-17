@@ -1,0 +1,20 @@
+<h1 class="contract">addcandidate</h1>
+---
+spec-version: 0.0.0
+title: addcandidate
+summary: This action will add candidate to voting_result_table.
+icon:
+
+<h1 class="contract">vote</h1>
+---
+spec-version: 0.0.0
+title: vote
+summary: This action will increase the voting count of a candidate.
+icon:
+
+<h1 class="contract">clear</h1>
+---
+spec-version: 0.0.0
+title: clear
+summary: This action will remove all voting result.
+icon:
