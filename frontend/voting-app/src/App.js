@@ -28,8 +28,8 @@ function App() {
     <div>
       <Routes>
         <Route path="/" exact element={home()}/>
-        <Route path="/voting" exact element={VotingPage()}/>
-        <Route path="/voted" exact element={voted()}/>
+        <Route path="/voting" exact element={VotingPage}/>
+        <Route path="/voted" exact element={voted}/>
       </Routes>
     </div>
   )
