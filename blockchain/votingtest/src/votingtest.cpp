@@ -20,6 +20,15 @@ ACTION votingtest::vote(name candidate) {
                  [&](auto& ballot) { ++ballot.vote_count; });
 }
 
+ACTION votingtest::unvote(name candidate) {
+  voting_result_table _voting(get_self(), get_self().value);
+  auto voting_itr = _voting.find(candidate.value);
+  check(voting_itr != _voting.end(), "candidate is not exist");
+
+  _voting.modify(voting_itr, get_self(),
+                 [&](auto& ballot) { --ballot.vote_count; });
+}
+
 ACTION votingtest::clear() {
   require_auth(get_self());
 

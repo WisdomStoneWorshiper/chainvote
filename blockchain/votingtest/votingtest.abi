@@ -19,6 +19,16 @@
             "fields": []
         },
         {
+            "name": "unvote",
+            "base": "",
+            "fields": [
+                {
+                    "name": "candidate",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "vote",
             "base": "",
             "fields": [
@@ -52,6 +62,11 @@
         {
             "name": "clear",
             "type": "clear",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "unvote",
+            "type": "unvote",
             "ricardian_contract": ""
         },
         {

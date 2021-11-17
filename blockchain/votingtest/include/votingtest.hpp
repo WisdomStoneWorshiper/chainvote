@@ -9,6 +9,7 @@ CONTRACT votingtest : public contract {
 
   ACTION addcandidate(name new_candidate);
   ACTION vote(name candidate);
+  ACTION unvote(name candidate);
   ACTION clear();
 
   TABLE voting_result {
