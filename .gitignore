@@ -31,4 +31,4 @@
 *.out
 *.app
 
-./frontend/voting-app/.env
+frontend/voting-app/.env
