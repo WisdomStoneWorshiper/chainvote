@@ -32,3 +32,4 @@
 *.app
 
 frontend/voting-app/.env
+backend/.env
