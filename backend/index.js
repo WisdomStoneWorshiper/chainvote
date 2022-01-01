@@ -25,30 +25,30 @@ app.use((req, res, next) => {
 app.use("/registration", registration);
 app.use("/confirmation", confirmation);
 
-app.get("/", async (req, res) => {
-    const acc = new Account({name : "testasd", key : "test1"})
-    acc.save().then(() => {
-        res.status(200).send("success");
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(200).send("fck")
-    })
-})
+// app.get("/", async (req, res) => {
+//     const acc = new Account({name : "testasd", key : "test1"})
+//     acc.save().then(() => {
+//         res.status(200).send("success");
+//     })
+//     .catch(err => {
+//         console.log(err)
+//         res.status(200).send("fck")
+//     })
+// })
 
-app.get('/find', async (req, res) => {
-    await Account.find().then((result) => {
-        result.forEach(value => {
-            console.log(value._id)
-        })
-        res.send("success");
-    })
-    .catch(err => {
-        console.log(err)
-        res.send("failure");
-    })
+// app.get('/find', async (req, res) => {
+//     await Account.find().then((result) => {
+//         result.forEach(value => {
+//             console.log(value._id)
+//         })
+//         res.send("success");
+//     })
+//     .catch(err => {
+//         console.log(err)
+//         res.send("failure");
+//     })
 
-})
+// })
 
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology : true})
     .then(() => {
