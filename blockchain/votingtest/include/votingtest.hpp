@@ -3,6 +3,8 @@
 using namespace std;
 using namespace eosio;
 
+static constexpr name none = name("none");
+
 CONTRACT votingtest : public contract {
  public:
   using contract::contract;
@@ -28,4 +30,14 @@ CONTRACT votingtest : public contract {
   typedef multi_index<name("votingresult"), voting_result> voting_result_table;
 
   typedef multi_index<name("voterlist"), voter_list> voter_list_table;
+
+ private:
+  TABLE voter_record_list {
+    name voter;
+    name choice;
+    auto primary_key() const { return voter.value; }
+  };
+
+  typedef multi_index<name("recordlist"), voter_record_list>
+      voter_record_list_table;
 };

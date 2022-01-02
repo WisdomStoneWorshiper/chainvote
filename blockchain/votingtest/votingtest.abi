@@ -67,6 +67,20 @@
             ]
         },
         {
+            "name": "voter_record_list",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "choice",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "voting_result",
             "base": "",
             "fields": [
@@ -109,6 +123,13 @@
         }
     ],
     "tables": [
+        {
+            "name": "recordlist",
+            "type": "voter_record_list",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
         {
             "name": "voterlist",
             "type": "voter_list",
