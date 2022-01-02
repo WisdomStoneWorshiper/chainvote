@@ -6,6 +6,7 @@ const Account = require("./Helper functions/mongoose/accModel");
 
 const registration = require("./router/registration/regisRouter");
 const confirmation = require("./router/confirmation/confirmRouter")
+const account = require('./router/account/accountRouter')
 
 
 require('dotenv').config();
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 
 app.use("/registration", registration);
 app.use("/confirmation", confirmation);
+app.use("/account", account);
 
 // app.get("/", async (req, res) => {
 //     const acc = new Account({name : "testasd", key : "test1"})
