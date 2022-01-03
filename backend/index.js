@@ -8,9 +8,7 @@ const registration = require("./router/registration/regisRouter");
 const confirmation = require("./router/confirmation/confirmRouter")
 const account = require('./router/account/accountRouter')
 
-
 require('dotenv').config();
-
 
 const app = express();
 
@@ -27,31 +25,6 @@ app.use("/registration", registration);
 app.use("/confirmation", confirmation);
 app.use("/account", account);
 
-// app.get("/", async (req, res) => {
-//     const acc = new Account({name : "testasd", key : "test1"})
-//     acc.save().then(() => {
-//         res.status(200).send("success");
-//     })
-//     .catch(err => {
-//         console.log(err)
-//         res.status(200).send("fck")
-//     })
-// })
-
-// app.get('/find', async (req, res) => {
-//     await Account.find().then((result) => {
-//         result.forEach(value => {
-//             console.log(value._id)
-//         })
-//         res.send("success");
-//     })
-//     .catch(err => {
-//         console.log(err)
-//         res.send("failure");
-//     })
-
-// })
-
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology : true})
     .then(() => {
         app.listen(process.env.SERVER_PORT, ()=> {
@@ -62,11 +35,6 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology : t
         console.log(err);
     }
 )
-
-
-// app.listen(3000, () => {
-//     console.log(`Listening at port ${process.env.SERVER_PORT}`);
-// })
 
 
 

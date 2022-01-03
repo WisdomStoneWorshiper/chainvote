@@ -26,19 +26,15 @@ function getRandomString(length) {
     return result;
 }
 
-router.get('/test', async (req, res) => {
-    const test = await sgMail(`irug.com@gmail.com`, "Email confirmation", "testkey").then(result => console.log(result))
-    res.send("test done?")
-})
-
 router.post("/", async (req, res) => {
     const {name} = req.body;
     const result = await Account.find({name : name})
     .catch(err => {
-
+        console.log(err);
+        res.send("Unexpected error")
     })
     if(result.length  <= 0){ //no acc found
-        const saveAcc = new Account({name : name, key : getRandomString(5)})
+        const saveAcc = new Account({name : name, key : getRandomString(5), created : false})
         saveAcc.save()
         .then( result => {
             sgMail(`${name}@connect.ust.hk`, "Email confirmation", `Your confirmation key is ${saveAcc.key}`)//TODO handle mail limit?
