@@ -32,4 +32,6 @@
 *.app
 
 frontend/voting-app/.env
+
+mainnet_account.txt
 backend/.env
