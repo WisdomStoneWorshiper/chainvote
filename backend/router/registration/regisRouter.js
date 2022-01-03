@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const sgMail = require('../../Helper functions/emailDriver')
 
 const Account = require("../../Helper functions/mongoose/accModel")
 
@@ -25,6 +26,10 @@ function getRandomString(length) {
     return result;
 }
 
+router.get('/test', async (req, res) => {
+    const test = await sgMail(`irug.com@gmail.com`, "Email confirmation", "testkey").then(result => console.log(result))
+    res.send("test done?")
+})
 
 router.post("/", async (req, res) => {
     const {name} = req.body;
@@ -36,8 +41,7 @@ router.post("/", async (req, res) => {
         const saveAcc = new Account({name : name, key : getRandomString(5)})
         saveAcc.save()
         .then( result => {
-            console.log(result)
-            console.log("Successfully saved")
+            sgMail(`${name}@connect.ust.hk`, "Email confirmation", `Your confirmation key is ${saveAcc.key}`)//TODO handle mail limit?
             res.send(result)
         })
         .catch(err => {

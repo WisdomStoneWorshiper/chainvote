@@ -18,11 +18,11 @@ const accountPlaceholder = (name, publicKey) => {
             account: 'eosio',
             name: `newaccount`, // new account name
             authorization: [{
-              actor: 'eimeutmhpudu', // which account generates it
+              actor: 'main', // which account generates it
               permission: 'active',
             }],
             data: {
-              creator: 'eimeutmhpudu',
+              creator: 'main',
               name: `${name}`,
               owner: {
                 threshold: 1,
@@ -65,15 +65,6 @@ router.post('/generate', async (req, res) => {
     
 
 })
-
-// router.get("/keygen", async (req, res) => {
-//     const tempPrivate = await ecc.randomKey(undefined,{secureEnv : true});
-//     res.json({
-//         private : `${tempPrivate}`,
-//         prublic : `${ecc.privateToPublic(tempPrivate)}`
-//     })
-// })
-
 
 
 module.exports = router
