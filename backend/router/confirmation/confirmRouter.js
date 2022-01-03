@@ -38,6 +38,21 @@ const accountPlaceholder = (name, publicKey) => {
     );
 }
 
+const addCanidatePlaceholder = (name) => {
+    return         {
+        account: 'main',
+        name: `addvoter`, // new account name
+        authorization: [{
+          actor: 'main', // which account generates it
+          permission: 'active',
+        }],
+        data: {
+            new_voter: `${name}`
+        }
+      }
+}
+
+
 
 
 router.post("/", async (req, res) => {
@@ -61,7 +76,10 @@ router.post("/", async (req, res) => {
                 console.log("Valid confirmation")
                 // Account creation sample TODO: Account name checking
                 const transaction = await eosDriver.transact({
-                    actions: [accountPlaceholder(accname, pkey)]
+                    actions: [
+                        // accountPlaceholder(accname, pkey),
+                        addCanidatePlaceholder(accname)
+                    ]
                    }, {
                     blocksBehind: 3,
                     expireSeconds: 30,
