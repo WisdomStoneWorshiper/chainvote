@@ -5,39 +5,26 @@ const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 
 
-const home = () => {
-    const signatureProvider = new JsSignatureProvider([process.env.REACT_APP_OWNER_PRIVATE]);
-    const rpc = new JsonRpc(process.env.REACT_APP_TESTNET_HTTP, { fetch }); //required to read blockchain state
-    const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
+const Home = () => {
+    const testnet_http = "http://127.0.0.1:8888"
+
+    // const signatureProvider = new JsSignatureProvider([process.env.REACT_APP_OWNER_PRIVATE]);
+    const rpc = new JsonRpc(testnet_http, { fetch }); //required to read blockchain state
+    // const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
 
     const [person, setPerson] = useState("");
     const [data, setData] = useState([]);
 
-    const add_candidate = async () => {
-        const transaction = await api.transact({
-            actions: [{
-              account: 'eimeutmhpudu',
-              name: 'addcandidate',
-              authorization: [{
-                actor: 'eimeutmhpudu',
-                permission: 'owner',
-              }],
-              data: {
-                new_candidate : "test12"
-              },
-            }]
-           }, {
-            blocksBehind: 3,
-            expireSeconds: 30,
-           });
-        console.log(transaction);
-    }
+    //ACCOUNT SETTINGS
+    const [api, setApi] = useState(null);
+    const [acc, setAcc] = useState("");
+    const [pkey, setPkey] = useState("");
     
     const show_table = async () => {
         const table = await rpc.get_table_rows({
             json: true,               // Get the response as json
-            code: 'eimeutmhpudu',      // Contract that we target
-            scope: 'eimeutmhpudu',         // Account that owns the data
+            code: 'main',      // Contract that we target
+            scope: 'main',         // Account that owns the data
             table: 'votingresult',        // Table name
             limit: 10,                // Maximum number of rows that we want to get
           });
@@ -46,15 +33,28 @@ const home = () => {
     }
 
     const vote = async () => {
+      console.log({
+        account: 'main',
+        name: 'vote',
+        authorization: [{
+          actor: acc,
+          permission: 'owner',
+        }],
+        data: {
+          voter: acc,
+          candidate : person
+        },
+      })
         const transaction = await api.transact({
             actions: [{
-              account: 'eimeutmhpudu',
+              account: 'main',
               name: 'vote',
               authorization: [{
-                actor: 'eimeutmhpudu',
+                actor: acc,
                 permission: 'owner',
               }],
               data: {
+                voter: acc,
                 candidate : person
               },
             }]
@@ -62,7 +62,6 @@ const home = () => {
             blocksBehind: 3,
             expireSeconds: 30,
            });
-        console.log(transaction);
         show_table();
     }
 
@@ -73,6 +72,24 @@ const home = () => {
     return (
         <div>
             <h1> Welcome to the blockchain based voting system </h1>
+            <div>
+              <div>
+                <a>Account name</a>
+                <input type="text" onChange={e => setAcc(e.target.value)}/>
+              </div>
+              <div>
+                <a>Public key</a>
+                <input type="text" onChange={e => setPkey(e.target.value)}/>
+              </div>
+              <button onClick={e => {
+                e.preventDefault()
+                const signatureProvider = new JsSignatureProvider([pkey]);
+                const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
+                console.log(`Set api with name ${acc} and pkey ${pkey}`)
+                setApi(api);
+              }}>Login</button>
+            </div>
+
             <form onSubmit={e => {
                 e.preventDefault()
                 vote()
@@ -87,11 +104,11 @@ const home = () => {
                         <option value={value.candidate}>{value.candidate}</option>)}
                 </select>
                 </label>
-                <input type="submit" value="Cast Vote" />
+                {api == null ? null : <input type="submit" value="Cast Vote" />}
             </form>
-            <button onClick={show_table}>
+            {/* <button onClick={show_table}>
                 Cast Vote
-            </button>
+            </button> */}
             <div>
                 <h1>Current result</h1>
                 {data.map((value, index) => 
@@ -104,4 +121,4 @@ const home = () => {
 }
 
 
-export default home;
+export default Home;
