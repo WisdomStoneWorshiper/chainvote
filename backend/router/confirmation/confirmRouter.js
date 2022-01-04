@@ -38,7 +38,7 @@ const accountPlaceholder = (name, publicKey) => {
     );
 }
 
-const addCanidatePlaceholder = (name) => {
+const addVoterPlaceholder = (name) => {
     return         {
         account: 'main',
         name: `addvoter`, // new account name
@@ -67,6 +67,9 @@ router.post("/", async (req, res) => {
      * 3. accname : account name
      * 4. pkey : public key 
      */
+    console.log("Entering confirmation")
+    console.log(req.body)
+
     const {name, key, accname, pkey} = req.body;
     Account.findOne({ name : name}, async (err, result) => {
         if(err || result == null) res.send("No account with the name")
@@ -77,8 +80,8 @@ router.post("/", async (req, res) => {
                 // Account creation sample TODO: Account name checking
                 const transaction = await eosDriver.transact({
                     actions: [
-                        // accountPlaceholder(accname, pkey),
-                        addCanidatePlaceholder(accname)
+                        accountPlaceholder(accname, pkey),
+                        addVoterPlaceholder(accname)
                     ]
                    }, {
                     blocksBehind: 3,
