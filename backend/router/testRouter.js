@@ -1,6 +1,4 @@
 const express = require('express');
-const eosDriver = require('../../Helper functions/eosDriver')
-const {ecc} = require("eosjs/dist/eosjs-ecc-migration")
 const Account = require("../Helper functions/mongoose/accModel")
 
 const router = express.Router();
@@ -15,7 +13,7 @@ function getRandomString(length) {
 }
 
 
-router.get('/testAccount', async (req, res) => {
+router.post('/', async (req, res) => {
     // const {name} = req.body;
     // const tempKeypair = await generateKeyPair();
     // const accAction = accountPlaceholder(name, tempKeypair.public)
@@ -42,3 +40,5 @@ router.get('/testAccount', async (req, res) => {
         });
     })
 })
+
+module.exports = router

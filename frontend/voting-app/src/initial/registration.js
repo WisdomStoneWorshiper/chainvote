@@ -63,11 +63,15 @@ const Registration = () => {
     }
 
     const registerName = (itsc) => {
-        postData("http://localhost:3000/registration", {name : itsc})
+        postData("http://localhost:3000/registration", {itsc : itsc})
         .then(result => result.json())
         .then(result => {
-            console.log(`Account with itsc ${result.name} Key ${result.key}`)
-            setCkey(result.key)
+            if(!result.error){
+                setCkey("Success")
+            }
+            else{
+                setCkey(result.message)
+            }
         })
         .catch(err => {
             console.log(err.message)
@@ -78,7 +82,7 @@ const Registration = () => {
     const confirmAccount = () => {
         postData("http://localhost:3000/confirmation",
          {
-            name : itsc,
+            itsc : itsc,
             key : ckey,
             accname : name,
             pkey : pair.public
@@ -128,7 +132,7 @@ const Registration = () => {
                     <input type="submit" value="Register"/>
                 </form>
             </div>
-            <h4>Return key {ckey}</h4>
+            <h3>Registration Status: {ckey}</h3>
 
             <h3>Confirmation form</h3>
             <div>

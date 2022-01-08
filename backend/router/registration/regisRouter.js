@@ -37,8 +37,6 @@ router.post("/", async (req, res) => {
         });
     })
     if(result.length != 0){ //acc found
-        // const saveAcc = new Account({itsc : itsc, key : getRandomString(5), created : false})
-        // saveAcc.save()
         const random_str = getRandomString(5);
         Account.findOneAndUpdate({itsc : itsc}, {key : random_str})
         .then( result => {

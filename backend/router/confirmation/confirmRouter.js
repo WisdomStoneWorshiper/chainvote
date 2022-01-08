@@ -91,14 +91,22 @@ router.post("/", async (req, res) => {
                    }, {
                     blocksBehind: 3,
                     expireSeconds: 30,
-                   });
-                //insert smart contract communication
+                   }); //TODO : ADD ERROR HANDLING TO COMBAT SAME NAME ACC
                 Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname}).then(result => {
                     console.log(result);
+                    res.json({
+                      error : false
+                    });
+                }) //TODO : add handling for same public key
+                .catch(err => {
+                  console.log("Cant update lul")
+                  console.log(err)
+                  res.json({
+                    error: true,
+                    message: "Unexpected error on updating"
+                  })
                 })
-                res.json({
-                  error : false
-                });
+                
             }
             else{
               res.json({
@@ -107,12 +115,6 @@ router.post("/", async (req, res) => {
               });
             }
         }
-    }).catch(err => {
-      console.log(err);
-      res.json({
-          error : true,
-          message : "Unexpected error searching itsc" 
-      });
     })
 
 });
