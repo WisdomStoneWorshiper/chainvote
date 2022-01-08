@@ -72,10 +72,15 @@ router.post("/", async (req, res) => {
 
     const {itsc, key, accname, pkey} = req.body;
     Account.findOne({ itsc : itsc}, async (err, result) => {
-        if(err || result == null) res.send("No account with the name")
+        if(err || result.length == 0) {
+          res.json({
+            error : true,
+            message : "Invalid itsc"
+          });
+        }
         else{
             console.log(result)
-            if(result.key === key && result.publicKey){
+            if(result.key === key && !result.publicKey){
                 console.log("Valid confirmation")
                 // Account creation sample TODO: Account name checking
                 const transaction = await eosDriver.transact({
@@ -91,13 +96,24 @@ router.post("/", async (req, res) => {
                 Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname}).then(result => {
                     console.log(result);
                 })
-                res.send("Confirmation Successful")
+                res.json({
+                  error : false
+                });
             }
             else{
-                res.send("Invalid key insert")
+              res.json({
+                error : true,
+                message : "Invalid key or public key exists"
+              });
             }
         }
-    } )
+    }).catch(err => {
+      console.log(err);
+      res.json({
+          error : true,
+          message : "Unexpected error searching itsc" 
+      });
+    })
 
 });
 
