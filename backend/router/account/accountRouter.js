@@ -12,40 +12,6 @@ const generateKeyPair = async () => {
     };
 }
 
-const accountPlaceholder = (name, publicKey) => {
-    return (
-        {
-            account: 'eosio',
-            name: `newaccount`, // new account name
-            authorization: [{
-              actor: 'main', // which account generates it
-              permission: 'active',
-            }],
-            data: {
-              creator: 'main',
-              name: `${name}`,
-              owner: {
-                threshold: 1,
-                keys: [{
-                  key: `${publicKey}`,
-                  weight: 1
-                }],
-                accounts: [],
-                waits: []
-              },
-              active: {
-                threshold: 1,
-                keys: [{
-                  key: `${publicKey}`,
-                  weight: 1
-                }],
-                accounts: [],
-                waits: []
-              },
-            }
-          }
-    );
-}
 
 router.get('/generate', async (req, res) => {
     // const {name} = req.body;
