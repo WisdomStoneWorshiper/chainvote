@@ -27,17 +27,17 @@ function getRandomString(length) {
 }
 
 router.post("/", async (req, res) => {
-    const {name} = req.body;
-    const result = await Account.find({name : name})
+    const {itsc} = req.body;
+    const result = await Account.find({itsc : itsc})
     .catch(err => {
         console.log(err);
         res.send("Unexpected error")
     })
     if(result.length  <= 0){ //no acc found
-        const saveAcc = new Account({name : name, key : getRandomString(5), created : false})
+        const saveAcc = new Account({itsc : itsc, key : getRandomString(5), created : false})
         saveAcc.save()
         .then( result => {
-            sgMail(`${name}@connect.ust.hk`, "Email confirmation", `Your confirmation key is ${saveAcc.key}`)//TODO handle mail limit?
+            sgMail(`${itsc}@connect.ust.hk`, "Email confirmation", `Your confirmation key is ${saveAcc.key}`)//TODO handle mail limit?
             res.send(result)
         })
         .catch(err => {

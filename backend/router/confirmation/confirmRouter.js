@@ -70,12 +70,12 @@ router.post("/", async (req, res) => {
     console.log("Entering confirmation")
     console.log(req.body)
 
-    const {name, key, accname, pkey} = req.body;
-    Account.findOne({ name : name}, async (err, result) => {
+    const {itsc, key, accname, pkey} = req.body;
+    Account.findOne({ itsc : itsc}, async (err, result) => {
         if(err || result == null) res.send("No account with the name")
         else{
             console.log(result)
-            if(result.key === key){
+            if(result.key === key && result.publicKey){
                 console.log("Valid confirmation")
                 // Account creation sample TODO: Account name checking
                 const transaction = await eosDriver.transact({
@@ -88,7 +88,7 @@ router.post("/", async (req, res) => {
                     expireSeconds: 30,
                    });
                 //insert smart contract communication
-                Account.findOneAndUpdate({name: name}, {created : true}).then(result => {
+                Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname}).then(result => {
                     console.log(result);
                 })
                 res.send("Confirmation Successful")
