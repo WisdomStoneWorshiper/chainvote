@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const regisSchema = new Schema({
-    name : {
+    itsc : {
         type: String,
         required: true,
         unique: true,
@@ -12,9 +12,13 @@ const regisSchema = new Schema({
         type: String,
         required: true
     },
-    created : {
-        type: Boolean,
-        required : true
+    accountName: {
+        type: String,
+        unique: true
+    },
+    publicKey : {
+        type: String,
+        unique: true
     }
 }, {timestamps : true});
 
