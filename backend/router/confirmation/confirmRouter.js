@@ -91,21 +91,29 @@ router.post("/", async (req, res) => {
                    }, {
                     blocksBehind: 3,
                     expireSeconds: 30,
-                   }); //TODO : ADD ERROR HANDLING TO COMBAT SAME NAME ACC
-                Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname}).then(result => {
-                    console.log(result);
+                   })
+                   .then(result => {
+                    Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
+                    .then(result => {
+                      console.log(result);
+                      res.json({
+                        error : false
+                      });
+                    })
+                    .catch(err => {
                     res.json({
-                      error : false
-                    });
-                }) //TODO : add handling for same public key
-                .catch(err => {
-                  console.log("Cant update lul")
-                  console.log(err)
-                  res.json({
-                    error: true,
-                    message: "Unexpected error on updating"
+                      error: true,
+                      message: err.message
+                    })
                   })
                 })
+                   .catch(err => {
+                     console.log("Detected error")
+                     console.log(err.message)
+                     res.json({
+                       "fuck" : "you"
+                     })
+                   })
                 
             }
             else{

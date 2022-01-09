@@ -41,10 +41,10 @@ const Registration = () => {
     //REGISTRATION DATA
     const [itsc, setItsc] = useState("");
     const [ckey, setCkey] = useState("");
+    const [rconfirm, setRconfirm] = useState("");
 
     //CONFIRMATION DATA
     const [name, setName] = useState("");
-
     const [confirm, setConfirm] = useState("")
 
     const getKeyPair = () => {
@@ -67,15 +67,14 @@ const Registration = () => {
         .then(result => result.json())
         .then(result => {
             if(!result.error){
-                setCkey("Success")
+                setRconfirm("Success")
             }
             else{
-                setCkey(result.message)
+                setRconfirm(result.message)
             }
         })
         .catch(err => {
-            console.log(err.message)
-            console.log("Error in registering")
+            setRconfirm("Unexpected error in registration")
         })
     }
 
@@ -88,8 +87,12 @@ const Registration = () => {
             pkey : pair.public
         })
         .then(result => {
-            console.log("Account created")
-            setConfirm("Account has successfully confirmed")
+            if(!result.error){
+                setConfirm("Account successfully created")
+            }
+            else{
+                setConfirm(result.message)
+            }
         })
         .catch(err => {
             console.log(err.message)
@@ -98,7 +101,6 @@ const Registration = () => {
 
         })
     }
-
 
     return (
         <div>
@@ -132,7 +134,7 @@ const Registration = () => {
                     <input type="submit" value="Register"/>
                 </form>
             </div>
-            <h3>Registration Status: {ckey}</h3>
+            <h3>Registration Status: {rconfirm}</h3>
 
             <h3>Confirmation form</h3>
             <div>
@@ -171,10 +173,7 @@ const Registration = () => {
                     <input type="submit" value="Confirm form"/>
                 </form>
             </div>
-
-            
-
-
+            <h3>Confirmation Status : {confirm}</h3>
         </div>
     )
 }
