@@ -93,4 +93,15 @@ ACTION votingtest::clear() {
   }
 }
 
-EOSIO_DISPATCH(votingtest, (addcandidate)(vote)(unvote)(clear)(addvoter))
+ACTION votingtest::testfuc() {
+  test_table _test(get_self(), get_self().value);
+  vector<uint8_t> temp_list = {1, 2, 3, 4};
+
+  _test.emplace(get_self(), [&](auto& new_record) {
+    new_record.id = _test.available_primary_key();
+    new_record.result = temp_list;
+  });
+}
+
+EOSIO_DISPATCH(votingtest,
+               (addcandidate)(vote)(unvote)(clear)(addvoter)(testfuc))
