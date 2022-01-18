@@ -122,6 +122,20 @@
             ]
         },
         {
+            "name": "voter_actions",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign",
+                    "type": "string"
+                },
+                {
+                    "name": "action_time",
+                    "type": "time_point"
+                }
+            ]
+        },
+        {
             "name": "voter_list",
             "base": "",
             "fields": [
@@ -136,6 +150,10 @@
                 {
                     "name": "votable_campaigns",
                     "type": "uint64[]"
+                },
+                {
+                    "name": "records",
+                    "type": "voter_actions[]"
                 }
             ]
         },

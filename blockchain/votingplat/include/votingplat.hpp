@@ -1,4 +1,5 @@
 #include <eosio/eosio.hpp>
+#include <eosio/system.hpp>
 
 using namespace std;
 using namespace eosio;
@@ -25,6 +26,12 @@ CONTRACT votingplat : public contract {
 
   // ACTION testfuc();
 
+  struct voter_actions {
+    string campaign;
+    time_point action_time;
+  };
+
+
   TABLE campaign_list {
     uint64_t id;
     string campaign_name;
@@ -40,6 +47,7 @@ CONTRACT votingplat : public contract {
     name voter;
     vector<uint64_t> owned_campaigns;
     vector<uint64_t> votable_campaigns;
+    vector<voter_actions> records;
     auto primary_key() const { return voter.value; }
   };
 

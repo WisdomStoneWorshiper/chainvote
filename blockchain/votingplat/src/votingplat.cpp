@@ -33,6 +33,7 @@ ACTION votingplat::createcamp(name owner, string campaign_name) {
     target_voter.owned_campaigns.push_back(_campaign_id);
   });
 }
+
 ACTION votingplat::addchoice(name owner, uint64_t campaign_id,
                              string new_choice) {
   check(has_auth(owner), "You are not authorized to use this account");
@@ -61,12 +62,13 @@ ACTION votingplat::addvoter(name owner, uint64_t campaign_id, name voter) {
     target_voter.votable_campaigns.push_back(campaign_id);
   });
 }
+
 ACTION votingplat::vote(uint64_t campaign_id, name voter, uint64_t choice_idx) {
   check(has_auth(voter), "You are not authorized to use this account");
   campaign_table _campaign(get_self(), get_self().value);
   auto campaign_itr = _campaign.find(campaign_id);
   check(campaign_itr != _campaign.end(), "campaign not exist");
-  check(campaign_itr->choice_list.size() < choice_idx, "choice not exist");
+  check((campaign_itr->choice_list).size() > choice_idx, "choice not exist");
 
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(voter.value);
@@ -79,7 +81,16 @@ ACTION votingplat::vote(uint64_t campaign_id, name voter, uint64_t choice_idx) {
   _campaign.modify(campaign_itr, get_self(), [&](auto& target_campaign) {
     ++target_campaign.result[choice_idx];
   });
+
+  votingplat::voter_actions record;
+  record.campaign = campaign_itr->campaign_name;
+  record.action_time = current_time_point();
+
+  _voter.modify(voting_itr, get_self(), [&](auto& target_voter) {
+    target_voter.records.push_back(record); 
+  });
 }
+
 ACTION votingplat::deletecamp(name owner, uint64_t campaign_id) {
   check(has_auth(owner), "You are not authorized to use this account");
   campaign_table _campaign(get_self(), get_self().value);
