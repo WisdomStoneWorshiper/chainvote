@@ -115,8 +115,8 @@ ACTION votingplat::updatevoter(name voter, bool active){
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(voter.value);
   check(voting_itr != _voter.end(), "voter not exist");
-  _voter.modify(voting_itr, get_self(), [&](auto& target_voter){
-    target_voter.is_active = active;
+  voter_table.emplace(voting_itr, get_self(), [&](auto& target_voter){
+
   });
 }
 
