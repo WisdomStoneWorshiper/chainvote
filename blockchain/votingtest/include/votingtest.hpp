@@ -16,6 +16,8 @@ CONTRACT votingtest : public contract {
   ACTION unvote(name voter, name candidate);
   ACTION clear();
 
+  ACTION testfuc();
+
   TABLE voting_result {
     name candidate;
     uint64_t vote_count;
@@ -26,6 +28,14 @@ CONTRACT votingtest : public contract {
     name voter;
     auto primary_key() const { return voter.value; }
   };
+
+  TABLE test_list {
+    uint64_t id;
+    vector<uint8_t> result;
+    auto primary_key() const { return id; }
+  };
+
+  typedef multi_index<name("testing"), test_list> test_table;
 
   typedef multi_index<name("votingresult"), voting_result> voting_result_table;
 
