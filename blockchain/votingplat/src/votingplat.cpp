@@ -110,5 +110,24 @@ ACTION votingplat::deletecamp(name owner, uint64_t campaign_id) {
   _campaign.erase(campaign_itr);
 }
 
+ACTION votingplat::updatevoter(name voter, bool active){
+  check(has_auth(get_self()), "Only admin can update one's voting account");
+  voter_table _voter(get_self(), get_self().value);
+  auto voting_itr = _voter.find(voter.value);
+  check(voting_itr != _voter.end(), "voter not exist");
+  _voter.modify(voting_itr, get_self(), [&](auto& target_voter){
+    target_voter.is_active = active;
+  });
+}
+
+ACTION votingplat::deletevoter(name voter){
+  check(has_auth(get_self()), "Only admin can update one's voting account");
+  voter_table _voter(get_self(), get_self().value);
+  auto voting_itr = _voter.find(voter.value);
+  check(voting_itr != _voter.end(), "voter not exist");
+  _voter.erase(voting_itr);
+  check(voting_itr != _voter.end(), "Invalid : voter was not deleted properly");
+}
+
 EOSIO_DISPATCH(votingplat,
                (createvoter)(createcamp)(addchoice)(addvoter)(vote)(deletecamp))

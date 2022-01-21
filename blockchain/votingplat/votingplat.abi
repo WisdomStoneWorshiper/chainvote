@@ -120,6 +120,30 @@
             ]
         },
         {
+            "name": "deletevoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "updatevoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "active",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
             "name": "vote",
             "base": "",
             "fields": [
@@ -170,6 +194,10 @@
                 {
                     "name": "records",
                     "type": "voter_actions[]"
+                },
+                {
+                    "name": "is_active",
+                    "type": "bool"
                 }
             ]
         }
@@ -198,6 +226,16 @@
         {
             "name": "deletecamp",
             "type": "deletecamp",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deletevoter",
+            "type": "deletevoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updatevoter",
+            "type": "updatevoter",
             "ricardian_contract": ""
         },
         {
