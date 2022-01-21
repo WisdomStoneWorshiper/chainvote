@@ -56,6 +56,14 @@
                     "type": "name"
                 },
                 {
+                    "name": "start_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_time",
+                    "type": "time_point"
+                },
+                {
                     "name": "choice_list",
                     "type": "string[]"
                 },
@@ -76,6 +84,14 @@
                 {
                     "name": "campaign_name",
                     "type": "string"
+                },
+                {
+                    "name": "start_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_time",
+                    "type": "time_point"
                 }
             ]
         },
@@ -156,20 +172,6 @@
                     "type": "voter_actions[]"
                 }
             ]
-        },
-        {
-            "name": "voter_record_list",
-            "base": "",
-            "fields": [
-                {
-                    "name": "voter",
-                    "type": "name"
-                },
-                {
-                    "name": "choice",
-                    "type": "name"
-                }
-            ]
         }
     ],
     "actions": [
@@ -208,13 +210,6 @@
         {
             "name": "campaign",
             "type": "campaign_list",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "recordlist",
-            "type": "voter_record_list",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

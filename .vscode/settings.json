@@ -17,6 +17,8 @@
         "variant": "cpp",
         "typeinfo": "cpp",
         "string_view": "cpp",
-        "initializer_list": "cpp"
+        "initializer_list": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp"
     }
 }

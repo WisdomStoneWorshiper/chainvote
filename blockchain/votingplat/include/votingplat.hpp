@@ -11,7 +11,7 @@ CONTRACT votingplat : public contract {
   using contract::contract;
 
   ACTION createvoter(name new_voter);
-  ACTION createcamp(name owner, string campaign_name);
+  ACTION createcamp(name owner, string campaign_name, time_point start_time, time_point end_time);
   ACTION addchoice(name owner, uint64_t campaign_id, string new_choice);
   ACTION addvoter(name owner, uint64_t campaign_id, name voter);
   ACTION vote(uint64_t campaign_id, name voter, uint64_t choice_idx);
@@ -36,6 +36,8 @@ CONTRACT votingplat : public contract {
     uint64_t id;
     string campaign_name;
     name owner;
+    time_point start_time;
+    time_point end_time;
     vector<string> choice_list;
     vector<uint64_t> result;
     auto primary_key() const { return id; }
@@ -54,12 +56,12 @@ CONTRACT votingplat : public contract {
   typedef multi_index<name("voter"), voter_list> voter_table;
 
  private:
-  TABLE voter_record_list {
-    name voter;
-    name choice;
-    auto primary_key() const { return voter.value; }
-  };
+  // TABLE voter_record_list {
+  //   name voter;
+  //   name choice;
+  //   auto primary_key() const { return voter.value; }
+  // };
 
-  typedef multi_index<name("recordlist"), voter_record_list>
-      voter_record_list_table;
+  // typedef multi_index<name("recordlist"), voter_record_list>
+  //     voter_record_list_table;
 };
