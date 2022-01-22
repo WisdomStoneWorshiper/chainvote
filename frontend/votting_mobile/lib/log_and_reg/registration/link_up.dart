@@ -15,10 +15,24 @@ class LinkUp extends StatelessWidget {
   TextEditingController _codeController = TextEditingController();
   TextEditingController _eosAccController = TextEditingController();
   TextEditingController _eosPublicKeyController = TextEditingController();
+  late BuildContext _context;
 
   LinkUp({Key? key}) : super(key: key);
 
   void _submitLinpUpRequest() {
+    if (_codeController.text.isEmpty ||
+        _eosAccController.text.isEmpty ||
+        (_needCreateEOSIO == true && _eosPublicKeyController.text.isEmpty)) {
+      final errBar = SnackBar(
+        content: Text("Please fillin all field!"),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(_context).showSnackBar(errBar);
+      print("on9");
+    }
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
   }
@@ -28,7 +42,7 @@ class LinkUp extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as LinkUpArg;
     _itsc = args.itsc;
     _needCreateEOSIO = args.needCreateEOSIO;
-
+    _context = context;
     return Scaffold(
       appBar: AppBar(
         title: Text("Link up with your itsc"),
@@ -73,7 +87,7 @@ class LinkUp extends StatelessWidget {
                   children: [
                     Text("EOSIO public key : "),
                     SizedBox(
-                      width: 300,
+                      width: 250,
                       height: 50,
                       child: TextField(
                         decoration: InputDecoration(

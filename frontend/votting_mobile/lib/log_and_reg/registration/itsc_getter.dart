@@ -11,6 +11,8 @@ class ITSCGetter extends StatelessWidget {
   final String _keyPairURL =
       "https://eosauthority.com/generate_eos_private_key";
   final void Function(String) emailSentCallback;
+  late BuildContext _context;
+
   ITSCGetter(this.emailSentCallback);
 
   TextEditingController _itscFieldController = TextEditingController();
@@ -26,6 +28,17 @@ class ITSCGetter extends StatelessWidget {
   }
 
   void _sendRegistrationRequest(String itsc) async {
+    if (_itscFieldController.text.isEmpty) {
+      final errBar = SnackBar(
+        content: Text("Please fillin all field!"),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(_context).showSnackBar(errBar);
+      return;
+    }
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
@@ -43,6 +56,7 @@ class ITSCGetter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Center(
       child: Column(
         children: [
