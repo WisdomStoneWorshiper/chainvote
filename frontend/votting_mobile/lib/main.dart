@@ -18,7 +18,7 @@ class VottingApp extends StatelessWidget {
       routes: {
         'l&r': (context) => const LogAndReg(),
         'l': (context) => const Login(),
-        'r': (context) => const Register(),
+        'r': (context) => Register(),
       },
     );
   }
