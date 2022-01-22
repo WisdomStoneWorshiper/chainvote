@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './log_and_reg_btn.dart';
 
 class LogAndReg extends StatelessWidget {
-  final String _title = "Votting App";
+  final String _title = "Voting App";
   const LogAndReg();
 
   void temp() {}
