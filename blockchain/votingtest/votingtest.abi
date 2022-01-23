@@ -29,6 +29,25 @@
             "fields": []
         },
         {
+            "name": "test_list",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "result",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "testfuc",
+            "base": "",
+            "fields": []
+        },
+        {
             "name": "unvote",
             "base": "",
             "fields": [
@@ -112,6 +131,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "testfuc",
+            "type": "testfuc",
+            "ricardian_contract": ""
+        },
+        {
             "name": "unvote",
             "type": "unvote",
             "ricardian_contract": ""
@@ -126,6 +150,13 @@
         {
             "name": "recordlist",
             "type": "voter_record_list",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "testing",
+            "type": "test_list",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

@@ -1,0 +1,267 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "addchoice",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "new_choice",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "addvoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "voter",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "campaign_list",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "campaign_name",
+                    "type": "string"
+                },
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "start_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "choice_list",
+                    "type": "string[]"
+                },
+                {
+                    "name": "result",
+                    "type": "uint64[]"
+                }
+            ]
+        },
+        {
+            "name": "createcamp",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "campaign_name",
+                    "type": "string"
+                },
+                {
+                    "name": "start_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_time",
+                    "type": "time_point"
+                }
+            ]
+        },
+        {
+            "name": "createvoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "new_voter",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "deletecamp",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "deletevoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "updatevoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "active",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "vote",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "choice_idx",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "voter_actions",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign",
+                    "type": "string"
+                },
+                {
+                    "name": "action_time",
+                    "type": "time_point"
+                }
+            ]
+        },
+        {
+            "name": "voter_list",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "owned_campaigns",
+                    "type": "uint64[]"
+                },
+                {
+                    "name": "votable_campaigns",
+                    "type": "uint64[]"
+                },
+                {
+                    "name": "records",
+                    "type": "voter_actions[]"
+                },
+                {
+                    "name": "is_active",
+                    "type": "bool"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addchoice",
+            "type": "addchoice",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addvoter",
+            "type": "addvoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "createcamp",
+            "type": "createcamp",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "createvoter",
+            "type": "createvoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deletecamp",
+            "type": "deletecamp",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deletevoter",
+            "type": "deletevoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updatevoter",
+            "type": "updatevoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "vote",
+            "type": "vote",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "campaign",
+            "type": "campaign_list",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "voter",
+            "type": "voter_list",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}
