@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
     // console.log(transaction);
     // res.json(transaction);
 
-    const temp = new Account({itsc : req.body.itsc, key : getRandomString(5), accountName: null, publicKey : null});
+    const temp = new Account({itsc : req.body.itsc, key : getRandomString(5), accountName: null, publicKey : null, created : false});
     temp.save().then(result => {
         res.json(result);
     })
@@ -38,6 +38,23 @@ router.post('/', async (req, res) => {
             error : true,
             message : "Cannot create test account"
         });
+    })
+})
+
+router.delete('/', async(req, res) => {
+    const {itsc} = req.body;
+    Account.findOneAndDelete({itsc: itsc}, (err, result) => {
+        if(!err){
+            res.json({
+                error: false
+            });
+        }
+        else{
+            res.json({
+                error: true,
+                message: "cannot find/ delete"
+            })
+        }
     })
 })
 

@@ -79,18 +79,17 @@ router.get("/create", async (req, res) => {
             return;
         }
         else{
-            if(result.key !== key || result.accountName){
+            if(result.created){
                 res.json({
                     error: true,
-                    message : "Invalid confirmation key or Account has been created"
+                    message : "Account has already been created"
                 });
                 return;
             }
             //begin acc creation
             const transaction  = await eosDriver.transact({
                 actions: [
-                    accountPlaceholder(accname, pkey),
-                    addVoterPlaceholder(accname)
+                    accountPlaceholder(accname, pkey)
                 ]
                }, {
                 blocksBehind: 3,
@@ -98,7 +97,7 @@ router.get("/create", async (req, res) => {
                })
             .then(result => {
                 console.log(result);
-                Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
+                Account.findOneAndUpdate({itsc: itsc}, {created: true})
                 .then(result => res.json({
                     error: false,
                 }))
