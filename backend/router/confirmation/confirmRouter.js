@@ -3,47 +3,49 @@ const Account = require("../../Helper functions/mongoose/accModel")
 const eosDriver = require("../../Helper functions/eosDriver")
 const router = express.Router();
 
-const accountPlaceholder = (name, publicKey) => {
-    return (
-        {
-            account: 'eosio',
-            name: `newaccount`, // new account name
-            authorization: [{
-              actor: 'main', // which account generates it
-              permission: 'active',
-            }],
-            data: {
-              creator: 'main',
-              name: `${name}`,
-              owner: {
-                threshold: 1,
-                keys: [{
-                  key: `${publicKey}`,
-                  weight: 1
-                }],
-                accounts: [],
-                waits: []
-              },
-              active: {
-                threshold: 1,
-                keys: [{
-                  key: `${publicKey}`,
-                  weight: 1
-                }],
-                accounts: [],
-                waits: []
-              },
-            }
-          }
-    );
-}
+require('dotenv').config();
+
+// const accountPlaceholder = (name, publicKey) => {
+//     return (
+//         {
+//             account: 'eosio',
+//             name: `newaccount`, // new account name
+//             authorization: [{
+//               actor: 'main', // which account generates it
+//               permission: 'active',
+//             }],
+//             data: {
+//               creator: 'main',
+//               name: `${name}`,
+//               owner: {
+//                 threshold: 1,
+//                 keys: [{
+//                   key: `${publicKey}`,
+//                   weight: 1
+//                 }],
+//                 accounts: [],
+//                 waits: []
+//               },
+//               active: {
+//                 threshold: 1,
+//                 keys: [{
+//                   key: `${publicKey}`,
+//                   weight: 1
+//                 }],
+//                 accounts: [],
+//                 waits: []
+//               },
+//             }
+//           }
+//     );
+// }
 
 const addVoterPlaceholder = (name) => {
     return         {
-        account: 'main',
-        name: `addvoter`, // new account name
+        account: `${process.env.ACC_NAME}`,
+        name: `createvoter`, // new account name
         authorization: [{
-          actor: 'main', // which account generates it
+          actor: `${process.env.ACC_NAME}`, // which account generates it
           permission: 'active',
         }],
         data: {
@@ -51,7 +53,6 @@ const addVoterPlaceholder = (name) => {
         }
       }
 }
-
 
 
 
@@ -77,6 +78,7 @@ router.post("/", async (req, res) => {
             error : true,
             message : "Invalid itsc"
           });
+          return;
         }
         else{
             console.log(result)
@@ -85,7 +87,6 @@ router.post("/", async (req, res) => {
                 // Account creation sample TODO: Account name checking
                 const transaction = await eosDriver.transact({
                     actions: [
-                        accountPlaceholder(accname, pkey),
                         addVoterPlaceholder(accname)
                     ]
                    }, {
@@ -111,9 +112,10 @@ router.post("/", async (req, res) => {
                      console.log("Detected error")
                      console.log(err.message)
                      res.json({
-                       "fuck" : "you"
+                       error : true,
+                       message : err.message
                      })
-                   })
+                   });
                 
             }
             else{
