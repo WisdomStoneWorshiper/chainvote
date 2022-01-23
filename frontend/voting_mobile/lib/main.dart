@@ -6,11 +6,11 @@ import 'log_and_reg/registration/eosio_acc_create.dart';
 import 'log_and_reg/registration/link_up.dart';
 
 void main() {
-  runApp(const votingApp());
+  runApp(const VotingApp());
 }
 
-class votingApp extends StatelessWidget {
-  const votingApp({Key? key}) : super(key: key);
+class VotingApp extends StatelessWidget {
+  const VotingApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
