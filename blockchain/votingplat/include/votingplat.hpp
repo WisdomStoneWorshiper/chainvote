@@ -1,4 +1,5 @@
 #include <eosio/eosio.hpp>
+#include <eosio/system.hpp>
 
 using namespace std;
 using namespace eosio;
@@ -10,11 +11,17 @@ CONTRACT votingplat : public contract {
   using contract::contract;
 
   ACTION createvoter(name new_voter);
-  ACTION createcamp(name owner, string campaign_name);
+  ACTION createcamp(name owner, string campaign_name, time_point start_time, time_point end_time);
   ACTION addchoice(name owner, uint64_t campaign_id, string new_choice);
   ACTION addvoter(name owner, uint64_t campaign_id, name voter);
   ACTION vote(uint64_t campaign_id, name voter, uint64_t choice_idx);
   ACTION deletecamp(name owner, uint64_t campaign_id);
+
+  // --- Voter maniputation --- //
+  ACTION updatevoter(name voter, bool active);
+  ACTION deletevoter(name voter);
+
+
 
   // ACTION addvoter(name new_voter);
 
@@ -25,10 +32,18 @@ CONTRACT votingplat : public contract {
 
   // ACTION testfuc();
 
+  struct voter_actions {
+    string campaign;
+    time_point action_time;
+  };
+
+
   TABLE campaign_list {
     uint64_t id;
     string campaign_name;
     name owner;
+    time_point start_time;
+    time_point end_time;
     vector<string> choice_list;
     vector<uint64_t> result;
     auto primary_key() const { return id; }
@@ -40,18 +55,20 @@ CONTRACT votingplat : public contract {
     name voter;
     vector<uint64_t> owned_campaigns;
     vector<uint64_t> votable_campaigns;
+    vector<voter_actions> records;
+    bool is_active;
     auto primary_key() const { return voter.value; }
   };
 
   typedef multi_index<name("voter"), voter_list> voter_table;
 
  private:
-  TABLE voter_record_list {
-    name voter;
-    name choice;
-    auto primary_key() const { return voter.value; }
-  };
+  // TABLE voter_record_list {
+  //   name voter;
+  //   name choice;
+  //   auto primary_key() const { return voter.value; }
+  // };
 
-  typedef multi_index<name("recordlist"), voter_record_list>
-      voter_record_list_table;
+  // typedef multi_index<name("recordlist"), voter_record_list>
+  //     voter_record_list_table;
 };

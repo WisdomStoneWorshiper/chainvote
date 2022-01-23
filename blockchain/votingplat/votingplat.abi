@@ -56,6 +56,14 @@
                     "type": "name"
                 },
                 {
+                    "name": "start_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_time",
+                    "type": "time_point"
+                },
+                {
                     "name": "choice_list",
                     "type": "string[]"
                 },
@@ -76,6 +84,14 @@
                 {
                     "name": "campaign_name",
                     "type": "string"
+                },
+                {
+                    "name": "start_time",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_time",
+                    "type": "time_point"
                 }
             ]
         },
@@ -104,6 +120,30 @@
             ]
         },
         {
+            "name": "deletevoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "updatevoter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "active",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
             "name": "vote",
             "base": "",
             "fields": [
@@ -122,6 +162,20 @@
             ]
         },
         {
+            "name": "voter_actions",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign",
+                    "type": "string"
+                },
+                {
+                    "name": "action_time",
+                    "type": "time_point"
+                }
+            ]
+        },
+        {
             "name": "voter_list",
             "base": "",
             "fields": [
@@ -136,20 +190,14 @@
                 {
                     "name": "votable_campaigns",
                     "type": "uint64[]"
-                }
-            ]
-        },
-        {
-            "name": "voter_record_list",
-            "base": "",
-            "fields": [
-                {
-                    "name": "voter",
-                    "type": "name"
                 },
                 {
-                    "name": "choice",
-                    "type": "name"
+                    "name": "records",
+                    "type": "voter_actions[]"
+                },
+                {
+                    "name": "is_active",
+                    "type": "bool"
                 }
             ]
         }
@@ -181,6 +229,16 @@
             "ricardian_contract": ""
         },
         {
+            "name": "deletevoter",
+            "type": "deletevoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updatevoter",
+            "type": "updatevoter",
+            "ricardian_contract": ""
+        },
+        {
             "name": "vote",
             "type": "vote",
             "ricardian_contract": ""
@@ -190,13 +248,6 @@
         {
             "name": "campaign",
             "type": "campaign_list",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "recordlist",
-            "type": "voter_record_list",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
