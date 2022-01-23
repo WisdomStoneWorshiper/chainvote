@@ -26,31 +26,38 @@ function getRandomString(length) {
     return result;
 }
 
-router.get('/test', async (req, res) => {
-    const test = await sgMail(`irug.com@gmail.com`, "Email confirmation", "testkey").then(result => console.log(result))
-    res.send("test done?")
-})
-
 router.post("/", async (req, res) => {
-    const {name} = req.body;
-    const result = await Account.find({name : name})
+    const {itsc} = req.body;
+    const result = await Account.find({itsc : itsc})
     .catch(err => {
-
+        console.log(err);
+        res.json({
+            error : true,
+            message : "Unexpected error searching itsc" 
+        });
     })
-    if(result.length  <= 0){ //no acc found
-        const saveAcc = new Account({name : name, key : getRandomString(5)})
-        saveAcc.save()
+    if(result.length != 0){ //acc found
+        const random_str = getRandomString(5);
+        Account.findOneAndUpdate({itsc : itsc}, {key : random_str})
         .then( result => {
-            sgMail(`${name}@connect.ust.hk`, "Email confirmation", `Your confirmation key is ${saveAcc.key}`)//TODO handle mail limit?
-            res.send(result)
+            sgMail(`${itsc}@connect.ust.hk`, "Email confirmation", `Your confirmation key is ${random_str}`)//TODO handle mail limit?
+            res.json({
+                error : false
+            })
         })
         .catch(err => {
             console.log(err)
-            res.send("Unexpected Error")
+            res.json({
+                error : true,
+                message : "Failed to update and send email"
+            })
         })
     }
-    else{
-        res.send("Account has been created!")
+    else{ // acc not found
+        res.json({
+            error : true,
+            message : "Invalid itsc"
+        });
     }
 
 });
