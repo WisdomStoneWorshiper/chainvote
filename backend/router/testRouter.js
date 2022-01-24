@@ -14,21 +14,6 @@ function getRandomString(length) {
 
 
 router.post('/', async (req, res) => {
-    // const {name} = req.body;
-    // const tempKeypair = await generateKeyPair();
-    // const accAction = accountPlaceholder(name, tempKeypair.public)
-
-    // console.log(accAction);
-    // const transaction = await eosDriver.transact({
-    //     actions: [accAction]
-    //    }, {
-    //     blocksBehind: 3,
-    //     expireSeconds: 30,
-    //    });
-
-    // console.log(transaction);
-    // res.json(transaction);
-
     const temp = new Account({itsc : req.body.itsc, key : getRandomString(5), accountName: null, publicKey : null, created : false});
     temp.save().then(result => {
         res.json(result);
@@ -50,7 +35,7 @@ router.delete('/', async(req, res) => {
             });
         }
         else{
-            res.json({
+            res.status(500).json({
                 error: true,
                 message: "cannot find/ delete"
             })

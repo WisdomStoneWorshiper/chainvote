@@ -47,14 +47,14 @@ router.post("/", async (req, res) => {
         })
         .catch(err => {
             console.log(err)
-            res.json({
+            res.status(500).json({
                 error : true,
                 message : "Failed to update and send email"
             })
         })
     }
     else{ // acc not found
-        res.json({
+        res.status(500).json({
             error : true,
             message : "Invalid itsc"
         });
