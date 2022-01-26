@@ -5,8 +5,13 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [Text("This is home page")],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Voting App"),
+      ),
+      body: Center(
+        child: Text("this is homepage"),
+      ),
     );
   }
 }

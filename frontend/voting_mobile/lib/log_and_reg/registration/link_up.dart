@@ -31,9 +31,10 @@ class LinkUp extends StatelessWidget {
         ),
       );
       ScaffoldMessenger.of(_context).showSnackBar(errBar);
+    } else {
+      BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+      var dio = Dio(opt);
     }
-    BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
-    var dio = Dio(opt);
   }
 
   @override

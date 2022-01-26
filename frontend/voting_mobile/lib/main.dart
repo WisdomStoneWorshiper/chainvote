@@ -4,6 +4,7 @@ import 'log_and_reg/login/login.dart';
 import 'log_and_reg/registration/register.dart';
 import 'log_and_reg/registration/eosio_acc_create.dart';
 import 'log_and_reg/registration/link_up.dart';
+import 'home/home.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -19,10 +20,11 @@ class VotingApp extends StatelessWidget {
       initialRoute: 'l&r',
       routes: {
         'l&r': (context) => const LogAndReg(),
-        'l': (context) => const Login(),
+        'l': (context) => Login(),
         'r': (context) => Register(),
         'e': (context) => EOSIOAccCreate(),
         'lu': (context) => LinkUp(),
+        'h': (context) => HomePage(),
       },
     );
   }
