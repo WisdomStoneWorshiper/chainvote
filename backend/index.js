@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const Account = require("./Helper functions/mongoose/accModel");
 
 const registration = require("./router/registration/regisRouter");
-const confirmation = require("./router/confirmation/confirmRouter")
+// const confirmation = require("./router/confirmation/confirmRouter")
 const account = require('./router/account/accountRouter')
 const test = require('./router/testRouter');
 
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 })
 
 app.use("/registration", registration);
-app.use("/confirmation", confirmation);
+// app.use("/confirmation", confirmation);
 app.use("/account", account);
 app.use("/test", test);
 
