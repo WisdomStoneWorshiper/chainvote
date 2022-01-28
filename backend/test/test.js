@@ -2,6 +2,7 @@ let app = require("../index")
 let Account = require("../Helper functions/mongoose/accModel")
 let eosDriver = require("../Helper functions/eosDriver")
 let {accountPlaceholder} = require("../Helper functions/eosPlaceholder")
+let axios = require("axios")
 
 let chai = require("chai")
 let chaiHttp = require('chai-http')
@@ -80,9 +81,9 @@ describe("Full testing", function (){
 
         let keypair = null;
 
-        let fixedName = getRandomString(12);
+        let fixedName = null;
 
-        before(async function() {
+        beforeEach(async function() {
             this.timeout(3000); //account generation
             let temp = new Account({
                 itsc: process.env.REAL_NAME,
@@ -92,6 +93,8 @@ describe("Full testing", function (){
                 created : false
             });
             await temp.save();
+
+            fixedName = getRandomString(12);
 
             let result = await chai.request(app)
             .get("/account/pair")
@@ -202,8 +205,8 @@ describe("Full testing", function (){
             })
         })
 
-        it("should reject due to account has been created before", (done) => {
-            chai.request(app)
+        it("should reject due to account has been created before", async () => {
+            await chai.request(app)
             .post("/account/create")
             .send({
                 itsc : process.env.REAL_NAME,
@@ -211,16 +214,25 @@ describe("Full testing", function (){
                 accname: fixedName,
                 pkey : keypair.public
             })
-            .end((err, res) => {
-                res.should.have.status(500);
-                res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Account has already been created");
-                done()
+            .then(res => {
+                return chai.request(app)
+                .post("/account/create")
+                .send({
+                    itsc : process.env.REAL_NAME,
+                    key : process.env.CONF_KEY,
+                    accname: fixedName,
+                    pkey : keypair.public
+                })
+                .then((res) => {
+                    res.should.have.status(500);
+                    res.body.should.have.property("error").eql(true);
+                    res.body.should.have.property("message").eql("Account has already been created");
+                })
             })
         })
 
-        after(function () {
-            return Account.deleteOne({itsc : process.env.REAL_NAME});
+        afterEach(function () {
+            return Account.deleteMany({itsc : process.env.REAL_NAME});
         })
 
     })

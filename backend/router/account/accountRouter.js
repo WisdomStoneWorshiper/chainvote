@@ -70,7 +70,6 @@ router.post("/create", async (req, res) => {
                 expireSeconds: 30,
                })
             .then(result => {
-                // console.log(result);
                 Account.findOneAndUpdate({itsc: itsc}, {created: true})
                 .then(result => res.json({
                     error: false,
@@ -141,7 +140,7 @@ router.post("/confirm", async (req, res) => {
             .then(result => {
                 Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
                 .then(result => {
-                    console.log("entering to save")
+                    // console.log("entering to save")
                 //   console.log(result);
                     res.json({
                     error : false
