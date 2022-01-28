@@ -29,7 +29,7 @@ router.get('/pair', async (req, res) => {
 router.post("/create", async (req, res) => {
     const {itsc, key, accname, pkey} = req.body
     Account.findOne({itsc : itsc}, async (err, result) => {
-        if(result == null || result.length == 0){
+        if(err || result === null){
             // console.log("dead1")
             res.status(500).json({
                 error : true,
@@ -61,13 +61,6 @@ router.post("/create", async (req, res) => {
                 })
                 return;
             }
-            // if(!eosPublicKeyValidation(pkey)){
-            //     res.status(500).json({
-            //         error : true,
-            //         message : "Invalid public key"
-            //     })
-            //     return;
-            // }
             const transaction  = await eosDriver.transact({
                 actions: [
                     accountPlaceholder(accname, pkey)
@@ -106,7 +99,7 @@ router.post("/confirm", async (req, res) => {
 
     const {itsc, key, accname, pkey} = req.body;
     Account.findOne({ itsc : itsc}, async (err, result) => {
-        if(err || result == undefined) {
+        if(err || result === null) {
           res.status(500).json({
             error : true,
             message : "Invalid itsc"
@@ -114,51 +107,63 @@ router.post("/confirm", async (req, res) => {
           return;
         }
         else{
-            // console.log(result)
-            if(result.key === key && !result.publicKey){
-                // console.log("Valid confirmation")
-                // Account creation sample TODO: Account name checking
-                console.log(addVoterPlaceholder(accname))
-                const transaction = await eosDriver.transact({
-                    actions: [
-                        addVoterPlaceholder(accname)
-                    ]
-                   }, {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
-                   })
-                   .then(result => {
-                    Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
-                    .then(result => {
-                    //   console.log(result);
-                      res.json({
-                        error : false
-                      });
-                    })
-                    .catch(err => {
-                    console.log(err)
-                    res.status(500).json({
-                      error: true,
-                      message: "Itsc account cannot be updated "
-                    })
-                  })
+            if(result.key !== key){
+                // console.log("dead3")
+                res.status(500).json({
+                    error: true,
+                    message : "Invalid confirmation key"
                 })
-                   .catch(err => {
-                    //  console.log("Detected error")
-                    //  console.log(err.message)
-                     res.status(500).json({
-                       error : true,
-                       message : err.message
-                     })
-                   });
-                
+                return;
             }
-            else{
-              res.status(500).json({
+            if(result.publicKey){
+                // console.log("dead3")
+                res.status(500).json({
+                    error: true,
+                    message : "Account has been linked"
+                })
+                return;
+            }
+            if(!eosNameValidation(accname)){
+                res.status(500).json({
+                    error: true,
+                    message : "Invalid account name"
+                })
+                return;
+            }
+            const transaction = await eosDriver.transact({
+                actions: [
+                    addVoterPlaceholder(accname)
+                ]
+                }, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+                })
+            .then(result => {
+                Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
+                .then(result => {
+                    console.log("entering to save")
+                //   console.log(result);
+                    res.json({
+                    error : false
+                    });
+                })
+                .catch(err => {
+                console.log(err)
+                res.status(500).json({
+                    error: true,
+                    message: "Itsc account cannot be updated "
+                })
+                })
+            })
+            .catch(err => {
+            //  console.log("Detected error")
+            //  console.log(err.message)
+                res.status(500).json({
                 error : true,
-                message : result.publicKey ? "Account has been linked" : "Invalid confirmation key"
-              });
-            }
+                message : err.message
+                })
+            });
+                
         }
     })
 
