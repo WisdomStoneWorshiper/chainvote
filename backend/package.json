@@ -21,7 +21,7 @@
     "util": "^0.12.4"
   },
   "scripts": {
-    "test": "mocha ",
+    "test": "mocha --exit",
     "start": "nodemon index.js"
   },
   "author": "",

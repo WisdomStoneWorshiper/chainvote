@@ -65,7 +65,7 @@ router.post("/create", async (req, res) => {
                     error: false,
                 }))
                 .catch(err => {
-                    res.json({
+                    res.status(500).json({
                         error: true,
                         message: "Itsc account cannot be updated"
                     })
@@ -73,7 +73,7 @@ router.post("/create", async (req, res) => {
             })
             .catch(err => {
                 // console.log(err)
-                res.json({
+                res.status(500).json({
                     error: true,
                     message: err.message
                 })
@@ -83,12 +83,12 @@ router.post("/create", async (req, res) => {
 })
 
 router.post("/confirm", async (req, res) => {
-    console.log("Entering confirmation")
-    console.log(req.body)
+    // console.log("Entering confirmation")
+    // console.log(req.body)
 
     const {itsc, key, accname, pkey} = req.body;
     Account.findOne({ itsc : itsc}, async (err, result) => {
-        if(err || result.length == 0) {
+        if(err || result == undefined) {
           res.status(500).json({
             error : true,
             message : "Invalid itsc"
@@ -96,10 +96,11 @@ router.post("/confirm", async (req, res) => {
           return;
         }
         else{
-            console.log(result)
+            // console.log(result)
             if(result.key === key && !result.publicKey){
-                console.log("Valid confirmation")
+                // console.log("Valid confirmation")
                 // Account creation sample TODO: Account name checking
+                console.log(addVoterPlaceholder(accname))
                 const transaction = await eosDriver.transact({
                     actions: [
                         addVoterPlaceholder(accname)
@@ -111,12 +112,13 @@ router.post("/confirm", async (req, res) => {
                    .then(result => {
                     Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
                     .then(result => {
-                      console.log(result);
+                    //   console.log(result);
                       res.json({
                         error : false
                       });
                     })
                     .catch(err => {
+                    console.log(err)
                     res.status(500).json({
                       error: true,
                       message: "Itsc account cannot be updated "
@@ -124,8 +126,8 @@ router.post("/confirm", async (req, res) => {
                   })
                 })
                    .catch(err => {
-                     console.log("Detected error")
-                     console.log(err.message)
+                    //  console.log("Detected error")
+                    //  console.log(err.message)
                      res.status(500).json({
                        error : true,
                        message : err.message
@@ -134,7 +136,7 @@ router.post("/confirm", async (req, res) => {
                 
             }
             else{
-              res.json({
+              res.status(500).json({
                 error : true,
                 message : result.publicKey ? "Account has been linked" : "Invalid confirmation key"
               });

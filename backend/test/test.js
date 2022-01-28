@@ -1,5 +1,7 @@
 let app = require("../index")
 let Account = require("../Helper functions/mongoose/accModel")
+let eosDriver = require("../Helper functions/eosDriver")
+let {accountPlaceholder} = require("../Helper functions/eosPlaceholder")
 
 let chai = require("chai")
 let chaiHttp = require('chai-http')
@@ -8,6 +10,15 @@ let should = chai.should()
 require('dotenv').config()
 
 chai.use(chaiHttp)
+
+function getRandomString(length) {
+    var randomChars = 'abcdefghijklmnopqrstuvwxyz';
+    var result = '';
+    for ( var i = 0; i < length; i++ ) {
+        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return result;
+}
 
 describe("Full testing", function (){
 
@@ -67,15 +78,6 @@ describe("Full testing", function (){
 
     describe("/account/create", function () {
 
-        function getRandomString(length) {
-            var randomChars = 'abcdefghijklmnopqrstuvwxyz';
-            var result = '';
-            for ( var i = 0; i < length; i++ ) {
-                result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-            }
-            return result;
-        }
-
         let keypair = null;
 
         let fixedName = getRandomString(10);
@@ -93,12 +95,10 @@ describe("Full testing", function (){
 
             let result = await chai.request(app)
             .get("/account/pair")
-            
             keypair = result.body;
-
         })
 
-        this.timeout(10000000)
+        this.timeout(100000)
 
 
         it("should reject due to invalid itsc", (done) => {
@@ -174,7 +174,113 @@ describe("Full testing", function (){
 
     })
 
+    describe("/account/confirm", function(){
+        let keypair = null;
+        let fixedName = getRandomString(10);
+
+        console.log(fixedName)
+        before(async function() {
+            this.timeout(3000); //account generation
+            let temp = new Account({
+                itsc: process.env.REAL_NAME,
+                key : process.env.CONF_KEY,
+                accountName : null,
+                publicKey : null,
+                created : true
+            });
+            await temp.save();
+
+            let result = await chai.request(app)
+            .get("/account/pair")
+            
+            keypair = result.body;
+            await eosDriver.transact({
+                actions: [
+                    accountPlaceholder(fixedName, keypair.public)
+                ]
+               }, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+               })
+
+        })
+
+        it("should fail link via itsc", (done) => {
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : process.env.FAKE_NAME,
+                key : process.env.CONF_KEY,
+                accname: fixedName,
+                pkey : keypair.public
+            })
+            .end((err,res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid itsc");
+                done()
+            })
+        });
+
+        it("should fail link via key", (done) => {
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : process.env.REAL_NAME,
+                key : process.env.FAKE_KEY,
+                accname: fixedName,
+                pkey : keypair.public
+            })
+            .end((err,res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid confirmation key");
+                done()
+            })
+        });
+
+        it("link successfully", (done) => {
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : process.env.REAL_NAME,
+                key : process.env.CONF_KEY,
+                accname: fixedName,
+                pkey : keypair.public
+            })
+            .end((err,res) => {
+                console.log(res.body)
+                res.should.have.status(200);
+                res.body.should.have.property("error").eql(false);
+                res.body.should.not.have.property("message");
+                done()
+            })
+        });
+
+        it("should fail link via public", (done) => {
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : process.env.REAL_NAME,
+                key : process.env.CONF_KEY,
+                accname: fixedName,
+                pkey : keypair.public
+            })
+            .end((err,res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Account has been linked");
+                done()
+            })
+        });
+
+        after(function () {
+            return Account.deleteOne({itsc : process.env.REAL_NAME});
+        })
+    });
+
 });
+
 
 
 
