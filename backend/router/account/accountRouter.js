@@ -15,16 +15,18 @@ const generateKeyPair = async () => {
     };
 }
 
+
 router.get('/pair', async (req, res) => {
     const temp = await generateKeyPair();
     res.json(temp);
 })
 
-router.get("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
     const {itsc, key, accname, pkey} = req.body
     Account.findOne({itsc : itsc}, async (err, result) => {
-        if(err || result.length == 0){
-            res.json({
+        if(result == null || result.length == 0){
+            // console.log("dead1")
+            res.status(500).json({
                 error : true,
                 message : "Invalid itsc"
             });
@@ -32,17 +34,20 @@ router.get("/create", async (req, res) => {
         }
         else{
             if(result.created){
-                res.json({
+                // console.log("dead2")
+                res.status(500).json({
                     error: true,
                     message : "Account has already been created"
                 });
                 return;
             }
             if(result.key !== key){
+                // console.log("dead3")
                 res.status(500).json({
                     error: true,
                     message : "Invalid confirmation key"
                 })
+                return;
             }
             //begin acc creation
             const transaction  = await eosDriver.transact({
@@ -54,7 +59,7 @@ router.get("/create", async (req, res) => {
                 expireSeconds: 30,
                })
             .then(result => {
-                console.log(result);
+                // console.log(result);
                 Account.findOneAndUpdate({itsc: itsc}, {created: true})
                 .then(result => res.json({
                     error: false,
@@ -67,7 +72,7 @@ router.get("/create", async (req, res) => {
                 })
             })
             .catch(err => {
-                console.log(err)
+                // console.log(err)
                 res.json({
                     error: true,
                     message: err.message

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
+    "axios": "^0.25.0",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
@@ -20,7 +21,7 @@
     "util": "^0.12.4"
   },
   "scripts": {
-    "test": "mocha --exit",
+    "test": "mocha ",
     "start": "nodemon index.js"
   },
   "author": "",
