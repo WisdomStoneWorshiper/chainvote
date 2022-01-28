@@ -1,3 +1,5 @@
+const  ecc = require('eosjs-ecc')
+
 const accountPlaceholder = (name, publicKey) => {
     return (
         {
@@ -47,4 +49,21 @@ const addVoterPlaceholder = (name) => {
       }
 }
 
-module.exports = {accountPlaceholder, addVoterPlaceholder}
+let regex = new RegExp('[a-z]([a-z]|\.|[1-5]){10}[^\.]');
+
+const eosNameValidation = (name) => {
+  return regex.test(name) & name.length == 12;
+}
+
+// const eosPublicKeyValidation = (publicKey) => {
+//   console.log(publicKey)
+//   console.log(ecc.isValidPublic(publicKey))
+//   return ecc.isValidPublic(publicKey) === true;
+// }
+
+module.exports = {
+  accountPlaceholder, 
+  addVoterPlaceholder, 
+  eosNameValidation, 
+  // eosPublicKeyValidation
+}

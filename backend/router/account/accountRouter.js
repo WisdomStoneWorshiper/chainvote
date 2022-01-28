@@ -1,7 +1,12 @@
 const express = require('express');
 const eosDriver = require('../../Helper functions/eosDriver')
 const {ecc} = require("eosjs/dist/eosjs-ecc-migration")
-const {addVoterPlaceholder, accountPlaceholder} = require("../../Helper functions/eosPlaceholder")
+const {
+    addVoterPlaceholder, 
+    accountPlaceholder, 
+    eosNameValidation,
+    // eosPublicKeyValidation
+} = require("../../Helper functions/eosPlaceholder")
 const Account = require("../../Helper functions/mongoose/accModel")
 require('dotenv').config();
 
@@ -49,7 +54,20 @@ router.post("/create", async (req, res) => {
                 })
                 return;
             }
-            //begin acc creation
+            if(!eosNameValidation(accname)){
+                res.status(500).json({
+                    error: true,
+                    message : "Invalid account name"
+                })
+                return;
+            }
+            // if(!eosPublicKeyValidation(pkey)){
+            //     res.status(500).json({
+            //         error : true,
+            //         message : "Invalid public key"
+            //     })
+            //     return;
+            // }
             const transaction  = await eosDriver.transact({
                 actions: [
                     accountPlaceholder(accname, pkey)
