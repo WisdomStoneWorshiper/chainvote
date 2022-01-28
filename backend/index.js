@@ -17,8 +17,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-
-    console.log("enter server");
     next();
 })
 
@@ -31,12 +29,15 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology : t
     .then(() => {
         app.listen(process.env.SERVER_PORT, ()=> {
             console.log(`Listening at port ${process.env.SERVER_PORT}`);
+            app.emit("serverStart");
         })
     })
     .catch((err) => {
         console.log(err);
     }
 )
+
+module.exports = app;
 
 
 
