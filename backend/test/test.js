@@ -238,11 +238,10 @@ describe("Full testing", function (){
     })
 
     describe("/account/confirm", function(){
-        let keypair = null;
-        let fixedName = getRandomString(12);
+        let keypair, fixedName;
 
         console.log(fixedName)
-        before(async function() {
+        beforeEach( async function() {
             this.timeout(3000); //account generation
             let temp = new Account({
                 itsc: process.env.REAL_NAME,
@@ -257,6 +256,8 @@ describe("Full testing", function (){
             .get("/account/pair")
             
             keypair = result.body;
+            fixedName = getRandomString(12);
+
             await eosDriver.transact({
                 actions: [
                     accountPlaceholder(fixedName, keypair.public)
@@ -363,7 +364,6 @@ describe("Full testing", function (){
                 pkey : keypair.public
             })
             .end((err,res) => {
-                console.log(res.body)
                 res.should.have.status(200);
                 res.body.should.have.property("error").eql(false);
                 res.body.should.not.have.property("message");
@@ -371,8 +371,8 @@ describe("Full testing", function (){
             })
         });
 
-        it("should fail link via public", (done) => {
-            chai.request(app)
+        it("should fail link via public", async () => {
+            await chai.request(app)
             .post("/account/confirm")
             .send({
                 itsc : process.env.REAL_NAME,
@@ -380,15 +380,24 @@ describe("Full testing", function (){
                 accname: fixedName,
                 pkey : keypair.public
             })
-            .end((err,res) => {
-                res.should.have.status(500);
-                res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Account has been linked");
-                done()
+            .then(res => {
+                return chai.request(app)
+                .post("/account/confirm")
+                .send({
+                    itsc : process.env.REAL_NAME,
+                    key : process.env.CONF_KEY,
+                    accname: fixedName,
+                    pkey : keypair.public
+                })
+                .then(res => {
+                    res.should.have.status(500);
+                    res.body.should.have.property("error").eql(true);
+                    res.body.should.have.property("message").eql("Account has been linked");
+                })
             })
         });
 
-        after(function () {
+        afterEach(function () {
             return Account.deleteOne({itsc : process.env.REAL_NAME});
         })
     });
