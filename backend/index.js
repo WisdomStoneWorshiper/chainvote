@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const Account = require("./Helper functions/mongoose/accModel");
 
 const registration = require("./router/registration/regisRouter");
-const confirmation = require("./router/confirmation/confirmRouter")
+// const confirmation = require("./router/confirmation/confirmRouter")
 const account = require('./router/account/accountRouter')
 const test = require('./router/testRouter');
 
@@ -17,13 +17,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-
-    console.log("enter server");
     next();
 })
 
 app.use("/registration", registration);
-app.use("/confirmation", confirmation);
+// app.use("/confirmation", confirmation);
 app.use("/account", account);
 app.use("/test", test);
 
@@ -31,12 +29,15 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology : t
     .then(() => {
         app.listen(process.env.SERVER_PORT, ()=> {
             console.log(`Listening at port ${process.env.SERVER_PORT}`);
+            app.emit("serverStart");
         })
     })
     .catch((err) => {
         console.log(err);
     }
 )
+
+module.exports = app;
 
 
 

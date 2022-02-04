@@ -10,10 +10,11 @@ CONTRACT votingplat : public contract {
  public:
   using contract::contract;
 
-  ACTION createvoter(name new_voter);
+  ACTION createvoter(name new_voter, string itsc);
   ACTION createcamp(name owner, string campaign_name, time_point start_time, time_point end_time);
   ACTION addchoice(name owner, uint64_t campaign_id, string new_choice);
   ACTION addvoter(name owner, uint64_t campaign_id, name voter);
+  ACTION addvoteritsc(name owner, uint64_t campaign_id, string itsc);
   ACTION vote(uint64_t campaign_id, name voter, uint64_t choice_idx);
   ACTION deletecamp(name owner, uint64_t campaign_id);
 
@@ -63,12 +64,11 @@ CONTRACT votingplat : public contract {
   typedef multi_index<name("voter"), voter_list> voter_table;
 
  private:
-  // TABLE voter_record_list {
-  //   name voter;
-  //   name choice;
-  //   auto primary_key() const { return voter.value; }
-  // };
+  TABLE itsc_list {
+    string itsc;
+    name voter;
+    auto primary_key() const { return voter.value};
+  }
 
-  // typedef multi_index<name("recordlist"), voter_record_list>
-  //     voter_record_list_table;
+  typedef multi_index<name("itsc"), itsc_list> itsc_table;
 };

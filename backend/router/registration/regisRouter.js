@@ -35,6 +35,7 @@ router.post("/", async (req, res) => {
             error : true,
             message : "Unexpected error searching itsc" 
         });
+        return;
     })
     if(result.length != 0){ //acc found
         const random_str = getRandomString(5);
@@ -47,14 +48,14 @@ router.post("/", async (req, res) => {
         })
         .catch(err => {
             console.log(err)
-            res.json({
+            res.status(500).json({
                 error : true,
                 message : "Failed to update and send email"
             })
         })
     }
     else{ // acc not found
-        res.json({
+        res.status(500).json({
             error : true,
             message : "Invalid itsc"
         });

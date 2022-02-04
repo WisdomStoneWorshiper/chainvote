@@ -19,6 +19,10 @@ const regisSchema = new Schema({
     publicKey : {
         type: String,
         unique: true
+    },
+    created : {
+        type : Boolean,
+        required: true
     }
 }, {timestamps : true});
 
