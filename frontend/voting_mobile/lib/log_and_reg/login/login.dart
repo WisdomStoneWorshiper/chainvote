@@ -15,7 +15,7 @@ class Login extends StatelessWidget {
     if (_itscFieldController.text.isEmpty ||
         _publicKeyFieldController.text.isEmpty) {
       final errBar = SnackBar(
-        content: Text("Please fillin all field!"),
+        content: const Text("Please fill in all fields!"),
         action: SnackBarAction(
           label: 'OK',
           onPressed: () {},
@@ -41,30 +41,60 @@ class Login extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text("itsc"),
+            const SizedBox(
+              height: 150,
+            ),
+            const Text(
+              "ITSC Account",
+              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             SizedBox(
-              width: 100,
+              width: 300,
               child: TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'itsc',
+                  hintText: 'ITSC Account',
                 ),
                 controller: _itscFieldController,
               ),
             ),
-            Text("EOSIO Public Key"),
+            const SizedBox(
+              height: 40,
+            ),
+            const Text(
+              "EOSIO Public Key",
+              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             SizedBox(
-              width: 100,
+              width: 300,
               child: TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Public Key',
+                  hintText: 'Public Key',
                 ),
                 controller: _publicKeyFieldController,
               ),
             ),
+            const SizedBox(
+              height: 150,
+            ),
             ElevatedButton(
-                onPressed: _loginRequestHandler, child: Text("Login"))
+              onPressed: _loginRequestHandler,
+              child: const Text(
+                "Login",
+                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                //primary: Colors.blue,
+                minimumSize: const Size(300, 42),
+              ),
+            )
           ],
         ),
       ),

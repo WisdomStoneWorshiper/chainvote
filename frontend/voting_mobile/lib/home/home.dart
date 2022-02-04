@@ -10,7 +10,19 @@ class HomePage extends StatelessWidget {
         title: Text("Voting App"),
       ),
       body: Center(
-        child: Text("this is homepage"),
+        // child: const Text(
+        //   "We are still developing the homepage",
+        //   style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+        // ),
+        child: RichText(
+          text: const TextSpan(
+            text: 'Home Page',
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
     );
   }

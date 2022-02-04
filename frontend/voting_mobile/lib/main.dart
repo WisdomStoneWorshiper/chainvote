@@ -26,6 +26,20 @@ class VotingApp extends StatelessWidget {
         'lu': (context) => LinkUp(),
         'h': (context) => HomePage(),
       },
+      // theme: ThemeData(
+      //     // Define the default brightness and colors.
+      //     brightness: Brightness.dark,
+      //     primaryColor: Color.fromARGB(255, 67, 218, 155),
+      //     buttonTheme: ButtonThemeData(
+      //       buttonColor: Color.fromARGB(255, 116, 238, 92),
+      //     ),
+      //     elevatedButtonTheme: ElevatedButtonThemeData(
+      //         style: ElevatedButton.styleFrom(
+      //       primary: Color.fromARGB(255, 98, 245, 159),
+      //     )))
+      // // Define the default `TextTheme`. Use this to specify the default
+      // text styling for headlines, titles, bodies of text, and more.
+      // ,
     );
   }
 }
