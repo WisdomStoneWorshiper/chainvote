@@ -10,18 +10,15 @@ class HomePage extends StatelessWidget {
         title: Text("Voting App"),
       ),
       body: Center(
-        // child: const Text(
-        //   "We are still developing the homepage",
-        //   style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-        // ),
-        child: RichText(
-          text: const TextSpan(
-            text: 'Home Page',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold),
-          ),
+        child: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Text("111"),
+                Text("222"),
+              ]),
+            )
+          ],
         ),
       ),
     );

@@ -19,7 +19,7 @@ class LinkUp extends StatelessWidget {
 
   LinkUp({Key? key}) : super(key: key);
 
-  void _submitLinpUpRequest() {
+  void _submitLinpUpRequest() async {
     if (_codeController.text.isEmpty ||
         _eosAccController.text.isEmpty ||
         (_needCreateEOSIO == true && _eosPublicKeyController.text.isEmpty)) {
@@ -34,6 +34,17 @@ class LinkUp extends StatelessWidget {
     } else {
       BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
       var dio = Dio(opt);
+      try {
+        Response response = await dio.post("/account/create", data: {
+          'itsc': _itsc,
+          'key': _codeController.text,
+          'accname': _eosAccController.text,
+          'pkey': _eosPublicKeyController.text
+        });
+        print(response);
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
