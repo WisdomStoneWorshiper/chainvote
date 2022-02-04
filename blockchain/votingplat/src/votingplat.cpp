@@ -1,25 +1,25 @@
 #include <algorithm>
 #include <votingplat.hpp>
 
-ACTION votingplat::createvoter(name new_voter, string itsc) { //edited check please
+ACTION votingplat::createvoter(name new_voter) { //edited check please
   require_auth(get_self());
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(new_voter.value);
   check(voting_itr == _voter.end(), "voter exist");
-
+  /*
   itsc_table _itsc(get_self(), get_self().value);
   auto itsc_itr = _itsc.find(itsc);
   check(itsc_itr == _itsc.end(), "itsc linked already");
-
+  */
   _voter.emplace(get_self(), [&](auto& new_voter_record) {
     new_voter_record.voter = new_voter;
   });
-
+  /*
   _itsc.emplace(get_self(), [&](auto& new_itsc_record){
     new_itsc_record.itsc = itsc;
     new_itsc_record.new_voter = new_voter;
   });
-
+  */
   // Do we need to check both itsc? i guess
 }
 
@@ -74,6 +74,7 @@ ACTION votingplat::addvoter(name owner, uint64_t campaign_id, name voter) {
   check(voting_itr != _voter.end(), "owner not exist");
 
   voting_itr = _voter.find(voter.value); //edited value
+  /*
   if(voting_itr == _voter.end()){
 
     itsc_table _itsc(get_self(), get_self().value);
@@ -82,6 +83,7 @@ ACTION votingplat::addvoter(name owner, uint64_t campaign_id, name voter) {
 
     voting_itr = _voter.find(itsc_itr.voter);
   }
+  */
   check(voting_itr != _voter.end(), "voter not exist");
 
   _voter.modify(voting_itr, get_self(), [&](auto& target_voter) {
@@ -135,9 +137,11 @@ ACTION votingplat::updatevoter(name voter, bool active){
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(voter.value);
   check(voting_itr != _voter.end(), "voter not exist");
+  /*
   voter_table.emplace(voting_itr, get_self(), [&](auto& target_voter){
 
   });
+  */
 }
 
 ACTION votingplat::deletevoter(name voter){

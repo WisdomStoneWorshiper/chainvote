@@ -36,3 +36,7 @@ frontend/voting-app/.env
 mainnet_account.txt
 backend/.env
 backend/node_modules
+
+blockchain/test-voting/node_modules
+blockchain/test-voting/test/index.js
+blockchain/test-voting/.env
