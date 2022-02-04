@@ -10,7 +10,16 @@ class HomePage extends StatelessWidget {
         title: Text("Voting App"),
       ),
       body: Center(
-        child: Text("this is homepage"),
+        child: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Text("111"),
+                Text("222"),
+              ]),
+            )
+          ],
+        ),
       ),
     );
   }
