@@ -49,13 +49,14 @@ class Login extends StatelessWidget {
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(
-              height: 10,
+              height: 15,
             ),
             SizedBox(
               width: 300,
               child: TextField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
+                  labelText: "ITSC",
                   hintText: 'ITSC Account',
                 ),
                 controller: _itscFieldController,
@@ -69,14 +70,15 @@ class Login extends StatelessWidget {
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(
-              height: 10,
+              height: 15,
             ),
             SizedBox(
               width: 300,
               child: TextField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Public Key',
+                  labelText: "Public Key",
+                  hintText: 'EOSIO Public Key',
                 ),
                 controller: _publicKeyFieldController,
               ),
