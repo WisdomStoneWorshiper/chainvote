@@ -36,6 +36,20 @@
             ]
         },
         {
+            "name": "campaign_choice",
+            "base": "",
+            "fields": [
+                {
+                    "name": "choice",
+                    "type": "string"
+                },
+                {
+                    "name": "result",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "campaign_list",
             "base": "",
             "fields": [
@@ -61,11 +75,7 @@
                 },
                 {
                     "name": "choice_list",
-                    "type": "string[]"
-                },
-                {
-                    "name": "result",
-                    "type": "uint64[]"
+                    "type": "campaign_choice[]"
                 }
             ]
         },

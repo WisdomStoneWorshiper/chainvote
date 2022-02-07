@@ -52,10 +52,8 @@ ACTION votingplat::createcamp(name owner, string campaign_name,
     new_campaign_record.id = _campaign_id;
     new_campaign_record.campaign_name = campaign_name;
     new_campaign_record.owner = owner;
-    vector<string> temp_str_list;
-    new_campaign_record.choice_list = temp_str_list;
-    vector<uint64_t> temp_result;
-    new_campaign_record.result = temp_result;
+    vector<campaign_choice> temp_choice_list;
+    new_campaign_record.choice_list = temp_choice_list;
     new_campaign_record.start_time = start_time;
     new_campaign_record.end_time = end_time;
   });
@@ -82,15 +80,17 @@ ACTION votingplat::addchoice(name owner, uint64_t campaign_id,
         "Campaign has already started");
   auto choice_itr = campaign_itr->choice_list.begin();
   while (choice_itr != campaign_itr->choice_list.end()) {
-    if (choice_itr->compare(new_choice) == 0) {
+    if (choice_itr->choice.compare(new_choice) == 0) {
       break;
     }
     ++choice_itr;
   }
   check(choice_itr == campaign_itr->choice_list.end(), "duplicated choice");
+  votingplat::campaign_choice _new_cp;
+  _new_cp.choice = new_choice;
+  _new_cp.result = 0;
   _campaign.modify(campaign_itr, get_self(), [&](auto& target_campaign) {
-    target_campaign.choice_list.push_back(new_choice);
-    target_campaign.result.push_back(0);
+    target_campaign.choice_list.push_back(_new_cp);
   });
 }
 ACTION votingplat::addvoter(uint64_t campaign_id, name voter) {
@@ -150,7 +150,7 @@ ACTION votingplat::vote(uint64_t campaign_id, name voter, uint64_t choice_idx) {
   check(votable_campaigns_itr->is_vote == false, "you have voted already");
 
   _campaign.modify(campaign_itr, get_self(), [&](auto& target_campaign) {
-    ++target_campaign.result[choice_idx];
+    ++target_campaign.choice_list[choice_idx].result;
   });
 
   _voter.modify(voting_itr, get_self(), [&](auto& target_voter) {

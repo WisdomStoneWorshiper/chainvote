@@ -37,14 +37,18 @@ CONTRACT votingplat : public contract {
     bool is_vote;
   };
 
+  struct campaign_choice {
+    string choice;
+    uint64_t result;
+  };
+
   TABLE campaign_list {
     uint64_t id;
     string campaign_name;
     name owner;
     time_point start_time;
     time_point end_time;
-    vector<string> choice_list;
-    vector<uint64_t> result;
+    vector<campaign_choice> choice_list;
     auto primary_key() const { return id; }
   };
 
