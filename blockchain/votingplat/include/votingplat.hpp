@@ -11,10 +11,11 @@ CONTRACT votingplat : public contract {
   using contract::contract;
 
   ACTION createvoter(name new_voter);
-  ACTION createcamp(name owner, string campaign_name, time_point start_time, time_point end_time);
+  ACTION createcamp(name owner, string campaign_name, time_point start_time,
+                    time_point end_time);
   ACTION addchoice(name owner, uint64_t campaign_id, string new_choice);
-  ACTION addvoter(name owner, uint64_t campaign_id, name voter);
-  //ACTION addvoteritsc(name owner, uint64_t campaign_id, string itsc);
+  ACTION addvoter(uint64_t campaign_id, name voter);
+  // ACTION addvoteritsc(name owner, uint64_t campaign_id, string itsc);
   ACTION vote(uint64_t campaign_id, name voter, uint64_t choice_idx);
   ACTION deletecamp(name owner, uint64_t campaign_id);
 
@@ -22,22 +23,19 @@ CONTRACT votingplat : public contract {
   ACTION updatevoter(name voter, bool active);
   ACTION deletevoter(name voter);
 
-
-
   // ACTION addvoter(name new_voter);
 
   // ACTION addcandidate(name new_candidate);
   // ACTION vote(name voter, name candidate);
   // ACTION unvote(name voter, name candidate);
-  // ACTION clear();
+  ACTION clear();
 
   // ACTION testfuc();
 
-  struct voter_actions {
-    string campaign;
-    time_point action_time;
+  struct voter_record {
+    uint64_t campaign;
+    bool is_vote;
   };
-
 
   TABLE campaign_list {
     uint64_t id;
@@ -55,8 +53,7 @@ CONTRACT votingplat : public contract {
   TABLE voter_list {
     name voter;
     vector<uint64_t> owned_campaigns;
-    vector<uint64_t> votable_campaigns;
-    vector<voter_actions> records;
+    vector<voter_record> votable_campaigns;
     bool is_active;
     auto primary_key() const { return voter.value; }
   };
@@ -64,11 +61,11 @@ CONTRACT votingplat : public contract {
   typedef multi_index<name("voter"), voter_list> voter_table;
 
  private:
-  //TABLE itsc_list {
-  //  string itsc;
-  //  name voter;
-  //  auto primary_key() const { return voter.value; };
-  //};
+  // TABLE itsc_list {
+  //   string itsc;
+  //   name voter;
+  //   auto primary_key() const { return voter.value; };
+  // };
 
-  //typedef multi_index<name("itsc"), itsc_list> itsc_table;
+  // typedef multi_index<name("itsc"), itsc_list> itsc_table;
 };

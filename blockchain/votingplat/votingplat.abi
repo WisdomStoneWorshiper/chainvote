@@ -26,10 +26,6 @@
             "base": "",
             "fields": [
                 {
-                    "name": "owner",
-                    "type": "name"
-                },
-                {
                     "name": "campaign_id",
                     "type": "uint64"
                 },
@@ -72,6 +68,11 @@
                     "type": "uint64[]"
                 }
             ]
+        },
+        {
+            "name": "clear",
+            "base": "",
+            "fields": []
         },
         {
             "name": "createcamp",
@@ -162,20 +163,6 @@
             ]
         },
         {
-            "name": "voter_actions",
-            "base": "",
-            "fields": [
-                {
-                    "name": "campaign",
-                    "type": "string"
-                },
-                {
-                    "name": "action_time",
-                    "type": "time_point"
-                }
-            ]
-        },
-        {
             "name": "voter_list",
             "base": "",
             "fields": [
@@ -189,14 +176,24 @@
                 },
                 {
                     "name": "votable_campaigns",
-                    "type": "uint64[]"
-                },
-                {
-                    "name": "records",
-                    "type": "voter_actions[]"
+                    "type": "voter_record[]"
                 },
                 {
                     "name": "is_active",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "voter_record",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign",
+                    "type": "uint64"
+                },
+                {
+                    "name": "is_vote",
                     "type": "bool"
                 }
             ]
@@ -211,6 +208,11 @@
         {
             "name": "addvoter",
             "type": "addvoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clear",
+            "type": "clear",
             "ricardian_contract": ""
         },
         {
