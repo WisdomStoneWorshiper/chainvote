@@ -14,8 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.0",
-    "eosjs": "^22.1.0",
-    "eoslime": "^2.0.0",
     "mocha": "^9.2.0"
   }
 }
