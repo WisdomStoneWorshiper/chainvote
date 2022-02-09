@@ -394,7 +394,6 @@ describe("votingplat", () => {
         permission : "active"
       }])
       .catch(err => {
-        console.log(err.message)
         expect(
           err.message
         .indexOf(
@@ -495,54 +494,163 @@ describe("votingplat", () => {
     });
   });
 
-  // describe("addvoter", function(){
-  //   beforeEach(async () => {
-  //     await contractAcc.contract.createvoter({
-  //       new_voter : userAccount1.accountName
-  //     })
+  describe("addvoter", function(){
+    beforeEach(async () => {
+      await contractAcc.contract.createvoter({
+        new_voter : userAccount1.accountName
+      })
 
-  //     await contractAcc.contract.createvoter({
-  //       new_voter : userAccount2.accountName
-  //     })
+      await contractAcc.contract.createvoter({
+        new_voter : userAccount2.accountName
+      })
 
-  //     await contractAcc.contract.createcamp({
-  //       owner : userAccount1.accountName,
-  //       campaign_name : "testcamp",
-  //       start_time : startTime.toISOString().split(".")[0],
-  //       end_time : endTime.toISOString().split(".")[0]
-  //     }, [{
-  //       actor : userAccount1.accountName,
-  //       permission : "active"
-  //     }])
-  //   });
+      await contractAcc.contract.createcamp({
+        owner : userAccount1.accountName,
+        campaign_name : "testcamp",
+        start_time : startTime.toISOString().split(".")[0],
+        end_time : endTime.toISOString().split(".")[0]
+      }, [{
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+    });
 
-  //   it("add voter to campaign", async function(){
-  //     expect.assertions(1);
+    it("add voter to campaign", async function(){
+      expect.assertions(1);
 
-  //     await contractAcc.contract.addvoter({
-  //       campaign_id : "0",
-  //       new_voter : userAccount2.accountName
-  //     })
-  //     .then(result => {
-  //       expect(contractAcc.getTableRowsScoped("voter")["votingplat"][0])
-  //       .toEqual(
-  //         [
-  //           {
-  //             voter: 'useracc1',
-  //             owned_campaigns: [0],
-  //             votable_campaigns: [],
-  //             is_active: false
-  //           },
-  //           {
-  //             voter : 'useracc2',
-  //             owned_campaigns : [],
-  //             votable_campaigns : [0],
-  //             is_active: false
-  //           }
-  //         ]
-  //       )
-  //     })
-  //   });
-  // });
+      await contractAcc.contract.addvoter({
+        campaign_id : 0,
+        voter : userAccount2.accountName
+      })
+      .then(result => {
+        expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
+        .toEqual(
+          [
+            {
+              voter: 'useracc1',
+              owned_campaigns: ["0"],
+              votable_campaigns: [],
+              is_active: false
+            },
+            {
+              voter : 'useracc2',
+              owned_campaigns : [],
+              votable_campaigns : [{
+                "campaign" : "0",
+                "is_vote" : false
+              }],
+              is_active: false
+            }
+          ]
+        )
+      })
+    });
+
+    it("does not allow owner account to add voter", async ()=> {
+      expect.assertions(2);
+
+      await contractAcc.contract.addvoter({
+        campaign_id : "0",
+        voter : userAccount2.accountName
+      }, [
+        {
+          actor : userAccount1.accountName,
+          permission : "active"
+        }
+      ])
+      .catch( err => {
+        expect(
+          err.message
+          .indexOf(
+            "only contract account can add vote"
+            ) >= 0
+          ).toEqual(true);
+
+        expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
+        .toEqual([
+          {
+            voter: 'useracc1',
+            owned_campaigns: ["0"],
+            votable_campaigns: [],
+            is_active: false
+          },
+          {
+            voter : 'useracc2',
+            owned_campaigns : [],
+            votable_campaigns : [],
+            is_active: false
+          }
+        ]) 
+      })
+    });
+
+    it("does not allow add voter to non-existing campaign", async ()=> {
+      expect.assertions(2);
+
+      await contractAcc.contract.addvoter({
+        campaign_id : 10,
+        voter : userAccount2.accountName
+      })
+      .catch( err => {
+        console.log(err)
+        expect(
+          err.message
+          .indexOf(
+            "campaign not exist"
+            ) >= 0
+          ).toEqual(true);
+
+        expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
+        .toEqual([
+          {
+            voter: 'useracc1',
+            owned_campaigns: ["0"],
+            votable_campaigns: [],
+            is_active: false
+          },
+          {
+            voter : 'useracc2',
+            owned_campaigns : [],
+            votable_campaigns : [],
+            is_active: false
+          }
+        ]) 
+      })
+    });
+
+    it("does not allow add non-exist voter", async ()=> {
+      expect.assertions(2);
+
+      await contractAcc.contract.addvoter({
+        campaign_id : 0,
+        voter : "randomname"
+      })
+      .catch( err => {
+        expect(
+          err.message
+          .indexOf(
+            "voter not exist"
+            ) >= 0
+          ).toEqual(true);
+
+        expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
+        .toEqual([
+          {
+            voter: 'useracc1',
+            owned_campaigns: ["0"],
+            votable_campaigns: [],
+            is_active: false
+          },
+          {
+            voter : 'useracc2',
+            owned_campaigns : [],
+            votable_campaigns : [],
+            is_active: false
+          }
+        ]) 
+      })
+    });
+    
+  });
 
 });
