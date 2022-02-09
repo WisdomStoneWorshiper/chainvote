@@ -13,6 +13,7 @@ ACTION votingplat::createvoter(name new_voter) {  // edited check please
   */
   _voter.emplace(get_self(), [&](auto& new_voter_record) {
     new_voter_record.voter = new_voter;
+    new_voter_record.is_active = true;
   });
   /*
   _itsc.emplace(get_self(), [&](auto& new_itsc_record){
@@ -45,6 +46,7 @@ ACTION votingplat::createcamp(name owner, string campaign_name,
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(owner.value);
   check(voting_itr != _voter.end(), "owner not exist");
+  check(voting_itr->is_active == true, "owner is not an active account");
   // campaign_table _campaign(get_self(), get_self().value);
   uint64_t _campaign_id = _campaign.available_primary_key();
 
@@ -71,9 +73,10 @@ ACTION votingplat::addchoice(name owner, uint64_t campaign_id,
   check(voting_itr != _voter.end(), "owner not exist");
   campaign_table _campaign(get_self(), get_self().value);
   auto campaign_itr = _campaign.find(campaign_id);
+
+  check(campaign_itr != _campaign.end(), "campaign not exist");
   check(campaign_itr->owner.value == owner.value,
         "You are not the owner of this campaign");
-  check(campaign_itr != _campaign.end(), "campaign not exist");
   check(campaign_itr->end_time > current_time_point(),
         "Campaign has ended already");
   check(campaign_itr->start_time > current_time_point(),
@@ -105,6 +108,7 @@ ACTION votingplat::addvoter(uint64_t campaign_id, name voter) {
 
   auto voting_itr = _voter.find(voter.value);  // edited value
   check(voting_itr != _voter.end(), "voter not exist");
+  check(voting_itr->is_active == true, "owner is not an active account");
 
   votingplat::voter_record record;
   record.campaign = campaign_id;
@@ -115,16 +119,19 @@ ACTION votingplat::addvoter(uint64_t campaign_id, name voter) {
 }
 
 ACTION votingplat::vote(uint64_t campaign_id, name voter, uint64_t choice_idx) {
+  auto enter_time_point = current_time_point();
   check(has_auth(voter), "You are not authorized to use this account");
   campaign_table _campaign(get_self(), get_self().value);
   auto campaign_itr = _campaign.find(campaign_id);
   check(campaign_itr != _campaign.end(), "campaign not exist");
   check((campaign_itr->choice_list).size() > choice_idx, "choice not exist");
 
-  check(campaign_itr->start_time < current_time_point(),
-        "Campaign has not started");
-  check(campaign_itr->end_time > current_time_point(),
-        "Campaign has already ended");
+  check(
+      campaign_itr->start_time < enter_time_point,
+      "Campaign has not started, enter time: " + enter_time_point.to_string());
+  check(campaign_itr->end_time > enter_time_point,
+        "Campaign has already ended, enter time: " +
+            enter_time_point.to_string());
 
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(voter.value);
@@ -174,11 +181,9 @@ ACTION votingplat::updatevoter(name voter, bool active) {
   voter_table _voter(get_self(), get_self().value);
   auto voting_itr = _voter.find(voter.value);
   check(voting_itr != _voter.end(), "voter not exist");
-  /*
-  voter_table.emplace(voting_itr, get_self(), [&](auto& target_voter){
 
-  });
-  */
+  _voter.modify(voting_itr, get_self(),
+                [&](auto& target_voter) { target_voter.is_active = false; });
 }
 
 ACTION votingplat::deletevoter(name voter) {
