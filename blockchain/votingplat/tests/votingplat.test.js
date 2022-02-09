@@ -1,4 +1,5 @@
 const { loadConfig, Blockchain } = require("@klevoya/hydra");
+const { fail } = require("assert");
 const assert = require("assert");
 const { isTypedArray } = require("util/types");
 require("dotenv").config();
@@ -13,6 +14,7 @@ let endTime = new Date( currentDate.getTime() + 2 * DAY_OFFSET.getTime());
 let prevTime = new Date( currentDate.getTime() - 2 * DAY_OFFSET.getTime());
 
 describe("votingplat", () => {
+
   let blockchain = new Blockchain(config);
   let contractAcc = blockchain.createAccount(`votingplat`);
 
@@ -298,26 +300,249 @@ describe("votingplat", () => {
         .toEqual(undefined); //since the table isnt generated yet
       });
     });
-
-    // describe("addchoice", function(){
-    //   beforeEach(async ()=> {
-    //     await contractAcc.contract.createvoter({
-    //       new_voter : userAccount1.accountName
-    //     })
-    //     await contractAcc.contract.createcamp({
-    //       owner : userAccount1.accountName,
-    //       campaign_name : "testcamp",
-    //       start_time : startTime.toISOString().split(".")[0],
-    //       end_time : endTime.toISOString().split(".")[0]
-    //     }, [{
-    //       actor : userAccount1.accountName,
-    //       permission : "active"
-    //     }])
-
-    //   })
-
-    //   it("should add choice1 on c")
-    // });
-
   });
+
+  describe("addchoice", function(){
+    beforeEach(async ()=> {
+      await contractAcc.contract.createvoter({
+        new_voter : userAccount1.accountName
+      })
+
+      await contractAcc.contract.createvoter({
+        new_voter : userAccount2.accountName
+      })
+
+      await contractAcc.contract.createcamp({
+        owner : userAccount1.accountName,
+        campaign_name : "testcamp",
+        start_time : startTime.toISOString().split(".")[0],
+        end_time : endTime.toISOString().split(".")[0]
+      }, [{
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+    })
+
+    it("should add choice1 on campaign", async function(){
+      expect.assertions(1);
+      await contractAcc.contract.addchoice({
+        owner : userAccount1.accountName,
+        campaign_id : 0,
+        new_choice : "choice1"
+      }, [
+       { 
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .then(result => {
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual({
+          campaign_name: "testcamp", 
+          choice_list: [{
+            "choice" : "choice1",
+            "result" : "0"
+          }], 
+          end_time: endTime.toISOString().split(".")[0] + ".000", 
+          id: "0", 
+          owner: userAccount1.accountName, 
+          start_time: startTime.toISOString().split(".")[0] + ".000"})
+      })
+    });
+
+    it("should not add choice using other account", async function(){
+      expect.assertions(2)
+
+      await contractAcc.contract.addchoice({
+        owner : userAccount1.accountName,
+        campaign_id : 0,
+        new_choice : "choice1"
+      }, [
+       { 
+        actor : userAccount2.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        expect(
+          err.message
+        .indexOf(
+          "You are not authorized to use this account"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual({
+          campaign_name: "testcamp", 
+          choice_list: [], 
+          end_time: endTime.toISOString().split(".")[0] + ".000", 
+          id: "0", 
+          owner: userAccount1.accountName, 
+          start_time: startTime.toISOString().split(".")[0] + ".000"})
+      })
+    });
+
+    it("should not add choice to invalid id campaign", async function(){
+      expect.assertions(2)
+
+      await contractAcc.contract.addchoice({
+        owner : userAccount1.accountName,
+        campaign_id : 10,
+        new_choice : "choice1"
+      }, [
+       { 
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        console.log(err.message)
+        expect(
+          err.message
+        .indexOf(
+          "You are not the owner of this campaign"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual({
+          campaign_name: "testcamp", 
+          choice_list: [], 
+          end_time: endTime.toISOString().split(".")[0] + ".000", 
+          id: "0", 
+          owner: userAccount1.accountName, 
+          start_time: startTime.toISOString().split(".")[0] + ".000"})
+      })
+    });
+
+    it("should not add duplicated choice", async function(){
+      expect.assertions(2)
+      await contractAcc.contract.addchoice({
+        owner : userAccount1.accountName,
+        campaign_id : 0,
+        new_choice : "choice1"
+      }, [
+       { 
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .catch( err => {
+        fail("Transaction to initialize failed")
+      })
+
+      await contractAcc.contract.addchoice({
+        owner : userAccount1.accountName,
+        campaign_id : 0,
+        new_choice : "choice1"
+      }, [
+       { 
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        expect(
+          err.message
+        .indexOf(
+          "duplicated choice"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual({
+          campaign_name: "testcamp", 
+          choice_list: [{
+            "choice" : "choice1",
+            "result" : "0"
+          }], 
+          end_time: endTime.toISOString().split(".")[0] + ".000", 
+          id: "0", 
+          owner: userAccount1.accountName, 
+          start_time: startTime.toISOString().split(".")[0] + ".000"})
+      })
+    });
+
+    it("should not add to invalid owner", async function(){
+      expect.assertions(2)
+      await contractAcc.contract.addchoice({
+        owner : userAccount2.accountName,
+        campaign_id : 0,
+        new_choice : "choice1"
+      }, [
+       { 
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        expect(
+          err.message
+        .indexOf(
+          "You are not authorized to use this account"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual(
+          {
+            campaign_name: "testcamp", 
+            choice_list: [], 
+            end_time: endTime.toISOString().split(".")[0] + ".000", 
+            id: "0", 
+            owner: userAccount1.accountName, 
+            start_time: startTime.toISOString().split(".")[0] + ".000"})
+        }
+        )
+    });
+  });
+
+  // describe("addvoter", function(){
+  //   beforeEach(async () => {
+  //     await contractAcc.contract.createvoter({
+  //       new_voter : userAccount1.accountName
+  //     })
+
+  //     await contractAcc.contract.createvoter({
+  //       new_voter : userAccount2.accountName
+  //     })
+
+  //     await contractAcc.contract.createcamp({
+  //       owner : userAccount1.accountName,
+  //       campaign_name : "testcamp",
+  //       start_time : startTime.toISOString().split(".")[0],
+  //       end_time : endTime.toISOString().split(".")[0]
+  //     }, [{
+  //       actor : userAccount1.accountName,
+  //       permission : "active"
+  //     }])
+  //   });
+
+  //   it("add voter to campaign", async function(){
+  //     expect.assertions(1);
+
+  //     await contractAcc.contract.addvoter({
+  //       campaign_id : "0",
+  //       new_voter : userAccount2.accountName
+  //     })
+  //     .then(result => {
+  //       expect(contractAcc.getTableRowsScoped("voter")["votingplat"][0])
+  //       .toEqual(
+  //         [
+  //           {
+  //             voter: 'useracc1',
+  //             owned_campaigns: [0],
+  //             votable_campaigns: [],
+  //             is_active: false
+  //           },
+  //           {
+  //             voter : 'useracc2',
+  //             owned_campaigns : [],
+  //             votable_campaigns : [0],
+  //             is_active: false
+  //           }
+  //         ]
+  //       )
+  //     })
+  //   });
+  // });
+
 });
