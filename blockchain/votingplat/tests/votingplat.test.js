@@ -592,7 +592,7 @@ describe("votingplat", () => {
         voter : userAccount2.accountName
       })
       .catch( err => {
-        console.log(err)
+        // console.log(err)
         expect(
           err.message
           .indexOf(
@@ -651,6 +651,267 @@ describe("votingplat", () => {
       })
     });
     
+  });
+
+  describe("voter", function(){
+
+    beforeEach(async () => {
+      await contractAcc.contract.createvoter({
+        new_voter : userAccount1.accountName
+      })
+
+      await contractAcc.contract.createvoter({
+        new_voter : userAccount2.accountName
+      })
+    });
+
+    describe("voting with now > startTime", function(){
+
+      beforeEach(async () => {
+        await contractAcc.contract.createcamp({
+          owner : userAccount1.accountName,
+          campaign_name : "testcamp",
+          start_time : startTime.toISOString().split(".")[0],
+          end_time : endTime.toISOString().split(".")[0]
+        }, [{
+          actor : userAccount1.accountName,
+          permission : "active"
+        }])
+
+        await contractAcc.contract.addvoter({ //add allowed voter
+          campaign_id : 0,
+          voter : userAccount2.accountName
+        })
+
+      await contractAcc.contract.addchoice({ //add choice
+          owner : userAccount1.accountName,
+          campaign_id : 0,
+          new_choice : "choice1"
+        }, [
+        { 
+          actor : userAccount1.accountName,
+          permission : "active"
+        }])
+      });
+
+      it("should not vote on non-existent campaign", async ()=> {
+        await contractAcc.contract.vote({
+          campaign_id : 10,
+          voter : userAccount2.accountName,
+          choice_idx : 0
+        }, [{
+          actor : userAccount2.accountName,
+          permission : "active"
+        }])
+        .catch( err => {
+          console.log(err.message)
+          expect(
+            err.message
+          .indexOf(
+            "campaign not exist"
+            ) >= 0
+          )
+          .toEqual(true)
+  
+          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+          .toEqual(
+            {
+              campaign_name: "testcamp", 
+              choice_list: [{
+                "choice" : "choice1",
+                "result" : "0"
+              }], 
+              end_time: endTime.toISOString().split(".")[0] + ".000", 
+              id: "0", 
+              owner: userAccount1.accountName, 
+              start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      });
+
+      it("should not vote on non-existent choice", async ()=> {
+        await contractAcc.contract.vote({
+          campaign_id : 0,
+          voter : userAccount2.accountName,
+          choice_idx : 1
+        }, [{
+          actor : userAccount2.accountName,
+          permission : "active"
+        }])
+        .catch( err => {
+          console.log(err.message)
+          expect(
+            err.message
+          .indexOf(
+            "choice not exist"
+            ) >= 0
+          )
+          .toEqual(true)
+  
+          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+          .toEqual(
+            {
+              campaign_name: "testcamp", 
+              choice_list: [{
+                "choice" : "choice1",
+                "result" : "0"
+              }], 
+              end_time: endTime.toISOString().split(".")[0] + ".000", 
+              id: "0", 
+              owner: userAccount1.accountName, 
+              start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      });
+
+      it("should not vote on unauthorized account", async ()=> {
+        await contractAcc.contract.vote({
+          campaign_id : 0,
+          voter : userAccount2.accountName,
+          choice_idx : 0
+        },[{
+          actor : userAccount1.accountName,
+          permission : "active"
+        }])
+        .catch( err => {
+          console.log(err.message)
+          expect(
+            err.message
+          .indexOf(
+            "You are not authorized to use this account"
+            ) >= 0
+          )
+          .toEqual(true)
+  
+          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+          .toEqual(
+            {
+              campaign_name: "testcamp", 
+              choice_list: [{
+                "choice" : "choice1",
+                "result" : "0"
+              }], 
+              end_time: endTime.toISOString().split(".")[0] + ".000", 
+              id: "0", 
+              owner: userAccount1.accountName, 
+              start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      });
+
+      it("should not vote when campaign hasn't started", async ()=> {
+        await contractAcc.contract.vote({
+          campaign_id : 0,
+          voter : userAccount2.accountName,
+          choice_idx : 0
+        },[{
+          actor : userAccount2.accountName,
+          permission : "active"
+        }])
+        .catch( err => {
+          // console.log(err.message);
+          expect(
+            err.message
+          .indexOf(
+            "Campaign has not started"
+            ) >= 0
+          )
+          .toEqual(true)
+  
+          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+          .toEqual(
+            {
+              campaign_name: "testcamp", 
+              choice_list: [{
+                "choice" : "choice1",
+                "result" : "0"
+              }], 
+              end_time: endTime.toISOString().split(".")[0] + ".000", 
+              id: "0", 
+              owner: userAccount1.accountName, 
+              start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      });
+
+    });
+
+    describe("Voting with startTime > now", function(){
+      let currentTime = new Date();
+      let currentTimeOffset = new Date( currentTime.getTime() + 10);
+
+      beforeEach(async () => {
+          await contractAcc.contract.createcamp({
+            owner : userAccount1.accountName,
+            campaign_name : "testcamp",
+            start_time : currentTimeOffset.toISOString().split(".")[0],
+            end_time : endTime.toISOString().split(".")[0]
+          }, [{
+            actor : userAccount1.accountName,
+            permission : "active"
+          }])
+
+          await contractAcc.contract.addvoter({ //add allowed voter
+            campaign_id : 0,
+            voter : userAccount2.accountName
+          })
+
+          await contractAcc.contract.addchoice({ //add choice
+            owner : userAccount1.accountName,
+            campaign_id : 0,
+            new_choice : "choice1"
+          }, [
+          { 
+            actor : userAccount1.accountName,
+            permission : "active"
+          }])
+
+          // let startTimer = new Date();
+          // console.log("current timing start")
+          // while(true){
+          //   let current = new Date();
+          //   if(current - startTimer > 4000){
+          //     console.log("timing ends!")
+          //     console.log(currentTimeOffset.toISOString());
+          //     console.log(startTimer.toISOString())
+          //     console.log(current.toISOString())
+          //     break;
+          //   }
+          // }
+        });
+
+      it("should vote", async () => {
+        expect.assertions(1);
+        await contractAcc.contract.vote({
+          campaign_id : 0,
+          voter : userAccount2.accountName,
+          choice_idx : 0
+        }, [{
+          actor : userAccount2.accountName,
+          permission : "active"
+        }])
+        .then(result => {
+          console.log(result)
+          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+          .toEqual(
+            {
+              campaign_name: "testcamp", 
+              choice_list: [{
+                "choice" : "choice1",
+                "result" : "1"
+              }], 
+              end_time: endTime.toISOString().split(".")[0] + ".000", 
+              id: "0", 
+              owner: userAccount1.accountName, 
+              start_time: startTime.toISOString().split(".")[0] + ".000"})
+          }
+        )
+        .catch(err => {
+          console.log(err.message);
+
+          let curren = new Date();
+          console.log(`current time offset ${currentTimeOffset.toISOString()}`);
+          console.log( `now ${curren.toISOString()}`);
+        })
+      });
+    });
+
   });
 
 });
