@@ -35,7 +35,7 @@ const accountPlaceholder = (name, publicKey) => {
     );
 }
 
-const addVoterPlaceholder = (name) => {
+const createVoterPlaceholder = (name) => {
     return         {
         account: `${process.env.ACC_NAME}`,
         name: `createvoter`, // new account name
@@ -47,6 +47,23 @@ const addVoterPlaceholder = (name) => {
             new_voter: `${name}`
         }
       }
+}
+
+const addVoterPlaceholder = (accName, campaignId) => {
+  return {
+    actions: [{
+      account: `${process.env.ACC_NAME}`,
+      name: 'addvoter',
+      authorization: [{
+        actor: `${process.env.ACC_NAME}`,
+        permission: 'active',
+      }],
+      data: {
+        campaign_id : campaignId,
+        voter : accName
+      },
+    }]
+  }
 }
 
 let regex = new RegExp('[a-z]([a-z]|\.|[1-5]){10}[^\.]');
@@ -63,7 +80,8 @@ const eosNameValidation = (name) => {
 
 module.exports = {
   accountPlaceholder, 
-  addVoterPlaceholder, 
-  eosNameValidation, 
+  createVoterPlaceholder, 
+  eosNameValidation,
+  addVoterPlaceholder
   // eosPublicKeyValidation
 }

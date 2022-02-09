@@ -2,7 +2,7 @@ const express = require('express');
 const eosDriver = require('../../Helper functions/eosDriver')
 const {ecc} = require("eosjs/dist/eosjs-ecc-migration")
 const {
-    addVoterPlaceholder, 
+    createVoterPlaceholder, 
     accountPlaceholder, 
     eosNameValidation,
     // eosPublicKeyValidation
@@ -131,7 +131,7 @@ router.post("/confirm", async (req, res) => {
             }
             const transaction = await eosDriver.transact({
                 actions: [
-                    addVoterPlaceholder(accname)
+                    createVoterPlaceholder(accname)
                 ]
                 }, {
                 blocksBehind: 3,

@@ -7,6 +7,7 @@ const Account = require("./Helper functions/mongoose/accModel");
 const registration = require("./router/registration/regisRouter");
 // const confirmation = require("./router/confirmation/confirmRouter")
 const account = require('./router/account/accountRouter')
+const contract = require("./router/contract/contractRouter")
 const test = require('./router/testRouter');
 
 require('dotenv').config();
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 app.use("/registration", registration);
 // app.use("/confirmation", confirmation);
+app.use("/contract", contract);
 app.use("/account", account);
 app.use("/test", test);
 
