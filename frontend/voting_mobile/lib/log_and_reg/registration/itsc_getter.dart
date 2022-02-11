@@ -42,10 +42,10 @@ class ITSCGetter extends StatelessWidget {
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
-      print("itsc:" + itsc);
-      Response response = await dio.post("/registration", data: {'itsc': itsc});
-      print("itsc response");
-      print(response);
+      // print("itsc:" + itsc);
+      // Response response = await dio.post("/registration", data: {'itsc': itsc});
+      // print("itsc response");
+      // print(response);
       emailSentCallback(itsc);
     } catch (e) {
       print(e);

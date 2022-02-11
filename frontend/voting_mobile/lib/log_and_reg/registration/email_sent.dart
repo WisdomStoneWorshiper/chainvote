@@ -32,9 +32,9 @@ class EmailSent extends StatelessWidget {
             height: 20,
           ),
           RichText(
-            text: const TextSpan(
+            text: TextSpan(
               text:
-                  "mpsanghavi@connect.ust.hk", // ADD CORRECT EMAIL VARIABLE HERE
+                  email + "@connect.ust.hk", // ADD CORRECT EMAIL VARIABLE HERE
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 23.0,

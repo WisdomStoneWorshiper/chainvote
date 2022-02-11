@@ -52,7 +52,7 @@ class LinkUp extends StatelessWidget {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as LinkUpArg;
     _itsc =
-        "mpsanghavi@connect.ust.hk"; //args.itsc; UNCOMMENT LATER PLEASE ADD RIGHT EMAIL VARIABLE
+        args.itsc; //args.itsc; UNCOMMENT LATER PLEASE ADD RIGHT EMAIL VARIABLE
     _needCreateEOSIO = args.needCreateEOSIO;
     _context = context;
     return Scaffold(
