@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './link_up.dart';
 
 class EOSIOAccCreate extends StatelessWidget {
-  final String _title = "Welcome, ";
+  final String _title = "EOSIO Account ";
   late String _itsc;
   bool _haveEOSAcc = false;
   late BuildContext _context;
@@ -21,23 +21,58 @@ class EOSIOAccCreate extends StatelessWidget {
         appBar: AppBar(
           title: Text(_title + _itsc),
         ),
-        body: Column(
+        body: Center(
+            child: Column(
           children: [
-            Text("Have an EOSIO account?"),
+            const SizedBox(
+              height: 225,
+            ),
+            const Text(
+              "Already have an EOSIO account?",
+              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
-                onPressed: () {
-                  this._haveEOSAcc = true;
-                  _linkUpHander();
-                },
-                child: Text("Use my own account")),
-            Text("Don't have an EOSIO account?"),
+              onPressed: () {
+                this._haveEOSAcc = true;
+                _linkUpHander();
+              },
+              child: const Text(
+                "Use Existing Account",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                //primary: Colors.blue,
+                minimumSize: const Size(300, 42),
+              ),
+            ),
+            const SizedBox(
+              height: 125,
+            ),
+            const Text(
+              "Don't have an EOSIO account?",
+              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
-                onPressed: () {
-                  this._haveEOSAcc = false;
-                  _linkUpHander();
-                },
-                child: Text("Create a EOSIO account"))
+              onPressed: () {
+                this._haveEOSAcc = false;
+                _linkUpHander();
+              },
+              child: const Text(
+                "Create an EOSIO Account",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                //primary: Colors.blue,
+                minimumSize: const Size(300, 42),
+              ),
+            )
           ],
-        ));
+        )));
   }
 }

@@ -16,12 +16,63 @@ class LogAndReg extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            LogAndRegButton("Login", () {
-              Navigator.pushNamed(context, 'l');
-            }),
-            LogAndRegButton("Register", () {
-              Navigator.pushNamed(context, 'r');
-            })
+            const SizedBox(
+              height: 150,
+            ),
+            Column(children: [
+              RichText(
+                text: const TextSpan(
+                  text: 'Welcome to our Blockchain based',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 23.0,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              RichText(
+                text: const TextSpan(
+                  text: 'Voting App',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 45.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ]),
+            const SizedBox(
+              height: 200,
+            ),
+            Column(children: [
+              RichText(
+                text: const TextSpan(
+                  text: 'Already registered?',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              LogAndRegButton("Login", () {
+                Navigator.pushNamed(context, 'l');
+              }),
+            ]),
+            const SizedBox(
+              height: 80,
+            ),
+            Column(children: [
+              RichText(
+                text: const TextSpan(
+                  text: 'Create a new account?',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              LogAndRegButton("Register", () {
+                Navigator.pushNamed(context, 'r');
+              })
+            ]),
           ],
         ),
       ),

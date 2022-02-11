@@ -30,7 +30,7 @@ class ITSCGetter extends StatelessWidget {
   void _sendRegistrationRequest(String itsc) async {
     if (_itscFieldController.text.isEmpty) {
       final errBar = SnackBar(
-        content: Text("Please fillin all field!"),
+        content: Text("Please fill in all the fields!"),
         action: SnackBarAction(
           label: 'OK',
           onPressed: () {},
@@ -42,7 +42,9 @@ class ITSCGetter extends StatelessWidget {
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
+      // print("itsc:" + itsc);
       // Response response = await dio.post("/registration", data: {'itsc': itsc});
+      // print("itsc response");
       // print(response);
       emailSentCallback(itsc);
     } catch (e) {
@@ -60,33 +62,76 @@ class ITSCGetter extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          Row(
+          const SizedBox(
+            height: 200,
+          ),
+          Column(
             children: [
-              Text("Step 1: Generate eosio key pair"),
+              RichText(
+                text: const TextSpan(
+                  text: 'Step 1: Generate EOSIO key pair',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               ElevatedButton(
-                child: Text("Get Key Pair!"),
+                child: const Text(
+                  "Get Key Pair!",
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
                 onPressed: _gotoKeyGen,
+                style: ElevatedButton.styleFrom(
+                  //primary: Colors.blue,
+                  minimumSize: const Size(300, 42),
+                ),
               ),
             ],
           ),
-          Row(
+          const SizedBox(
+            height: 75,
+          ),
+          Column(
             children: [
-              Text("Step 2: Get verification code"),
+              const Text(
+                "Step 2: Get verification code",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Column(
                 children: [
                   SizedBox(
-                    width: 100,
+                    width: 275,
                     child: TextField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'itsc',
+                        hintText: 'ITSC Account',
                       ),
                       onSubmitted: _sendRegistrationRequest,
                       controller: _itscFieldController,
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   ElevatedButton(
-                      onPressed: _registerBtnHandler, child: Text("Register"))
+                    onPressed: _registerBtnHandler,
+                    child: const Text(
+                      "Register",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      //primary: Colors.blue,
+                      minimumSize: const Size(300, 45),
+                    ),
+                  )
                 ],
               ),
             ],

@@ -4,6 +4,7 @@ import 'log_and_reg/login/login.dart';
 import 'log_and_reg/registration/register.dart';
 import 'log_and_reg/registration/eosio_acc_create.dart';
 import 'log_and_reg/registration/link_up.dart';
+import 'home/home.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -19,11 +20,26 @@ class VotingApp extends StatelessWidget {
       initialRoute: 'l&r',
       routes: {
         'l&r': (context) => const LogAndReg(),
-        'l': (context) => const Login(),
+        'l': (context) => Login(),
         'r': (context) => Register(),
         'e': (context) => EOSIOAccCreate(),
         'lu': (context) => LinkUp(),
+        'h': (context) => HomePage(),
       },
+      // theme: ThemeData(
+      //     // Define the default brightness and colors.
+      //     brightness: Brightness.dark,
+      //     primaryColor: Color.fromARGB(255, 67, 218, 155),
+      //     buttonTheme: ButtonThemeData(
+      //       buttonColor: Color.fromARGB(255, 116, 238, 92),
+      //     ),
+      //     elevatedButtonTheme: ElevatedButtonThemeData(
+      //         style: ElevatedButton.styleFrom(
+      //       primary: Color.fromARGB(255, 98, 245, 159),
+      //     )))
+      // // Define the default `TextTheme`. Use this to specify the default
+      // text styling for headlines, titles, bodies of text, and more.
+      // ,
     );
   }
 }
