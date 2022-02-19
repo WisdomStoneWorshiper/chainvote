@@ -19,62 +19,111 @@ class LinkUp extends StatelessWidget {
 
   LinkUp({Key? key}) : super(key: key);
 
-  void _submitLinpUpRequest() {
+  void _submitLinpUpRequest() async {
     if (_codeController.text.isEmpty ||
         _eosAccController.text.isEmpty ||
         (_needCreateEOSIO == true && _eosPublicKeyController.text.isEmpty)) {
       final errBar = SnackBar(
-        content: Text("Please fillin all field!"),
+        content: const Text("Please fill in all the fields!"),
         action: SnackBarAction(
           label: 'OK',
           onPressed: () {},
         ),
       );
       ScaffoldMessenger.of(_context).showSnackBar(errBar);
+    } else {
+      BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+      var dio = Dio(opt);
+      try {
+        Response response = await dio.post("/account/create", data: {
+          'itsc': _itsc,
+          'key': _codeController.text,
+          'accname': _eosAccController.text,
+          'pkey': _eosPublicKeyController.text
+        });
+        print(response);
+      } catch (e) {
+        print(e);
+      }
     }
-    BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
-    var dio = Dio(opt);
   }
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as LinkUpArg;
-    _itsc = args.itsc;
+    _itsc =
+        args.itsc; //args.itsc; UNCOMMENT LATER PLEASE ADD RIGHT EMAIL VARIABLE
     _needCreateEOSIO = args.needCreateEOSIO;
     _context = context;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Link up with your itsc"),
+        title: const Text("Link ITSC"),
       ),
       body: Column(
         children: [
-          Text("ITSC : " + _itsc),
+          const SizedBox(
+            height: 125,
+          ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Confirmation code: "),
+              const Text(
+                "ITSC : ",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                _itsc,
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 45,
+          ),
+          Column(
+            children: [
+              const Text(
+                "Confirmation Code ",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
               SizedBox(
-                width: 100,
+                width: 300,
                 height: 50,
                 child: TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Please enter the code',
+                    labelText: "Confirmation Code",
+                    hintText: 'Please Enter the Code',
                   ),
                   controller: _codeController,
                 ),
               )
             ],
           ),
-          Row(
+          const SizedBox(
+            height: 40,
+          ),
+          Column(
             children: [
-              Text("EOSIO account name : "),
+              const Text(
+                "EOSIO Account Name : ",
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
               SizedBox(
-                width: 100,
+                width: 300,
                 height: 50,
                 child: TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Please enter the account name',
+                    hintText: 'Please enter the account name',
+                    labelText: "Account Name",
                   ),
                   controller: _eosAccController,
                 ),
@@ -82,24 +131,54 @@ class LinkUp extends StatelessWidget {
             ],
           ),
           _needCreateEOSIO == true
-              ? Row(
+              ? Column(
                   children: [
-                    Text("EOSIO public key : "),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    const Text(
+                      "EOSIO Public Key : ",
+                      style: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     SizedBox(
-                      width: 250,
+                      width: 300,
                       height: 50,
                       child: TextField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Please enter the public key',
+                          labelText: "Public Key",
+                          hintText: 'Please enter the public key',
                         ),
                         controller: _eosPublicKeyController,
                       ),
-                    )
+                    ),
+                    const SizedBox(
+                      height: 80,
+                    ),
                   ],
                 )
-              : Row(),
-          ElevatedButton(onPressed: _submitLinpUpRequest, child: Text("Submit"))
+              : Column(
+                  children: [
+                    const SizedBox(
+                      height: 150,
+                    ),
+                  ],
+                ),
+          ElevatedButton(
+            onPressed: _submitLinpUpRequest,
+            child: const Text(
+              "Submit",
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              //primary: Colors.blue,
+              minimumSize: const Size(300, 42),
+            ),
+          )
         ],
       ),
     );
