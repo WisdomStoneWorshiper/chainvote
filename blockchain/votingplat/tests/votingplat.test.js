@@ -653,7 +653,368 @@ describe("votingplat", () => {
     
   // });
 
-  describe("voter", function(){
+  // describe("voter", function(){
+
+  //   beforeEach(async () => {
+  //     await contractAcc.contract.createvoter({
+  //       new_voter : userAccount1.accountName
+  //     })
+
+  //     await contractAcc.contract.createvoter({
+  //       new_voter : userAccount2.accountName
+  //     })
+
+  //     await contractAcc.contract.createcamp({
+  //       owner : userAccount1.accountName,
+  //       campaign_name : "testcamp",
+  //       start_time : startTime.toISOString().split(".")[0],
+  //       end_time : endTime.toISOString().split(".")[0]
+  //     }, [{
+  //       actor : userAccount1.accountName,
+  //       permission : "active"
+  //     }])
+
+  //     await contractAcc.contract.addvoter({ //add allowed voter
+  //       campaign_id : 0,
+  //       voter : userAccount2.accountName
+  //     })
+
+  //     await contractAcc.contract.addchoice({ //add choice
+  //       owner : userAccount1.accountName,
+  //       campaign_id : 0,
+  //       new_choice : "choice1"
+  //     }, [
+  //     { 
+  //       actor : userAccount1.accountName,
+  //       permission : "active"
+  //     }])
+  //   });
+
+  //   describe("voting with now > startTime", function(){
+
+  //     it("should not vote on non-existent campaign", async ()=> {
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 10,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       }, [{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch( err => {
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "campaign not exist"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual(
+  //           {
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "0"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"})
+  //       })
+  //     });
+
+  //     it("should not vote on non-existent choice", async ()=> {
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 1
+  //       }, [{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch( err => {
+  //         console.log(err.message)
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "choice not exist"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual(
+  //           {
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "0"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"})
+  //       })
+  //     });
+
+  //     it("should not vote on unauthorized account", async ()=> {
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       },[{
+  //         actor : userAccount1.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch( err => {
+  //         console.log(err.message)
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "You are not authorized to use this account"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual(
+  //           {
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "0"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"})
+  //       })
+  //     });
+
+  //     it("should not vote when campaign hasn't started", async ()=> {
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       },[{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch( err => {
+  //         // console.log(err.message);
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "Campaign has not started"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual(
+  //           {
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "0"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"})
+  //       })
+  //     });
+
+  //   });
+
+  //   describe("Voting with startTime > now", function(){
+
+  //     beforeEach(() => {
+  //       blockchain.setCurrentTime(new Date(startTime.getTime() + 10000));
+  //     });
+
+  //     it("should vote", async () => {
+  //       expect.assertions(1);
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       }, [{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+  //       .then(result => {
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual(
+  //           {
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "1"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"})
+  //         }
+  //       )
+  //       .catch(err => {
+  //         console.log(err.message);
+          
+  //       })
+  //     });
+
+  //     it("should not allow double voting", async () => {
+  //       expect.assertions(3);
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       }, [{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+
+  //       expect.assertions(3);
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       }, [{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch((err) => {
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "you have voted already"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual({
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "1"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"
+  //           })
+
+  //         expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
+  //         .toEqual([
+  //                   {
+  //                     voter: 'useracc1',
+  //                     owned_campaigns: ["0"],
+  //                     votable_campaigns: [],
+  //                     is_active : true
+  //                   },
+  //                   {
+  //                     voter : 'useracc2',
+  //                     owned_campaigns : [],
+  //                     votable_campaigns : [{
+  //                       campaign : "0",
+  //                       is_vote : true
+  //                     }],
+  //                     is_active : true
+  //                   }
+  //                 ])
+  //         })
+  //       })
+
+  //     it("should not allow invalid voter", async () => {
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount1.accountName,
+  //         choice_idx : 0
+  //       }, [{
+  //         actor : userAccount1.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch(err => {
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "voter cannot vote this campaign"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual({
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "0"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"
+  //           })
+  //       })
+  //     })
+
+  //     afterEach(async () => {
+  //       blockchain.setCurrentTime(new Date(2000, 1, 1));
+  //     })
+
+  //   });
+
+  //   describe("Voting with endTime < now", function() {
+  //     beforeEach(() => {
+  //       blockchain.setCurrentTime(new Date( endTime.getTime() + 10000));
+  //     })
+
+  //     it("should not allow voter to vote", async () => {
+  //       await contractAcc.contract.vote({
+  //         campaign_id : 0,
+  //         voter : userAccount2.accountName,
+  //         choice_idx : 0
+  //       }, [{
+  //         actor : userAccount2.accountName,
+  //         permission : "active"
+  //       }])
+  //       .catch(err => {
+  //         expect(
+  //           err.message
+  //         .indexOf(
+  //           "Campaign has already ended"
+  //           ) >= 0
+  //         )
+  //         .toEqual(true)
+  
+  //         expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+  //         .toEqual({
+  //             campaign_name: "testcamp", 
+  //             choice_list: [{
+  //               "choice" : "choice1",
+  //               "result" : "0"
+  //             }], 
+  //             end_time: endTime.toISOString().split(".")[0] + ".000", 
+  //             id: "0", 
+  //             owner: userAccount1.accountName, 
+  //             start_time: startTime.toISOString().split(".")[0] + ".000"
+  //           })
+  //       })
+  //     })
+
+  //     afterEach(async () => {
+  //       blockchain.setCurrentTime(new Date(2000, 1, 1));
+  //     })
+
+  //   })
+
+  // });
+
+  describe("deletecamp", function(){
 
     beforeEach(async () => {
       await contractAcc.contract.createvoter({
@@ -690,350 +1051,174 @@ describe("votingplat", () => {
       }])
     });
 
-    describe("voting with now > startTime", function(){
-
-      it("should not vote on non-existent campaign", async ()=> {
-        await contractAcc.contract.vote({
-          campaign_id : 10,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        }, [{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-        .catch( err => {
-          console.log(err.message)
-          expect(
-            err.message
-          .indexOf(
-            "campaign not exist"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual(
-            {
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "0"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
-        })
-      });
-
-      it("should not vote on non-existent choice", async ()=> {
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 1
-        }, [{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-        .catch( err => {
-          console.log(err.message)
-          expect(
-            err.message
-          .indexOf(
-            "choice not exist"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual(
-            {
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "0"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
-        })
-      });
-
-      it("should not vote on unauthorized account", async ()=> {
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        },[{
-          actor : userAccount1.accountName,
-          permission : "active"
-        }])
-        .catch( err => {
-          console.log(err.message)
-          expect(
-            err.message
-          .indexOf(
-            "You are not authorized to use this account"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual(
-            {
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "0"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
-        })
-      });
-
-      it("should not vote when campaign hasn't started", async ()=> {
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        },[{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-        .catch( err => {
-          // console.log(err.message);
-          expect(
-            err.message
-          .indexOf(
-            "Campaign has not started"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual(
-            {
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "0"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
-        })
-      });
-
-    });
-
-    describe("Voting with startTime > now", function(){
-
-      beforeEach(() => {
-          // await contractAcc.contract.createcamp({
-          //   owner : userAccount1.accountName,
-          //   campaign_name : "testcamp",
-          //   start_time : startTime.toISOString().split(".")[0],
-          //   end_time : endTime.toISOString().split(".")[0]
-          // }, [{
-          //   actor : userAccount1.accountName,
-          //   permission : "active"
-          // }])
-
-          // await contractAcc.contract.addvoter({ //add allowed voter
-          //   campaign_id : 0,
-          //   voter : userAccount2.accountName
-          // })
-
-          // await contractAcc.contract.addchoice({ //add choice
-          //   owner : userAccount1.accountName,
-          //   campaign_id : 0,
-          //   new_choice : "choice1"
-          // }, [
-          // { 
-          //   actor : userAccount1.accountName,
-          //   permission : "active"
-          // }])
-
-          blockchain.setCurrentTime(new Date(startTime.getTime() + 10000));
-        });
-
-      it("should vote", async () => {
-        expect.assertions(1);
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        }, [{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-        .then(result => {
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual(
-            {
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "1"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
-          }
+    it("Should not allow to delete started campaign", async () => {
+      expect.assertions(2)
+      blockchain.setCurrentTime(new Date( startTime.getTime() + 10000));
+      await contractAcc.contract.deletecamp({
+        owner: userAccount1.accountName,
+        campaign_id : 0
+      }, [{
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        console.log(err.message);
+        expect(
+          err.message
+        .indexOf(
+          "Campaign has already started"
+          ) >= 0
         )
-        .catch(err => {
-          console.log(err.message);
-          
-        })
-      });
+        .toEqual(true)
 
-      it("should not allow double voting", async () => {
-        expect.assertions(3);
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        }, [{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-
-        expect.assertions(3);
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        }, [{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-        .catch((err) => {
-          expect(
-            err.message
-          .indexOf(
-            "you have voted already"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual({
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "1"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"
-            })
-
-          expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
-          .toEqual([
-                    {
-                      voter: 'useracc1',
-                      owned_campaigns: ["0"],
-                      votable_campaigns: [],
-                      is_active : true
-                    },
-                    {
-                      voter : 'useracc2',
-                      owned_campaigns : [],
-                      votable_campaigns : [{
-                        campaign : "0",
-                        is_vote : true
-                      }],
-                      is_active : true
-                    }
-                  ])
-          })
-        })
-
-      it("should not allow invalid voter", async () => {
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount1.accountName,
-          choice_idx : 0
-        }, [{
-          actor : userAccount1.accountName,
-          permission : "active"
-        }])
-        .catch(err => {
-          expect(
-            err.message
-          .indexOf(
-            "voter cannot vote this campaign"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual({
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "0"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"
-            })
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual(
+          {
+            campaign_name: "testcamp", 
+            choice_list: [{
+              "choice" : "choice1",
+              "result" : "0"
+            }], 
+            end_time: endTime.toISOString().split(".")[0] + ".000", 
+            id: "0", 
+            owner: userAccount1.accountName, 
+            start_time: startTime.toISOString().split(".")[0] + ".000"})
         })
       })
 
+    it("Should not allow to delete unauthorized account", async () => {
+      expect.assertions(2)
+      blockchain.setCurrentTime(new Date( startTime.getTime() + 10000));
+      await contractAcc.contract.deletecamp({
+        owner: userAccount1.accountName,
+        campaign_id : 0
+      }, [{
+        actor : userAccount2.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        expect(
+          err.message
+        .indexOf(
+          "You are not authorized to use this account"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual(
+          {
+            campaign_name: "testcamp", 
+            choice_list: [{
+              "choice" : "choice1",
+              "result" : "0"
+            }], 
+            end_time: endTime.toISOString().split(".")[0] + ".000", 
+            id: "0", 
+            owner: userAccount1.accountName, 
+            start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      })
+
+    it("Should not allow to delete due to invalid owner", async () => {
+      expect.assertions(2)
+      blockchain.setCurrentTime(new Date( startTime.getTime() + 10000));
+      await contractAcc.contract.deletecamp({
+        owner: userAccount2.accountName,
+        campaign_id : 0
+      }, [{
+        actor : userAccount2.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        console.log(err.message)
+        expect(
+          err.message
+        .indexOf(
+          "You are not the owner"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual(
+          {
+            campaign_name: "testcamp", 
+            choice_list: [{
+              "choice" : "choice1",
+              "result" : "0"
+            }], 
+            end_time: endTime.toISOString().split(".")[0] + ".000", 
+            id: "0", 
+            owner: userAccount1.accountName, 
+            start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      })
+
+    it("Should not allow to delete invalid campaign id", async () => {
+      expect.assertions(2)
+      blockchain.setCurrentTime(new Date( startTime.getTime() + 10000));
+      await contractAcc.contract.deletecamp({
+        owner: userAccount1.accountName,
+        campaign_id : 10
+      }, [{
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .catch(err => {
+        console.log(err.message);
+        expect(
+          err.message
+        .indexOf(
+          "campaign not exist"
+          ) >= 0
+        )
+        .toEqual(true)
+
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
+        .toEqual(
+          {
+            campaign_name: "testcamp", 
+            choice_list: [{
+              "choice" : "choice1",
+              "result" : "0"
+            }], 
+            end_time: endTime.toISOString().split(".")[0] + ".000", 
+            id: "0", 
+            owner: userAccount1.accountName, 
+            start_time: startTime.toISOString().split(".")[0] + ".000"})
+        })
+      })
+
+    it("Should delete campaign", async () => {
+      expect.assertions(1);
+
+
+      await contractAcc.contract.deletecamp({
+        owner: userAccount1.accountName,
+        campaign_id : 0
+      }, [{
+        actor : userAccount1.accountName,
+        permission : "active"
+      }])
+      .then(res => {
+        expect(contractAcc.getTableRowsScoped("campaign")["votingplat"])
+        .toEqual(undefined)
+      })
     });
 
-    describe("Voting with endTime < now", function() {
-      beforeEach(() => {
-        blockchain.setCurrentTime(new Date( endTime.getTime() + 10000));
-      })
-
-      it("should not allow voter to vote", async () => {
-        await contractAcc.contract.vote({
-          campaign_id : 0,
-          voter : userAccount2.accountName,
-          choice_idx : 0
-        }, [{
-          actor : userAccount2.accountName,
-          permission : "active"
-        }])
-        .catch(err => {
-          expect(
-            err.message
-          .indexOf(
-            "Campaign has already ended"
-            ) >= 0
-          )
-          .toEqual(true)
-  
-          expect(contractAcc.getTableRowsScoped("campaign")["votingplat"][0])
-          .toEqual({
-              campaign_name: "testcamp", 
-              choice_list: [{
-                "choice" : "choice1",
-                "result" : "0"
-              }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
-              id: "0", 
-              owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"
-            })
-        })
-      })
-
-    })
-
-    afterEach(async () => {
+    afterEach(() => {
       blockchain.setCurrentTime(new Date(2000, 1, 1));
     })
 
   });
+
+  
+
+
+  afterEach(async () => {
+    blockchain.setCurrentTime(new Date(2000, 1, 1));
+  })
+
 
 });
