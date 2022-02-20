@@ -42,12 +42,19 @@ describe("votingplat", () => {
 
   describe("createvoter", function(){
 
+    const createvoterPlaceholder = (account, signer) => {
+      return contractAcc.contract.createvoter({
+        new_voter : account.accountName
+      }, [{
+        actor : signer.accountName,
+        permission : "active"
+      }])
+    }
+
     it("Should create new voter", async function(){
       expect.assertions(1);
 
-      await contractAcc.contract.createvoter({
-        new_voter : userAccount1.accountName
-      })
+      await createvoterPlaceholder(userAccount1, contractAcc)
       .catch(err => console.log(err.message));
 
       expect(
@@ -67,13 +74,9 @@ describe("votingplat", () => {
     it('Should not have duplicateed voter', async function(){
       expect.assertions(2);
 
-      await contractAcc.contract.createvoter({
-        new_voter : userAccount1.accountName
-      })
+      await createvoterPlaceholder(userAccount1, contractAcc);
       
-      await contractAcc.contract.createvoter({
-        new_voter : userAccount1.accountName
-      })
+      await createvoterPlaceholder(userAccount1, contractAcc)
       .catch( err => {
         expect(
           err.message
@@ -98,12 +101,7 @@ describe("votingplat", () => {
 
     it('Should not create voter without admin account', async function(){
       expect.assertions(2);
-      await contractAcc.contract.createvoter({
-        new_voter : userAccount1.accountName
-      }, [{
-        actor : userAccount1.accountName,
-        permission : "active"
-      }])
+      await createvoterPlaceholder(userAccount1, userAccount1)
       .catch( err => {
         expect(
           err.message
@@ -1215,7 +1213,6 @@ describe("votingplat", () => {
 
   describe("updatevoter", function(){
     const updatevoterPlaceholder = (name, active, signer) => {
-      //console.log(`name : ${name.accountName} singer : ${signer.accountName}`)
       return contractAcc.contract.updatevoter({
         voter: name.accountName,
         active : active
@@ -1230,8 +1227,6 @@ describe("votingplat", () => {
       await contractAcc.contract.createvoter({
         new_voter : userAccount1.accountName
       })
-
-      console.log(contractAcc.getTableRowsScoped("voter")["votingplat"]);
     });
 
     it("Should only allow admin to update", async () => {
@@ -1243,9 +1238,7 @@ describe("votingplat", () => {
         actor : userAccount1.accountName,
         permission : "active"
       }])
-      .then(res => console.log(res))
       .catch(err => {
-        console.log(err.message)
         expect(
           err.message
         .indexOf(
@@ -1269,7 +1262,6 @@ describe("votingplat", () => {
     it("Should not update undefined account", async () => {
       expect.assertions(2);
       await updatevoterPlaceholder(userAccount2, false, contractAcc)
-      .then(res => console.log(res))
       .catch(err => {
         expect(
           err.message
@@ -1328,10 +1320,6 @@ describe("votingplat", () => {
     it("Should only allow admin to delete", async () => {
       expect.assertions(2);
       await deletevoterPlaceholder(userAccount1, userAccount1)
-      .then(res => {
-        console.log(res);
-        console.log(contractAcc.getTableRowsScoped("voter")["votingplat"])
-      })
       .catch(err => {
         expect(
           err.message
@@ -1382,9 +1370,8 @@ describe("votingplat", () => {
       await deletevoterPlaceholder(userAccount1, contractAcc)
       .then(err => {
         expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
-        .toEqual([])
+        .toEqual(undefined)
       })
-      .catch( err => console.log(err.message))
     })
 
   });

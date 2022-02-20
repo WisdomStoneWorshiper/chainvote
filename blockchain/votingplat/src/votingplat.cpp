@@ -216,4 +216,4 @@ ACTION votingplat::clear() {
 
 EOSIO_DISPATCH(
     votingplat,
-    (createvoter)(createcamp)(addchoice)(addvoter)(vote)(deletecamp)(clear))
+    (createvoter)(createcamp)(addchoice)(addvoter)(vote)(deletecamp)(deletevoter)(updatevoter)(clear))
