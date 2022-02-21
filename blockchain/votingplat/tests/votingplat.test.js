@@ -247,6 +247,7 @@ describe("votingplat", () => {
 
     it("Should not create a campaign with startTime > now", async function(){ //fix this 
       expect.assertions(2);
+      blockchain.setCurrentTime(new Date());
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
@@ -298,6 +299,10 @@ describe("votingplat", () => {
         .toEqual(undefined); //since the table isnt generated yet
       });
     });
+
+    afterEach(() => {
+      blockchain.setCurrentTime(new Date(2000,1,1));
+    })
   });
 
   describe("addchoice", function(){
@@ -395,7 +400,7 @@ describe("votingplat", () => {
         expect(
           err.message
         .indexOf(
-          "You are not the owner of this campaign"
+          "campaign not exist"
           ) >= 0
         )
         .toEqual(true)
