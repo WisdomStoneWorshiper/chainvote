@@ -5,10 +5,10 @@ class Campaign extends StatelessWidget {
   final bool isDetail;
   final int campaignId;
   Campaign({required this.campaignId, required this.isDetail}) {
-    client
-        .getTableRow(contractAccount, contractAccount, "campaign",
-            lower: campaignId.toString(), upper: campaignId.toString())
-        .then((value) => null);
+    // client
+    //     .getTableRow(contractAccount, contractAccount, "campaign",
+    //         lower: campaignId.toString(), upper: campaignId.toString())
+    //     .then((value) => null);
   }
 
   Widget homeView() {
