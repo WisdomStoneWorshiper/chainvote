@@ -37,14 +37,29 @@ class Campaign extends StatelessWidget {
 
   Widget homeView() {
     return Container(
-      padding: EdgeInsets.all(8.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: Column(
-          children: [Text(_campaignName), Text("Owner :" + _owner)],
+      padding: EdgeInsets.all(10.0),
+      child: Material(
+        elevation: 10,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Column(
+            children: [Text(_campaignName), Text("Owner :" + _owner)],
+          ),
         ),
       ),
     );
+    // return Material(
+    //   elevation: 20,
+    //   child: Container(
+    //     padding: EdgeInsets.all(20.0),
+    //     child: ClipRRect(
+    //       borderRadius: BorderRadius.circular(25),
+    //       child: Column(
+    //         children: [Text(_campaignName), Text("Owner :" + _owner)],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget votingView() {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 import '../../global_variable.dart';
-import '../../home/home.dart';
+import '../../home/navigation_bar_view.dart';
 
 class Login extends StatelessWidget {
   final String _title = "Login";
@@ -28,7 +28,7 @@ class Login extends StatelessWidget {
       var dio = Dio(opt);
 
       String eosName = 'eimeutmhpudu';
-      HomePageArg arg = HomePageArg(_itscFieldController.text, eosName);
+      HomeArg arg = HomeArg(_itscFieldController.text, eosName);
       Navigator.pop(_context);
       Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
     }
