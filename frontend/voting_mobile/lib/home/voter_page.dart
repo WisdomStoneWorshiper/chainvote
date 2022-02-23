@@ -11,6 +11,10 @@ class VoterPage extends StatefulWidget {
 class _VoterPageState extends State<VoterPage> {
   late Campaign campaign;
 
+  void _toBallot() {
+    Navigator.pushNamed(context, 'b', arguments: campaign);
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
@@ -20,6 +24,10 @@ class _VoterPageState extends State<VoterPage> {
       appBar: AppBar(),
       body: Column(
         children: [campaign],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _toBallot,
+        child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
       ),
     );
   }

@@ -52,6 +52,14 @@ class Campaign extends StatelessWidget {
     return _campaignName;
   }
 
+  String getOwner() {
+    return _owner;
+  }
+
+  List<Choice> getChoiceList() {
+    return _choiceList;
+  }
+
   void setIsDetail(bool s) {
     isDetail = s;
   }
