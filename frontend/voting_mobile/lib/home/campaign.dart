@@ -17,7 +17,12 @@ class Campaign extends StatelessWidget {
   late DateTime _endTime;
   List<Choice> _choiceList = [];
 
-  Campaign({required this.campaignId, required this.isDetail});
+  void Function(Campaign) callback;
+
+  Campaign(
+      {required this.campaignId,
+      required this.isDetail,
+      required this.callback});
 
   Future<bool> init() async {
     var data_temp = await client.getTableRow(
@@ -35,35 +40,66 @@ class Campaign extends StatelessWidget {
     return Future<bool>.value(true);
   }
 
+  DateTime getStartTime() {
+    return _startTime;
+  }
+
+  DateTime getEndTime() {
+    return _endTime;
+  }
+
+  String getCampaignName() {
+    return _campaignName;
+  }
+
+  void setIsDetail(bool s) {
+    isDetail = s;
+  }
+
   Widget homeView() {
     return Container(
       padding: EdgeInsets.all(10.0),
-      child: Material(
-        elevation: 10,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Column(
-            children: [Text(_campaignName), Text("Owner :" + _owner)],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Material(
+          elevation: 10,
+          child: ElevatedButton(
+            child: Column(
+              children: [Text(_campaignName), Text("Owner :" + _owner)],
+            ),
+            onPressed: () {
+              callback(this);
+            },
           ),
         ),
       ),
     );
-    // return Material(
-    //   elevation: 20,
-    //   child: Container(
-    //     padding: EdgeInsets.all(20.0),
-    //     child: ClipRRect(
-    //       borderRadius: BorderRadius.circular(25),
-    //       child: Column(
-    //         children: [Text(_campaignName), Text("Owner :" + _owner)],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget votingView() {
-    return Container();
+    return Container(
+        child: Align(
+      alignment: Alignment.topLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Campaign Name: " + _campaignName),
+          Text("Owner: " + _owner),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: _choiceList.length,
+            itemBuilder: (_, index) => Container(
+              child: ListTile(
+                leading: Text((index + 1).toString()),
+                title: Text(_choiceList[index].choiceName),
+                subtitle:
+                    Text("Result: " + _choiceList[index].result.toString()),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 
   @override

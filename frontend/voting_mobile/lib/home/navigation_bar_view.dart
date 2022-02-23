@@ -27,19 +27,14 @@ class _NavBarViewState extends State<NavBarView> {
   static const List<BottomNavigationBarItem> _barItem =
       <BottomNavigationBarItem>[
     BottomNavigationBarItem(
-      icon: Icon(Icons.home),
-      label: 'Home',
+      icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
+      label: 'Voting',
       backgroundColor: Colors.red,
     ),
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe04e, fontFamily: 'MaterialIcons')),
-      label: 'Business',
+      label: 'Manage Campaign',
       backgroundColor: Colors.green,
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
-      label: 'Vote',
-      backgroundColor: Colors.purple,
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.settings),
@@ -62,7 +57,6 @@ class _NavBarViewState extends State<NavBarView> {
         itsc: args.itsc,
         eosAccountName: args.eosAccountName,
       ));
-      _pageOpts.add(VoterPage());
       _pageOpts.add(OwnerPage());
       _pageOpts.add(SettingPage());
       _isInit = true;

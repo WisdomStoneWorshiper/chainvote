@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'campaign.dart';
 
 class VoterPage extends StatefulWidget {
   const VoterPage({Key? key}) : super(key: key);
@@ -8,10 +9,18 @@ class VoterPage extends StatefulWidget {
 }
 
 class _VoterPageState extends State<VoterPage> {
+  late Campaign campaign;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("Voter Page"),
+    final args = ModalRoute.of(context)!.settings.arguments as Campaign;
+    campaign = args;
+    campaign.setIsDetail(true);
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [campaign],
+      ),
     );
   }
 }

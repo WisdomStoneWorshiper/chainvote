@@ -6,6 +6,7 @@ import 'log_and_reg/registration/eosio_acc_create.dart';
 import 'log_and_reg/registration/link_up.dart';
 import 'home/home_page.dart';
 import 'home/navigation_bar_view.dart';
+import 'home/voter_page.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -26,6 +27,7 @@ class VotingApp extends StatelessWidget {
         'e': (context) => EOSIOAccCreate(),
         'lu': (context) => LinkUp(),
         'h': (context) => NavBarView(),
+        'v': (context) => VoterPage(),
       },
       // theme: ThemeData(
       //     // Define the default brightness and colors.

@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
       Campaign c = new Campaign(
         campaignId: vr.campaignId,
         isDetail: false,
+        callback: _viewVotableCampaign,
       );
       await c.init();
       t.add(c);
@@ -38,14 +39,12 @@ class _HomePageState extends State<HomePage> {
     return Future<List<Campaign>>.value(t);
   }
 
+  void _viewVotableCampaign(Campaign c) {
+    Navigator.pushNamed(context, 'v', arguments: c);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // itsc = args.itsc;
-    // print(itsc);
-    // eosAccountName = args.eosAccountName;
-
-    // user = Voter(voterName: eosAccountName);
-
     return FutureBuilder(
       future: init(eosAccountName),
       builder: (context, snapshot) {
@@ -65,7 +64,21 @@ class _HomePageState extends State<HomePage> {
             child: CustomScrollView(
           slivers: [
             SliverAppBar(
+              title: Text("Ongoing Campaign"),
+              pinned: true,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(children),
+            ),
+            SliverAppBar(
               title: Text("Coming Campaign"),
+              pinned: true,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(children),
+            ),
+            SliverAppBar(
+              title: Text("Ended Campaign"),
               pinned: true,
             ),
             SliverList(
