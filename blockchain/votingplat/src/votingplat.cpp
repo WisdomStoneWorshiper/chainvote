@@ -183,7 +183,7 @@ ACTION votingplat::updatevoter(name voter, bool active) {
   check(voting_itr != _voter.end(), "voter not exist");
 
   _voter.modify(voting_itr, get_self(),
-                [&](auto& target_voter) { target_voter.is_active = false; });
+                [&](auto& target_voter) { target_voter.is_active = active; });
 }
 
 ACTION votingplat::deletevoter(name voter) {
