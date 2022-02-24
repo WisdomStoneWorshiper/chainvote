@@ -44,6 +44,7 @@ class _BallotState extends State<Ballot> {
         builder: (context) => AlertDialog(
               title: Text("Confirm your ballot"),
               content: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("Campaign :" + campaign.getCampaignName()),
                   Text("Choice: " +
@@ -127,13 +128,16 @@ class _BallotState extends State<Ballot> {
               await voteClient.pushTransaction(transaction, broadcast: true);
 
           if (response.containsKey('transaction_id')) {
+            campaign.setIsVoted(true);
             String transHex = response["transaction_id"];
             SuccessPageArg arg = new SuccessPageArg(
-                message: 'Your Vote Submitted Successfully \n $transHex',
+                message:
+                    'Your Vote Submitted Successfully \n Transaction hash: $transHex',
                 returnPage: 'h');
             Navigator.pushNamed(context, 's', arguments: arg);
           } else {
-            // print(response);
+            print(response);
+            _errDialog("Unknown Error");
           }
         } catch (e) {
           Map error = json.decode(e as String);

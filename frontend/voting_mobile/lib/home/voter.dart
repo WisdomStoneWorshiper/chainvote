@@ -35,7 +35,7 @@ class Voter {
       return tempV;
     }).toList();
     is_active = (data_temp[0]["is_active"] == 0 ? false : true);
-    print(_ownerCampaigns);
+    // print(_ownerCampaigns);
 
     return Future<bool>.value(true);
   }

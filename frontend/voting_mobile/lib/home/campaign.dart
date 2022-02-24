@@ -17,6 +17,7 @@ class Campaign extends StatelessWidget {
   late String _owner;
   late DateTime _startTime;
   late DateTime _endTime;
+  bool isVoted;
   List<Choice> _choiceList = [];
 
   void Function(Campaign) callback;
@@ -24,7 +25,8 @@ class Campaign extends StatelessWidget {
   Campaign(
       {required this.campaignId,
       required this.isDetail,
-      required this.callback});
+      required this.callback,
+      required this.isVoted});
 
   Future<bool> init() async {
     var data_temp = await client.getTableRow(
@@ -32,8 +34,9 @@ class Campaign extends StatelessWidget {
         lower: campaignId.toString(), upper: campaignId.toString());
     _campaignName = data_temp!["campaign_name"];
     _owner = data_temp["owner"];
-    _startTime = DateTime.parse(data_temp["start_time"]);
-    _endTime = DateTime.parse(data_temp["end_time"]);
+    _startTime = DateTime.parse(data_temp["start_time"] + 'Z');
+
+    _endTime = DateTime.parse(data_temp["end_time"] + 'Z');
     for (Map<String, dynamic>? temp in data_temp["choice_list"]) {
       _choiceList
           .add(Choice(choiceName: temp!["choice"], result: temp["result"]));
@@ -66,10 +69,17 @@ class Campaign extends StatelessWidget {
     isDetail = s;
   }
 
+  void setIsVoted(bool s) {
+    isVoted = s;
+  }
+
   CampaignStat getCampaignStat() {
-    if (DateTime.now().isBefore(_startTime)) {
+    print("now:" + DateTime.now().toUtc().toString());
+    print("start:" + _startTime.toString());
+    print("end:" + _endTime.toString());
+    if (DateTime.now().toUtc().isBefore(_startTime)) {
       return CampaignStat.Coming;
-    } else if (DateTime.now().isAfter(_endTime)) {
+    } else if (DateTime.now().toUtc().isAfter(_endTime)) {
       return CampaignStat.Ended;
     } else {
       return CampaignStat.Ongoing;
@@ -105,6 +115,8 @@ class Campaign extends StatelessWidget {
         children: [
           Text("Campaign Name: " + _campaignName),
           Text("Owner: " + _owner),
+          Text("Start: " + _startTime.toLocal().toString()),
+          Text("End: " + _endTime.toLocal().toString()),
           ListView.builder(
             shrinkWrap: true,
             itemCount: _choiceList.length,

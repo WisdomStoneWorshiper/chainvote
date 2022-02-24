@@ -25,11 +25,13 @@ class _VoterPageState extends State<VoterPage> {
         body: Column(
           children: [campaign],
         ),
-        floatingActionButton: campaign.getCampaignStat() == CampaignStat.Ongoing
-            ? FloatingActionButton(
-                onPressed: _toBallot,
-                child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
-              )
-            : null);
+        floatingActionButton:
+            campaign.getCampaignStat() == CampaignStat.Ongoing &&
+                    campaign.isVoted == false
+                ? FloatingActionButton(
+                    onPressed: _toBallot,
+                    child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
+                  )
+                : null);
   }
 }
