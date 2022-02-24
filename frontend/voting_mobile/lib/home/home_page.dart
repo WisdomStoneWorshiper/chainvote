@@ -48,17 +48,30 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder(
       future: init(eosAccountName),
       builder: (context, snapshot) {
-        List<Widget> children;
+        List<Widget> ongoing = [];
+        List<Widget> coming = [];
+        List<Widget> ended = [];
+
         if (snapshot.hasData) {
-          children = snapshot.data as List<Campaign>;
+          List<Campaign> tempList = snapshot.data as List<Campaign>;
+          for (Campaign c in tempList) {
+            if (c.getCampaignStat() == CampaignStat.Coming) {
+              coming.add(c);
+            } else if (c.getCampaignStat() == CampaignStat.Ended) {
+              ended.add(c);
+            } else {
+              ongoing.add(c);
+            }
+          }
         } else {
-          children = [
-            SizedBox(
-              width: 200,
-              height: 200,
-              child: CircularProgressIndicator(),
-            ),
-          ];
+          Widget loading = SizedBox(
+            width: 200,
+            height: 200,
+            child: CircularProgressIndicator(),
+          );
+          ongoing = [loading];
+          ended = [loading];
+          coming = [loading];
         }
         return Center(
             child: CustomScrollView(
@@ -68,21 +81,21 @@ class _HomePageState extends State<HomePage> {
               pinned: true,
             ),
             SliverList(
-              delegate: SliverChildListDelegate(children),
+              delegate: SliverChildListDelegate(ongoing),
             ),
             SliverAppBar(
               title: Text("Coming Campaign"),
               pinned: true,
             ),
             SliverList(
-              delegate: SliverChildListDelegate(children),
+              delegate: SliverChildListDelegate(coming),
             ),
             SliverAppBar(
               title: Text("Ended Campaign"),
               pinned: true,
             ),
             SliverList(
-              delegate: SliverChildListDelegate(children),
+              delegate: SliverChildListDelegate(ended),
             )
           ],
         ));

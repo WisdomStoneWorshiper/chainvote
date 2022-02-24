@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../global_variable.dart';
 
+enum CampaignStat { Coming, Ongoing, Ended }
+
 class Choice {
   String choiceName;
   int result;
@@ -62,6 +64,16 @@ class Campaign extends StatelessWidget {
 
   void setIsDetail(bool s) {
     isDetail = s;
+  }
+
+  CampaignStat getCampaignStat() {
+    if (DateTime.now().isBefore(_startTime)) {
+      return CampaignStat.Coming;
+    } else if (DateTime.now().isAfter(_endTime)) {
+      return CampaignStat.Ended;
+    } else {
+      return CampaignStat.Ongoing;
+    }
   }
 
   Widget homeView() {

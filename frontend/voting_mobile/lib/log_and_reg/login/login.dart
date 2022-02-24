@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../global_variable.dart';
 import '../../home/navigation_bar_view.dart';
@@ -12,7 +13,7 @@ class Login extends StatelessWidget {
 
   Login();
 
-  void _loginRequestHandler() {
+  void _loginRequestHandler() async {
     if (_itscFieldController.text.isEmpty ||
         _publicKeyFieldController.text.isEmpty) {
       final errBar = SnackBar(
@@ -27,7 +28,11 @@ class Login extends StatelessWidget {
       BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
       var dio = Dio(opt);
 
+      final prefs = await SharedPreferences.getInstance();
+
       String eosName = 'eimeutmhpudu';
+
+      prefs.setString('eosName', eosName);
       HomeArg arg = HomeArg(_itscFieldController.text, eosName);
       Navigator.pop(_context);
       Navigator.pushReplacementNamed(_context, 'h', arguments: arg);

@@ -73,6 +73,7 @@ class _NavBarViewState extends State<NavBarView> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: Colors.amber[800],
+        backgroundColor: _barItem[_selectedIndex].backgroundColor,
       ),
     );
   }

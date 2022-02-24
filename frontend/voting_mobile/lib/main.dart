@@ -8,7 +8,7 @@ import 'home/home_page.dart';
 import 'home/navigation_bar_view.dart';
 import 'home/voter_page.dart';
 import 'home/ballot.dart';
-import 'home/vote_success.dart';
+import 'success_page.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -31,7 +31,7 @@ class VotingApp extends StatelessWidget {
         'h': (context) => NavBarView(),
         'v': (context) => VoterPage(),
         'b': (context) => Ballot(),
-        'vs': (context) => VoteSuccess(),
+        's': (context) => SuccessPage(),
       },
       // theme: ThemeData(
       //     // Define the default brightness and colors.

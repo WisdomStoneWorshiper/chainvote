@@ -1,6 +1,11 @@
+import 'package:eosdart/eosdart.dart' as eos;
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
 import 'campaign.dart';
-import 'vote_success.dart';
+import '../success_page.dart';
+import '../global_variable.dart';
 
 class Ballot extends StatefulWidget {
   Ballot({Key? key}) : super(key: key);
@@ -15,6 +20,23 @@ class _BallotState extends State<Ballot> {
   int _selected = -1;
 
   TextEditingController _pkController = new TextEditingController();
+
+  void _errDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Error"),
+        content: Text(message),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("ok"))
+        ],
+      ),
+    );
+  }
 
   void _confirmBallot() {
     showDialog(
@@ -62,15 +84,71 @@ class _BallotState extends State<Ballot> {
               ),
               TextButton(
                 onPressed: () {
-                  _vote(_pkController.text);
+                  _vote(context, _pkController.text);
                 },
                 child: Text("Submit"),
               )
             ],
           ));
 
-  void _vote(String pk) {
-    Navigator.pushNamed(context, 'vs');
+  void _vote(BuildContext context, String pk) async {
+    eos.EOSClient voteClient = client;
+    final prefs = await SharedPreferences.getInstance();
+
+    final String eosName = prefs.getString('eosName') ?? "";
+
+    if (eosName != "") {
+      try {
+        voteClient.privateKeys = [pk];
+
+        List<eos.Authorization> auth = [
+          eos.Authorization()
+            ..actor = eosName
+            ..permission = 'active'
+        ];
+
+        Map data = {
+          'campaign_id': campaign.campaignId.toString(),
+          'voter': eosName,
+          'choice_idx': _selected.toString()
+        };
+
+        List<eos.Action> actions = [
+          eos.Action()
+            ..account = contractAccount
+            ..name = 'vote'
+            ..authorization = auth
+            ..data = data
+        ];
+        eos.Transaction transaction = eos.Transaction()..actions = actions;
+
+        try {
+          var response =
+              await voteClient.pushTransaction(transaction, broadcast: true);
+
+          if (response.containsKey('transaction_id')) {
+            String transHex = response["transaction_id"];
+            SuccessPageArg arg = new SuccessPageArg(
+                message: 'Your Vote Submitted Successfully \n $transHex',
+                returnPage: 'h');
+            Navigator.pushNamed(context, 's', arguments: arg);
+          } else {
+            // print(response);
+          }
+        } catch (e) {
+          Map error = json.decode(e as String);
+          print(error);
+          // print(error["error"]["details"][0]["message"]);
+          // print(e.runtimeType);
+          _errDialog(error["error"]["details"][0]["message"]);
+        }
+      } catch (e) {
+        // print(e);
+        _errDialog("Invalid Private Key format");
+      }
+    } else {
+      _errDialog("Haven't login");
+    }
   }
 
   @override

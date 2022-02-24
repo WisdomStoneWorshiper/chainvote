@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 import '../../global_variable.dart';
+import '../../success_page.dart';
 
 class LinkUpArg {
   final String itsc;
@@ -41,6 +42,11 @@ class LinkUp extends StatelessWidget {
           'accname': _eosAccController.text,
           'pkey': _eosPublicKeyController.text
         });
+        if (response.statusCode == 200) {
+          SuccessPageArg arg = new SuccessPageArg(
+              message: 'Your Account Created Successfully', returnPage: 'l&r');
+          Navigator.pushNamed(_context, 's', arguments: arg);
+        }
         print(response);
       } catch (e) {
         print(e);

@@ -21,14 +21,15 @@ class _VoterPageState extends State<VoterPage> {
     campaign = args;
     campaign.setIsDetail(true);
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [campaign],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toBallot,
-        child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
-      ),
-    );
+        appBar: AppBar(),
+        body: Column(
+          children: [campaign],
+        ),
+        floatingActionButton: campaign.getCampaignStat() == CampaignStat.Ongoing
+            ? FloatingActionButton(
+                onPressed: _toBallot,
+                child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
+              )
+            : null);
   }
 }
