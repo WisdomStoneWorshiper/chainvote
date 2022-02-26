@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'voting/voter_page.dart';
-import 'owner_page.dart';
+import 'manage/owner_page.dart';
 import 'voting/votable_page.dart';
 import 'setting_page.dart';
 

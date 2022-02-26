@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'campaign.dart';
+import '../campaign.dart';
+import 'edit_page.dart';
 
 class ManagePage extends StatefulWidget {
   const ManagePage({Key? key}) : super(key: key);
@@ -32,11 +33,35 @@ class _ManagePageState extends State<ManagePage> {
               Row(
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return EditPage(
+                              campaignId: campaign.campaignId,
+                              editType: EditType.Choice,
+                              editingList: campaign
+                                  .getChoiceList()
+                                  .map((c) => c.choiceName)
+                                  .toList());
+                        },
+                      ));
+                    },
                     child: Text("Edit choice"),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return EditPage(
+                                campaignId: campaign.campaignId,
+                                editType: EditType.Voter,
+                                editingList: campaign.getVoterList());
+                          },
+                        ),
+                      );
+                    },
                     child: Text("Edit voter"),
                   ),
                 ],
@@ -61,7 +86,16 @@ class _ManagePageState extends State<ManagePage> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    child: Text("data1"),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: campaign.getVoterList().length,
+                      itemBuilder: (_, index) => Container(
+                        child: ListTile(
+                          leading: Text((index + 1).toString()),
+                          title: Text(campaign.getVoterList()[index]),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ))

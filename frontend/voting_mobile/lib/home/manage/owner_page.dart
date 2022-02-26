@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../global_variable.dart';
-import './campaign.dart';
-import './voter.dart';
+import '../../../global_variable.dart';
+import '../campaign.dart';
+import '../voter.dart';
 
 class OwnerPage extends StatefulWidget {
   final String itsc;

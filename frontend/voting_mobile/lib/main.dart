@@ -10,7 +10,7 @@ import 'home/navigation_bar_view.dart';
 import 'home/voting/votable_page.dart';
 import 'home/voting/ballot.dart';
 import 'success_page.dart';
-import 'home/manage_page.dart';
+import 'home/manage/manage_page.dart';
 
 void main() {
   runApp(const VotingApp());

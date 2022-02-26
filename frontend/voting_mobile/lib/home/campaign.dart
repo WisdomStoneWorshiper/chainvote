@@ -26,6 +26,7 @@ class Campaign extends StatelessWidget {
   late DateTime _endTime;
   CampaignVoteStat isVoted;
   List<Choice> _choiceList = [];
+  List<String> _voterList = [];
 
   void Function(Campaign) callback;
 
@@ -48,6 +49,11 @@ class Campaign extends StatelessWidget {
       _choiceList
           .add(Choice(choiceName: temp!["choice"], result: temp["result"]));
     }
+
+    for (String temp in data_temp["voter_list"]) {
+      _voterList.add(temp);
+    }
+
     print(data_temp);
     return Future<bool>.value(true);
   }
@@ -70,6 +76,10 @@ class Campaign extends StatelessWidget {
 
   List<Choice> getChoiceList() {
     return _choiceList;
+  }
+
+  List<String> getVoterList() {
+    return _voterList;
   }
 
   void setview(CampaignView s) {
