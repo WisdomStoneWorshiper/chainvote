@@ -256,11 +256,10 @@ ACTION votingplat::deletevoter(name voter) {
 ACTION votingplat::clear() {
   check(has_auth(get_self()), "Only admin can use this");
   voter_table _voter(get_self(), get_self().value);
-  // auto voting_itr = _voter.begin();
-  // while (voting_itr != _voter.end()) {
-  //   // auto curr = voting_itr++;
-  //   _voter.erase(voting_itr++);
-  // }
+  auto voting_itr = _voter.begin();
+  while (voting_itr != _voter.end()) {
+    voting_itr = _voter.erase(voting_itr);
+  }
 
   campaign_table _campaign(get_self(), get_self().value);
   auto campaign_itr = _campaign.begin();
