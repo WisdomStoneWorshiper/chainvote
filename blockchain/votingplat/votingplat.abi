@@ -26,16 +26,26 @@
             "base": "",
             "fields": [
                 {
-                    "name": "owner",
-                    "type": "name"
-                },
-                {
                     "name": "campaign_id",
                     "type": "uint64"
                 },
                 {
                     "name": "voter",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "campaign_choice",
+            "base": "",
+            "fields": [
+                {
+                    "name": "choice",
+                    "type": "string"
+                },
+                {
+                    "name": "result",
+                    "type": "uint64"
                 }
             ]
         },
@@ -64,14 +74,19 @@
                     "type": "time_point"
                 },
                 {
-                    "name": "choice_list",
-                    "type": "string[]"
+                    "name": "voter_list",
+                    "type": "name[]"
                 },
                 {
-                    "name": "result",
-                    "type": "uint64[]"
+                    "name": "choice_list",
+                    "type": "campaign_choice[]"
                 }
             ]
+        },
+        {
+            "name": "clear",
+            "base": "",
+            "fields": []
         },
         {
             "name": "createcamp",
@@ -106,6 +121,24 @@
             ]
         },
         {
+            "name": "delchoice",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "choice_idx",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "deletecamp",
             "base": "",
             "fields": [
@@ -126,6 +159,20 @@
                 {
                     "name": "voter",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "delvotable",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "voter_idx",
+                    "type": "uint64"
                 }
             ]
         },
@@ -162,20 +209,6 @@
             ]
         },
         {
-            "name": "voter_actions",
-            "base": "",
-            "fields": [
-                {
-                    "name": "campaign",
-                    "type": "string"
-                },
-                {
-                    "name": "action_time",
-                    "type": "time_point"
-                }
-            ]
-        },
-        {
             "name": "voter_list",
             "base": "",
             "fields": [
@@ -189,14 +222,24 @@
                 },
                 {
                     "name": "votable_campaigns",
-                    "type": "uint64[]"
-                },
-                {
-                    "name": "records",
-                    "type": "voter_actions[]"
+                    "type": "voter_record[]"
                 },
                 {
                     "name": "is_active",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "voter_record",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign",
+                    "type": "uint64"
+                },
+                {
+                    "name": "is_vote",
                     "type": "bool"
                 }
             ]
@@ -214,6 +257,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "clear",
+            "type": "clear",
+            "ricardian_contract": ""
+        },
+        {
             "name": "createcamp",
             "type": "createcamp",
             "ricardian_contract": ""
@@ -224,6 +272,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "delchoice",
+            "type": "delchoice",
+            "ricardian_contract": ""
+        },
+        {
             "name": "deletecamp",
             "type": "deletecamp",
             "ricardian_contract": ""
@@ -231,6 +284,11 @@
         {
             "name": "deletevoter",
             "type": "deletevoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "delvotable",
+            "type": "delvotable",
             "ricardian_contract": ""
         },
         {

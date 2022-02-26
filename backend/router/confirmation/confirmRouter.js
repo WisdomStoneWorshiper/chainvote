@@ -1,6 +1,6 @@
 const express = require("express");
 const Account = require("../../Helper functions/mongoose/accModel")
-const {addVoterPlaceholder} = require("../../Helper functions/eosPlaceholder")
+const {createVoterPlaceholder} = require("../../Helper functions/eosPlaceholder")
 const eosDriver = require("../../Helper functions/eosDriver")
 const router = express.Router();
 
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
                 // Account creation sample TODO: Account name checking
                 const transaction = await eosDriver.transact({
                     actions: [
-                        addVoterPlaceholder(accname)
+                        createVoterPlaceholder(accname)
                     ]
                    }, {
                     blocksBehind: 3,

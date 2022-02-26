@@ -1,0 +1,6 @@
+contracts:
+  votingplat:
+    abi: votingplat.abi
+    name: votingplat
+    wasm: votingplat.wasm
+options: null

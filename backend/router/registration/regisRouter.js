@@ -35,6 +35,7 @@ router.post("/", async (req, res) => {
             error : true,
             message : "Unexpected error searching itsc" 
         });
+        return;
     })
     if(result.length != 0){ //acc found
         const random_str = getRandomString(5);

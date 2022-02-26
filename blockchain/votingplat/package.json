@@ -1,0 +1,20 @@
+{
+  "name": "votingplat",
+  "version": "1.0.0",
+  "description": "Testing votingplat smart contract with Hydra",
+  "main": "",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@klevoya/hydra": "*",
+    "dotenv": "^16.0.0",
+    "jest": "^25.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": ""
+}
