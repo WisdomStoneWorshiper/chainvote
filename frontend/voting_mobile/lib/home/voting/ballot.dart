@@ -38,6 +38,27 @@ class _BallotState extends State<Ballot> {
     );
   }
 
+  void showLoaderDialog(BuildContext context, String loadingMsg) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+            margin: EdgeInsets.only(left: 7),
+            child: Text(loadingMsg + "..."),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   void _confirmBallot() {
     showDialog(
         context: context,
@@ -85,6 +106,7 @@ class _BallotState extends State<Ballot> {
               ),
               TextButton(
                 onPressed: () {
+                  showLoaderDialog(context, "Posting transaction");
                   _vote(context, _pkController.text);
                 },
                 child: Text("Submit"),
@@ -134,12 +156,15 @@ class _BallotState extends State<Ballot> {
                 message:
                     'Your Vote Submitted Successfully \n Transaction hash: $transHex',
                 returnPage: 'h');
+            Navigator.pop(context);
             Navigator.pushNamed(context, 's', arguments: arg);
           } else {
             print(response);
+            Navigator.pop(context);
             _errDialog("Unknown Error");
           }
         } catch (e) {
+          Navigator.pop(context);
           Map error = json.decode(e as String);
           print(error);
           // print(error["error"]["details"][0]["message"]);
@@ -147,10 +172,12 @@ class _BallotState extends State<Ballot> {
           _errDialog(error["error"]["details"][0]["message"]);
         }
       } catch (e) {
+        Navigator.pop(context);
         // print(e);
         _errDialog("Invalid Private Key format");
       }
     } else {
+      Navigator.pop(context);
       _errDialog("Haven't login");
     }
   }

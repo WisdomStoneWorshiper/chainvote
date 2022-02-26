@@ -207,6 +207,7 @@ class _EditPageState extends State<EditPage> {
           SuccessPageArg arg = new SuccessPageArg(
               message: 'All Selected has been deleted successfully!',
               returnPage: 'h');
+          Navigator.pop(context);
           Navigator.pushNamed(context, 's', arguments: arg);
         } catch (e) {
           Navigator.pop(context);
