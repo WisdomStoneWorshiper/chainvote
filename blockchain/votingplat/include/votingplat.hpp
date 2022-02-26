@@ -14,7 +14,9 @@ CONTRACT votingplat : public contract {
   ACTION createcamp(name owner, string campaign_name, time_point start_time,
                     time_point end_time);
   ACTION addchoice(name owner, uint64_t campaign_id, string new_choice);
+  ACTION delchoice(name owner, uint64_t campaign_id, uint64_t choice_idx);
   ACTION addvoter(uint64_t campaign_id, name voter);
+  ACTION delvotable(uint64_t campaign_id, uint64_t voter_idx);
   // ACTION addvoteritsc(name owner, uint64_t campaign_id, string itsc);
   ACTION vote(uint64_t campaign_id, name voter, uint64_t choice_idx);
   ACTION deletecamp(name owner, uint64_t campaign_id);
@@ -23,14 +25,7 @@ CONTRACT votingplat : public contract {
   ACTION updatevoter(name voter, bool active);
   ACTION deletevoter(name voter);
 
-  // ACTION addvoter(name new_voter);
-
-  // ACTION addcandidate(name new_candidate);
-  // ACTION vote(name voter, name candidate);
-  // ACTION unvote(name voter, name candidate);
   ACTION clear();
-
-  // ACTION testfuc();
 
   struct voter_record {
     uint64_t campaign;
@@ -48,6 +43,7 @@ CONTRACT votingplat : public contract {
     name owner;
     time_point start_time;
     time_point end_time;
+    vector<name> voter_list;
     vector<campaign_choice> choice_list;
     auto primary_key() const { return id; }
   };
@@ -65,11 +61,4 @@ CONTRACT votingplat : public contract {
   typedef multi_index<name("voter"), voter_list> voter_table;
 
  private:
-  // TABLE itsc_list {
-  //   string itsc;
-  //   name voter;
-  //   auto primary_key() const { return voter.value; };
-  // };
-
-  // typedef multi_index<name("itsc"), itsc_list> itsc_table;
 };

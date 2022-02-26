@@ -74,6 +74,10 @@
                     "type": "time_point"
                 },
                 {
+                    "name": "voter_list",
+                    "type": "name[]"
+                },
+                {
                     "name": "choice_list",
                     "type": "campaign_choice[]"
                 }
@@ -117,6 +121,24 @@
             ]
         },
         {
+            "name": "delchoice",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "choice_idx",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "deletecamp",
             "base": "",
             "fields": [
@@ -137,6 +159,20 @@
                 {
                     "name": "voter",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "delvotable",
+            "base": "",
+            "fields": [
+                {
+                    "name": "campaign_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "voter_idx",
+                    "type": "uint64"
                 }
             ]
         },
@@ -236,6 +272,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "delchoice",
+            "type": "delchoice",
+            "ricardian_contract": ""
+        },
+        {
             "name": "deletecamp",
             "type": "deletecamp",
             "ricardian_contract": ""
@@ -243,6 +284,11 @@
         {
             "name": "deletevoter",
             "type": "deletevoter",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "delvotable",
+            "type": "delvotable",
             "ricardian_contract": ""
         },
         {
