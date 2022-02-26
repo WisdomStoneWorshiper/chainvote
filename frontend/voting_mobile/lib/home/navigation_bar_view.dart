@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'voting/voter_page.dart';
 import 'owner_page.dart';
-import 'voter_page.dart';
+import 'voting/votable_page.dart';
 import 'setting_page.dart';
 
 class HomeArg {
@@ -53,11 +53,14 @@ class _NavBarViewState extends State<NavBarView> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as HomeArg;
     if (!_isInit) {
-      _pageOpts.add(HomePage(
+      _pageOpts.add(VoterPage(
         itsc: args.itsc,
         eosAccountName: args.eosAccountName,
       ));
-      _pageOpts.add(OwnerPage());
+      _pageOpts.add(OwnerPage(
+        itsc: args.itsc,
+        eosAccountName: args.eosAccountName,
+      ));
       _pageOpts.add(SettingPage());
       _isInit = true;
     }

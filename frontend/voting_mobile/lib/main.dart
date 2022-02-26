@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'log_and_reg/log_and_reg.dart';
 import 'log_and_reg/login/login.dart';
 import 'log_and_reg/registration/register.dart';
 import 'log_and_reg/registration/eosio_acc_create.dart';
 import 'log_and_reg/registration/link_up.dart';
-import 'home/home_page.dart';
+import 'home/voting/voter_page.dart';
 import 'home/navigation_bar_view.dart';
-import 'home/voter_page.dart';
-import 'home/ballot.dart';
+import 'home/voting/votable_page.dart';
+import 'home/voting/ballot.dart';
 import 'success_page.dart';
+import 'home/manage_page.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -29,9 +31,10 @@ class VotingApp extends StatelessWidget {
         'e': (context) => EOSIOAccCreate(),
         'lu': (context) => LinkUp(),
         'h': (context) => NavBarView(),
-        'v': (context) => VoterPage(),
+        'v': (context) => VotablePage(),
         'b': (context) => Ballot(),
         's': (context) => SuccessPage(),
+        'm': (context) => ManagePage(),
       },
       // theme: ThemeData(
       //     // Define the default brightness and colors.

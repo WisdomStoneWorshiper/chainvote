@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import 'campaign.dart';
-import '../success_page.dart';
-import '../global_variable.dart';
+import '../campaign.dart';
+import '../../success_page.dart';
+import '../../global_variable.dart';
 
 class Ballot extends StatefulWidget {
   Ballot({Key? key}) : super(key: key);
@@ -128,7 +128,7 @@ class _BallotState extends State<Ballot> {
               await voteClient.pushTransaction(transaction, broadcast: true);
 
           if (response.containsKey('transaction_id')) {
-            campaign.setIsVoted(true);
+            campaign.setIsVoted(CampaignVoteStat.Yes);
             String transHex = response["transaction_id"];
             SuccessPageArg arg = new SuccessPageArg(
                 message:

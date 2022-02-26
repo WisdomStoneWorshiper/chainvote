@@ -3,28 +3,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../global_variable.dart';
-import './campaign.dart';
-import './voter.dart';
+import '../../../global_variable.dart';
+import '../campaign.dart';
+import '../voter.dart';
 
-class HomePage extends StatefulWidget {
+class VoterPage extends StatefulWidget {
   final String itsc;
   final String eosAccountName;
-  const HomePage({required this.itsc, required this.eosAccountName, Key? key})
+  const VoterPage({required this.itsc, required this.eosAccountName, Key? key})
       : super(key: key);
 
   @override
-  _HomePageState createState() =>
-      _HomePageState(itsc: itsc, eosAccountName: eosAccountName);
+  _VoterPageState createState() =>
+      _VoterPageState(itsc: itsc, eosAccountName: eosAccountName);
 }
 
-class _HomePageState extends State<HomePage> {
+class _VoterPageState extends State<VoterPage> {
   final String itsc;
   final String eosAccountName;
 
   late Voter user;
 
-  _HomePageState({required this.itsc, required this.eosAccountName});
+  _VoterPageState({required this.itsc, required this.eosAccountName});
 
   bool _isLoad = false;
   Future<List<Campaign>> init(String voterName) async {
@@ -34,9 +34,10 @@ class _HomePageState extends State<HomePage> {
     for (VotingRecord vr in user.getVotableCampaigns()) {
       Campaign c = new Campaign(
         campaignId: vr.campaignId,
-        isDetail: false,
+        view: CampaignView.List,
         callback: _viewVotableCampaign,
-        isVoted: vr.isVoted,
+        isVoted:
+            vr.isVoted == true ? CampaignVoteStat.Yes : CampaignVoteStat.No,
       );
       await c.init();
       t.add(c);

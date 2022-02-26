@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+
 import '../../global_variable.dart';
+import 'campaign_list_view.dart';
+import 'voting_view.dart';
 
 enum CampaignStat { Coming, Ongoing, Ended }
+
+enum CampaignVoteStat { Yes, No, NA }
+
+enum CampaignView { List, Voter }
 
 class Choice {
   String choiceName;
@@ -11,22 +18,22 @@ class Choice {
 }
 
 class Campaign extends StatelessWidget {
-  bool isDetail;
+  CampaignView view;
   final int campaignId;
   late String _campaignName;
   late String _owner;
   late DateTime _startTime;
   late DateTime _endTime;
-  bool isVoted;
+  CampaignVoteStat isVoted;
   List<Choice> _choiceList = [];
 
   void Function(Campaign) callback;
 
   Campaign(
       {required this.campaignId,
-      required this.isDetail,
+      this.view = CampaignView.List,
       required this.callback,
-      required this.isVoted});
+      this.isVoted = CampaignVoteStat.NA});
 
   Future<bool> init() async {
     var data_temp = await client.getTableRow(
@@ -65,11 +72,11 @@ class Campaign extends StatelessWidget {
     return _choiceList;
   }
 
-  void setIsDetail(bool s) {
-    isDetail = s;
+  void setview(CampaignView s) {
+    view = s;
   }
 
-  void setIsVoted(bool s) {
+  void setIsVoted(CampaignVoteStat s) {
     isVoted = s;
   }
 
@@ -86,56 +93,29 @@ class Campaign extends StatelessWidget {
     }
   }
 
-  Widget homeView() {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Material(
-          elevation: 10,
-          child: ElevatedButton(
-            child: Column(
-              children: [Text(_campaignName), Text("Owner :" + _owner)],
-            ),
-            onPressed: () {
-              callback(this);
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget votingView() {
-    return Container(
-        child: Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Campaign Name: " + _campaignName),
-          Text("Owner: " + _owner),
-          Text("Start: " + _startTime.toLocal().toString()),
-          Text("End: " + _endTime.toLocal().toString()),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: _choiceList.length,
-            itemBuilder: (_, index) => Container(
-              child: ListTile(
-                leading: Text((index + 1).toString()),
-                title: Text(_choiceList[index].choiceName),
-                subtitle:
-                    Text("Result: " + _choiceList[index].result.toString()),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
-    return isDetail ? votingView() : homeView();
+    switch (view) {
+      case CampaignView.List:
+        {
+          return CampaignListView(
+            campaign: this,
+          );
+        }
+        break;
+      case CampaignView.Voter:
+        {
+          return VotingView(campaign: this);
+        }
+        break;
+
+      default:
+        {
+          return CampaignListView(
+            campaign: this,
+          );
+        }
+        break;
+    }
   }
 }

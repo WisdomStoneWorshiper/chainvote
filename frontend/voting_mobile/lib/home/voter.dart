@@ -48,4 +48,8 @@ class Voter {
   List<VotingRecord> getVotableCampaigns() {
     return _votableCampaigns;
   }
+
+  List<int> getOwnerCampaigns() {
+    return _ownerCampaigns;
+  }
 }

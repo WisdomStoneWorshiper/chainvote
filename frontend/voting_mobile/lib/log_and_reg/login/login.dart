@@ -30,7 +30,7 @@ class Login extends StatelessWidget {
 
       final prefs = await SharedPreferences.getInstance();
 
-      String eosName = 'eimeutmhpudu';
+      String eosName = 'qeyptzipvsqs';
 
       prefs.setString('eosName', eosName);
       HomeArg arg = HomeArg(_itscFieldController.text, eosName);

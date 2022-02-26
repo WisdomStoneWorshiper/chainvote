@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'campaign.dart';
+import '../campaign.dart';
 
-class VoterPage extends StatefulWidget {
-  const VoterPage({Key? key}) : super(key: key);
+class VotablePage extends StatefulWidget {
+  const VotablePage({Key? key}) : super(key: key);
 
   @override
-  _VoterPageState createState() => _VoterPageState();
+  _VotablePageState createState() => _VotablePageState();
 }
 
-class _VoterPageState extends State<VoterPage> {
+class _VotablePageState extends State<VotablePage> {
   late Campaign campaign;
 
   void _toBallot() {
@@ -19,7 +19,7 @@ class _VoterPageState extends State<VoterPage> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
-    campaign.setIsDetail(true);
+    campaign.setview(CampaignView.Voter);
     return Scaffold(
         appBar: AppBar(),
         body: Column(
