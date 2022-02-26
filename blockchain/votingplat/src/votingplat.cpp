@@ -256,22 +256,19 @@ ACTION votingplat::deletevoter(name voter) {
 ACTION votingplat::clear() {
   check(has_auth(get_self()), "Only admin can use this");
   voter_table _voter(get_self(), get_self().value);
-  auto voting_itr = _voter.begin();
-  while (voting_itr != _voter.end()) {
-    auto next_itr = ++voting_itr;
-    _voter.erase(voting_itr);
-    voting_itr = next_itr;
-  }
+  // auto voting_itr = _voter.begin();
+  // while (voting_itr != _voter.end()) {
+  //   // auto curr = voting_itr++;
+  //   _voter.erase(voting_itr++);
+  // }
 
   campaign_table _campaign(get_self(), get_self().value);
   auto campaign_itr = _campaign.begin();
   while (campaign_itr != _campaign.end()) {
-    auto next_itr = ++campaign_itr;
-    _campaign.erase(campaign_itr);
-    campaign_itr = next_itr;
+    campaign_itr = _campaign.erase(campaign_itr);
   }
 }
 
 EOSIO_DISPATCH(
     votingplat,
-    (createvoter)(createcamp)(addchoice)(addvoter)(vote)(deletecamp)(deletevoter)(updatevoter)(clear))
+    (createvoter)(createcamp)(addchoice)(delchoice)(addvoter)(delvotable)(vote)(deletecamp)(deletevoter)(updatevoter)(clear))
