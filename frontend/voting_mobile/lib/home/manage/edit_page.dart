@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
+import 'add_page.dart';
 
 enum EditType { Choice, Voter }
 
@@ -120,7 +121,11 @@ class _EditPageState extends State<EditPage> {
           ),
           TextButton(
             onPressed: () {
-              _requestKey();
+              if (editType == EditType.Choice) {
+                _requestKey();
+              } else {
+                _delVoter(context);
+              }
             },
             child: Text("Delete"),
           )
@@ -149,11 +154,7 @@ class _EditPageState extends State<EditPage> {
                   onPressed: () async {
                     showLoaderDialog(context, "Deleting");
 
-                    if (editType == EditType.Choice) {
-                      _delChoice(context, _pkController.text);
-                    } else {
-                      _delVoter(context);
-                    }
+                    _delChoice(context, _pkController.text);
                   },
                   child: Text("Submit"),
                 )
@@ -182,19 +183,20 @@ class _EditPageState extends State<EditPage> {
           'choice_idx': ""
         };
 
-        List<eos.Action> actions = [
-          eos.Action()
-            ..account = contractAccount
-            ..name = 'delchoice'
-            ..authorization = auth
-            ..data = data
-        ];
-        eos.Transaction transaction = eos.Transaction()..actions = actions;
-
         try {
-          for (int i = 0; i < _isChecked.length; ++i) {
+          for (int i = _isChecked.length - 1; i > 0; --i) {
             if (_isChecked[i]) {
+              print(i);
               data["choice_idx"] = i.toString();
+              List<eos.Action> actions = [
+                eos.Action()
+                  ..account = contractAccount
+                  ..name = 'delchoice'
+                  ..authorization = auth
+                  ..data = data
+              ];
+              eos.Transaction transaction = eos.Transaction()
+                ..actions = actions;
               var response = await voteClient.pushTransaction(transaction,
                   broadcast: true);
               if (!response.containsKey('transaction_id')) {
@@ -234,7 +236,7 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit " + editType.toString()),
+        title: Text("Edit " + editType.toString().substring(9)),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10),
@@ -253,7 +255,16 @@ class _EditPageState extends State<EditPage> {
           Padding(
             padding: EdgeInsets.only(right: 10),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddPage(
+                            editType: editType,
+                            campaignId: campaignId,
+                          )),
+                );
+              },
               child: Icon(IconData(0xe047, fontFamily: 'MaterialIcons')),
             ),
           ),
@@ -263,19 +274,19 @@ class _EditPageState extends State<EditPage> {
         children: [
           Container(
             color: Theme.of(context).primaryColor,
-            child: new Padding(
+            child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: new Card(
-                child: new ListTile(
-                  leading: new Icon(Icons.search),
-                  title: new TextField(
+              child: Card(
+                child: ListTile(
+                  leading: Icon(Icons.search),
+                  title: TextField(
                     controller: _searchController,
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                         hintText: 'Search', border: InputBorder.none),
                     onChanged: _searchHandler,
                   ),
-                  trailing: new IconButton(
-                    icon: new Icon(Icons.cancel),
+                  trailing: IconButton(
+                    icon: Icon(Icons.cancel),
                     onPressed: () {
                       _searchController.clear();
                       _searchHandler('');
@@ -292,6 +303,7 @@ class _EditPageState extends State<EditPage> {
                     itemCount: _searchResult.length,
                     itemBuilder: (_, index) => Container(
                         child: CheckboxListTile(
+                      controlAffinity: ListTileControlAffinity.leading,
                       title: Text(editingList[_searchResult[index]]),
                       value: _isChecked[_searchResult[index]],
                       onChanged: (value) {
