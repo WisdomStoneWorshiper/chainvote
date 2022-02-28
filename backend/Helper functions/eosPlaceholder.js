@@ -51,7 +51,6 @@ const createVoterPlaceholder = (name) => {
 
 const addVoterPlaceholder = (accName, campaignId) => {
   return {
-    actions: [{
       account: `${process.env.ACC_NAME}`,
       name: 'addvoter',
       authorization: [{
@@ -62,7 +61,21 @@ const addVoterPlaceholder = (accName, campaignId) => {
         campaign_id : campaignId,
         voter : accName
       },
-    }]
+  }
+}
+
+const delVoterPlaceholder = (campaignId, voterIDX) => {
+  return {
+      account: `${process.env.ACC_NAME}`,
+      name: 'delvotable',
+      authorization: [{
+        actor: `${process.env.ACC_NAME}`,
+        permission: 'active',
+      }],
+      data: {
+        campaign_id : campaignId,
+        voter_idx : voterIDX
+      },
   }
 }
 
@@ -82,6 +95,7 @@ module.exports = {
   accountPlaceholder, 
   createVoterPlaceholder, 
   eosNameValidation,
-  addVoterPlaceholder
+  addVoterPlaceholder,
+  delVoterPlaceholder
   // eosPublicKeyValidation
 }
