@@ -25,17 +25,40 @@ class Login extends StatelessWidget {
       );
       ScaffoldMessenger.of(_context).showSnackBar(errBar);
     } else {
+      final wrongInputErrBar = SnackBar(
+        content: const Text("Incorrect ITSC or EOSIO Public Key"),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
+        ),
+      );
+
       BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
       var dio = Dio(opt);
 
       final prefs = await SharedPreferences.getInstance();
 
-      String eosName = 'qeyptzipvsqs';
+      Response response = await dio.post("/contract/login", data: {
+        'itsc': _itscFieldController.text,
+        'publicKey': _publicKeyFieldController.text
+      });
+      // print(response.data);
+      if (response.statusCode == 200) {
+        print(response.data);
 
-      prefs.setString('eosName', eosName);
-      HomeArg arg = HomeArg(_itscFieldController.text, eosName);
-      Navigator.pop(_context);
-      Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
+        if (response.data["accountName"] != null) {
+          String eosName = response.data["accountName"];
+          prefs.setString('eosName', eosName);
+          prefs.setString('itsc', _itscFieldController.text);
+          HomeArg arg = HomeArg(_itscFieldController.text, eosName);
+          Navigator.pop(_context);
+          Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
+        } else {
+          ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
+        }
+      } else {
+        ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
+      }
     }
   }
 

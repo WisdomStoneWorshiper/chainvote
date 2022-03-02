@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 import './log_and_reg_btn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../home/navigation_bar_view.dart';
 
 class LogAndReg extends StatelessWidget {
   final String _title = "Voting App";
   const LogAndReg();
 
-  void temp() {}
+  void _loginHander(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.containsKey('itsc'));
+
+    if (prefs.containsKey('itsc') && prefs.containsKey('eosName')) {
+      HomeArg arg = HomeArg(prefs.getString('itsc') as String,
+          prefs.getString('eosName') as String);
+
+      Navigator.pushReplacementNamed(context, 'h', arguments: arg);
+    } else {
+      Navigator.pushNamed(context, 'l');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +68,10 @@ class LogAndReg extends StatelessWidget {
                 ),
               ),
               LogAndRegButton("Login", () {
-                Navigator.pushNamed(context, 'l');
+                _loginHander(context);
+                // final prefs = await SharedPreferences.getInstance();
+
+                // Navigator.pushNamed(context, 'l');
               }),
             ]),
             const SizedBox(
