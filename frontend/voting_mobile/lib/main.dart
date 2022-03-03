@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_and_reg/log_and_reg.dart';
 import 'log_and_reg/login/login.dart';
@@ -11,6 +12,7 @@ import 'home/voting/votable_page.dart';
 import 'home/voting/ballot.dart';
 import 'success_page.dart';
 import 'home/manage/manage_page.dart';
+import 'splash.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -23,7 +25,7 @@ class VotingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: 'l&r',
+      initialRoute: 'sp',
       routes: {
         'l&r': (context) => const LogAndReg(),
         'l': (context) => Login(),
@@ -35,21 +37,8 @@ class VotingApp extends StatelessWidget {
         'b': (context) => Ballot(),
         's': (context) => SuccessPage(),
         'm': (context) => ManagePage(),
+        'sp': (context) => SplashScreen(),
       },
-      // theme: ThemeData(
-      //     // Define the default brightness and colors.
-      //     brightness: Brightness.dark,
-      //     primaryColor: Color.fromARGB(255, 67, 218, 155),
-      //     buttonTheme: ButtonThemeData(
-      //       buttonColor: Color.fromARGB(255, 116, 238, 92),
-      //     ),
-      //     elevatedButtonTheme: ElevatedButtonThemeData(
-      //         style: ElevatedButton.styleFrom(
-      //       primary: Color.fromARGB(255, 98, 245, 159),
-      //     )))
-      // // Define the default `TextTheme`. Use this to specify the default
-      // text styling for headlines, titles, bodies of text, and more.
-      // ,
     );
   }
 }

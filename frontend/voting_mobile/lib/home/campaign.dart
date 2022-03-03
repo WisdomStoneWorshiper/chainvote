@@ -41,7 +41,23 @@ class Campaign extends StatelessWidget {
         contractAccount, contractAccount, "campaign",
         lower: campaignId.toString(), upper: campaignId.toString());
     _campaignName = data_temp!["campaign_name"];
-    _owner = data_temp["owner"];
+
+    BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+    var dio = Dio(opt);
+    Response response = await dio
+        .post("/contract/getITSC", data: {'accountName': data_temp["owner"]});
+    if (response.statusCode == 200) {
+      print(response.data);
+
+      if (response.data["itsc"] != null) {
+        _owner = response.data["itsc"];
+      } else {
+        _owner = data_temp["owner"];
+      }
+    } else {
+      _owner = data_temp["owner"];
+    }
+
     _startTime = DateTime.parse(data_temp["start_time"] + 'Z');
 
     _endTime = DateTime.parse(data_temp["end_time"] + 'Z');
@@ -51,10 +67,24 @@ class Campaign extends StatelessWidget {
     }
 
     for (String temp in data_temp["voter_list"]) {
-      _voterList.add(temp);
+      Response response =
+          await dio.post("/contract/getITSC", data: {'accountName': temp});
+      if (response.statusCode == 200) {
+        print(response.data);
+
+        if (response.data["itsc"] != null) {
+          _voterList.add(response.data["itsc"]);
+        } else {
+          _voterList.add(temp);
+        }
+      } else {
+        _voterList.add(temp);
+      }
     }
 
-    print(data_temp);
+    _voterList.sort();
+
+    // print(data_temp);
     return Future<bool>.value(true);
   }
 

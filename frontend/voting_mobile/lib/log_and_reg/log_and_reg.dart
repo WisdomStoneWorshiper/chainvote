@@ -4,29 +4,51 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../home/navigation_bar_view.dart';
 
-class LogAndReg extends StatelessWidget {
+class LogAndReg extends StatefulWidget {
+  const LogAndReg({Key? key}) : super(key: key);
+
+  @override
+  _LogAndRegState createState() => _LogAndRegState();
+}
+
+class _LogAndRegState extends State<LogAndReg> {
   final String _title = "Voting App";
-  const LogAndReg();
+  // const LogAndReg();
 
-  void _loginHander(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    print(prefs.containsKey('itsc'));
+  // @override
+  // void initState() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   print(prefs.containsKey('itsc'));
 
-    if (prefs.containsKey('itsc') && prefs.containsKey('eosName')) {
-      HomeArg arg = HomeArg(prefs.getString('itsc') as String,
-          prefs.getString('eosName') as String);
+  //   if (prefs.containsKey('itsc') && prefs.containsKey('eosName')) {
+  //     HomeArg arg = HomeArg(prefs.getString('itsc') as String,
+  //         prefs.getString('eosName') as String);
 
-      Navigator.pushReplacementNamed(context, 'h', arguments: arg);
-    } else {
-      Navigator.pushNamed(context, 'l');
-    }
-  }
+  //     Navigator.pushReplacementNamed(context, 'h', arguments: arg);
+  //   }
+  //   super.initState();
+  // }
+
+  // void _loginHander(BuildContext context) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   print(prefs.containsKey('itsc'));
+
+  //   if (prefs.containsKey('itsc') && prefs.containsKey('eosName')) {
+  //     HomeArg arg = HomeArg(prefs.getString('itsc') as String,
+  //         prefs.getString('eosName') as String);
+
+  //     Navigator.pushReplacementNamed(context, 'h', arguments: arg);
+  //   } else {
+  //     Navigator.pushNamed(context, 'l');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
@@ -68,7 +90,8 @@ class LogAndReg extends StatelessWidget {
                 ),
               ),
               LogAndRegButton("Login", () {
-                _loginHander(context);
+                Navigator.pushNamed(context, 'l');
+                // _loginHander(context);
                 // final prefs = await SharedPreferences.getInstance();
 
                 // Navigator.pushNamed(context, 'l');

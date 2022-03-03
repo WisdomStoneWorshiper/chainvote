@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:csv/csv.dart';
+import 'package:dio/dio.dart';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
@@ -166,7 +167,42 @@ class _AddPageState extends State<AddPage> {
     }
   }
 
-  void _addVoter(BuildContext context) async {}
+  void _addVoter(BuildContext context) async {
+    // List<String> failed_item = [];
+    BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+    var dio = Dio(opt);
+    for (int i = _addList.length - 1; i >= 0; --i) {
+      try {
+        Response response = await dio.post("/contract/addvoter",
+            data: {'itsc': _addList[i], 'campaignId': campaignId});
+        print(response.data);
+        if (response.statusCode != 200) {
+          print("fail");
+          // failed_item.add(_addList[i]);
+          _errDialog("Fail to add " +
+              _addList[i] +
+              ", Reason: " +
+              response.data["message"]);
+          return;
+        } else {
+          _addList.removeAt(i);
+        }
+      } catch (e) {
+        DioError err = e as DioError;
+
+        Map<String, dynamic> response = (err.response?.data);
+
+        _errDialog(
+            "Fail to add " + _addList[i] + ", Reason: " + response["message"]!);
+
+        return;
+      }
+    }
+    SuccessPageArg arg = new SuccessPageArg(
+        message: 'All Selected has been added successfully!', returnPage: 'h');
+    Navigator.pop(context);
+    Navigator.pushNamed(context, 's', arguments: arg);
+  }
 
   void _csvLoader() async {
     var status = await Permission.storage.status;

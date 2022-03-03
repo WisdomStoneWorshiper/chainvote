@@ -2,6 +2,7 @@ import 'package:eosdart/eosdart.dart' as eos;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
@@ -26,7 +27,7 @@ class EditPage extends StatefulWidget {
 class _EditPageState extends State<EditPage> {
   final EditType editType;
   final int campaignId;
-  List<String> editingList;
+  List<String> editingList = [];
   List<bool> _isChecked = [];
   int _checkedCount = 0;
   TextEditingController _searchController = new TextEditingController();
@@ -35,8 +36,9 @@ class _EditPageState extends State<EditPage> {
   _EditPageState(
       {required this.campaignId,
       required this.editType,
-      required this.editingList}) {
+      required editingList}) {
     _isChecked = List<bool>.filled(editingList.length, false);
+    this.editingList = editingList.toList();
   }
 
   List<int> _searchResult = [];
@@ -230,7 +232,48 @@ class _EditPageState extends State<EditPage> {
     }
   }
 
-  void _delVoter(BuildContext context) async {}
+  void _delVoter(BuildContext context) async {
+    // List<String> failed_item = [];
+    BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+    var dio = Dio(opt);
+    for (int i = _isChecked.length - 1; i > 0; --i) {
+      if (_isChecked[i]) {
+        try {
+          Response response = await dio.post("/contract/delvoter",
+              data: {'itsc': editingList[i], 'campaignId': campaignId});
+          print(response.data);
+          if (response.statusCode != 200) {
+            print("fail");
+            // failed_item.add(editingList[i]);
+            _errDialog("Cannot delete " +
+                editingList[i] +
+                ", Reason: " +
+                response.data["message"]);
+            return;
+          } else {
+            editingList.removeAt(i);
+            _isChecked.removeAt(i);
+          }
+        } catch (e) {
+          DioError err = e as DioError;
+
+          Map<String, dynamic> response = (err.response?.data);
+
+          _errDialog("Cannot delete " +
+              editingList[i] +
+              ", Reason: " +
+              response["message"]!);
+
+          return;
+        }
+      }
+    }
+    SuccessPageArg arg = new SuccessPageArg(
+        message: 'All Selected has been deleted successfully!',
+        returnPage: 'h');
+    Navigator.pop(context);
+    Navigator.pushNamed(context, 's', arguments: arg);
+  }
 
   @override
   Widget build(BuildContext context) {
