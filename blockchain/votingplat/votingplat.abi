@@ -101,12 +101,12 @@
                     "type": "string"
                 },
                 {
-                    "name": "start_time",
-                    "type": "time_point"
+                    "name": "start_time_string",
+                    "type": "string"
                 },
                 {
-                    "name": "end_time",
-                    "type": "time_point"
+                    "name": "end_time_string",
+                    "type": "string"
                 }
             ]
         },

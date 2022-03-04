@@ -78,6 +78,14 @@ class _NavBarViewState extends State<NavBarView> {
         selectedItemColor: Colors.amber[800],
         backgroundColor: _barItem[_selectedIndex].backgroundColor,
       ),
+      floatingActionButton: _selectedIndex == 1
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'c');
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

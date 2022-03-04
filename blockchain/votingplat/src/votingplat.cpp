@@ -13,11 +13,18 @@ ACTION votingplat::createvoter(name new_voter) {  // edited check please
 }
 
 ACTION votingplat::createcamp(name owner, string campaign_name,
-                              time_point start_time, time_point end_time) {
+                              string start_time_string,
+                              string end_time_string) {
+  time_point start_time =
+      eosio::time_point().from_iso_string(start_time_string);
+  time_point end_time = eosio::time_point().from_iso_string(end_time_string);
   check(has_auth(owner), "You are not authorized to use this account");
-  check(start_time < end_time, "Invalid timing: Start is later than End ");
+  check(start_time < end_time, "Invalid timing: Start is later than End");
   check(start_time > current_time_point(),
-        "Invalid timing: Campaign must start before the current time");
+        "Invalid timing: Campaign must start before the current time, current "
+        "time: " +
+            current_time_point().to_string() +
+            " start time: " + start_time.to_string());
 
   campaign_table _campaign(get_self(), get_self().value);
   auto campaign_itr = _campaign.begin();
@@ -231,6 +238,7 @@ ACTION votingplat::deletecamp(name owner, uint64_t campaign_id) {
   check(campaign_itr->owner.value == owner.value, "You are not the owner");
   check(campaign_itr->start_time > current_time_point(),
         "Campaign has already started");
+
   _campaign.erase(campaign_itr);
 }
 

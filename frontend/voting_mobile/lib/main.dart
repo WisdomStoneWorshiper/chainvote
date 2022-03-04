@@ -13,6 +13,7 @@ import 'home/voting/ballot.dart';
 import 'success_page.dart';
 import 'home/manage/manage_page.dart';
 import 'splash.dart';
+import 'home/manage/create_page.dart';
 
 void main() {
   runApp(const VotingApp());
@@ -38,6 +39,7 @@ class VotingApp extends StatelessWidget {
         's': (context) => SuccessPage(),
         'm': (context) => ManagePage(),
         'sp': (context) => SplashScreen(),
+        'c': (context) => CreatePage(),
       },
     );
   }

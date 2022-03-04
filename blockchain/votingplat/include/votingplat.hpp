@@ -11,8 +11,8 @@ CONTRACT votingplat : public contract {
   using contract::contract;
 
   ACTION createvoter(name new_voter);
-  ACTION createcamp(name owner, string campaign_name, time_point start_time,
-                    time_point end_time);
+  ACTION createcamp(name owner, string campaign_name, string start_time_string,
+                    string end_time_string);
   ACTION addchoice(name owner, uint64_t campaign_id, string new_choice);
   ACTION delchoice(name owner, uint64_t campaign_id, uint64_t choice_idx);
   ACTION addvoter(uint64_t campaign_id, name voter);
