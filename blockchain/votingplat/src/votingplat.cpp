@@ -239,6 +239,23 @@ ACTION votingplat::deletecamp(name owner, uint64_t campaign_id) {
   check(campaign_itr->start_time > current_time_point(),
         "Campaign has already started");
 
+  voter_table _voter(get_self(), get_self().value);
+  auto votable_itr = campaign_itr->voter_list.begin();
+  while (votable_itr != campaign_itr->voter_list.end()) {
+    auto voter_itr = _voter.find(votable_itr->value);
+
+    auto votable_campaigns_itr = voter_itr->votable_campaigns.begin();
+    while (votable_campaigns_itr != voter_itr->votable_campaigns.end()) {
+      if (votable_campaigns_itr->campaign == campaign_itr->id) {
+        _voter.modify(voter_itr, get_self(), [&](auto& target_voter) {
+          target_voter.votable_campaigns.erase(votable_campaigns_itr);
+        });
+        break;
+      }
+      ++votable_campaigns_itr;
+    }
+    ++votable_itr;
+  }
   _campaign.erase(campaign_itr);
 }
 
