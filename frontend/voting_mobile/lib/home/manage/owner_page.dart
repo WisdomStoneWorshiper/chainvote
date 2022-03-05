@@ -32,6 +32,7 @@ class _OwnerPageState extends State<OwnerPage> {
     await user.init();
     List<Campaign> t = [];
     for (int vr in user.getOwnerCampaigns()) {
+      print(vr.toString());
       Campaign c = new Campaign(
         campaignId: vr,
         view: CampaignView.List,

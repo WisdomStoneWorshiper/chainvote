@@ -79,7 +79,7 @@ class CreatePage extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () async {
-                    // showLoaderDialog(context, "Creating");
+                    showLoaderDialog(context, "Creating");
 
                     _createCampaign(context, _pkController.text);
                   },
@@ -196,7 +196,7 @@ class CreatePage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     AppBar(
-                      leading: Icon(Icons.verified_user),
+                      automaticallyImplyLeading: false,
                       elevation: 0,
                       title: Text('Campaign Details'),
                       centerTitle: true,
@@ -222,7 +222,7 @@ class CreatePage extends StatelessWidget {
                         decoration: InputDecoration(
                           labelText: 'Campaign Name',
                           hintText: 'Enter Campaign Name',
-                          icon: Icon(Icons.person),
+                          icon: Icon(Icons.view_headline),
                           isDense: true,
                         ),
                         validator: (String? value) {
@@ -239,7 +239,7 @@ class CreatePage extends StatelessWidget {
                         controller: _starttimeController,
                         decoration: InputDecoration(
                           labelText: 'Start time',
-                          icon: Icon(Icons.email),
+                          icon: Icon(Icons.timer_outlined),
                         ),
                         onTap: () {
                           DatePicker.showDateTimePicker(
@@ -262,7 +262,7 @@ class CreatePage extends StatelessWidget {
                         controller: _endtimeController,
                         decoration: InputDecoration(
                           labelText: 'End time',
-                          icon: Icon(Icons.email),
+                          icon: Icon(Icons.timer_off_outlined),
                         ),
                         onTap: () {
                           DatePicker.showDateTimePicker(
