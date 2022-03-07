@@ -169,45 +169,36 @@ class _EditPageState extends State<EditPage> with SharedDialog {
 
   void _delVoter(BuildContext context) async {
     // List<String> failed_item = [];
+    List<String> deleteList = [];
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
+
     for (int i = _isChecked.length - 1; i > 0; --i) {
       if (_isChecked[i]) {
-        try {
-          Response response = await dio.post("/contract/delvoter",
-              data: {'itsc': editingList[i], 'campaignId': campaignId});
-          print(response.data);
-          if (response.statusCode != 200) {
-            print("fail");
-            // failed_item.add(editingList[i]);
-            errDialog(
-                context,
-                "Cannot delete " +
-                    editingList[i] +
-                    ", Reason: " +
-                    response.data["message"]);
-            return;
-          } else {
-            editingList.removeAt(i);
-            _isChecked.removeAt(i);
-          }
-        } catch (e) {
-          DioError err = e as DioError;
-
-          Map<String, dynamic> response = (err.response?.data);
-
-          errDialog(
-              context,
-              "Cannot delete " +
-                  editingList[i] +
-                  ", Reason: " +
-                  response["message"]!);
-
-          return;
-        }
+        deleteList.add(editingList[i]);
       }
     }
-    SuccessPageArg arg = new SuccessPageArg(
+    try {
+      Response response = await dio.post("/contract/delvoter",
+          data: {'itsc': deleteList, 'campaignId': campaignId});
+      if (response.statusCode != 200) {
+        print("fail");
+        // failed_item.add(editingList[i]);
+        errDialog(
+            context, "Cannot delete, Reason: " + response.data["message"]);
+        return;
+      }
+    } catch (e) {
+      DioError err = e as DioError;
+
+      Map<String, dynamic> response = (err.response?.data);
+
+      errDialog(context, "Cannot delete, Reason: " + response["message"]!);
+
+      return;
+    }
+
+    SuccessPageArg arg = SuccessPageArg(
         message: 'All Selected has been deleted successfully!',
         returnPage: 'h');
     Navigator.pop(context);

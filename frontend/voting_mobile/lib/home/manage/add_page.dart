@@ -106,35 +106,54 @@ class _AddPageState extends State<AddPage> with SharedDialog {
     // List<String> failed_item = [];
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
-    for (int i = _addList.length - 1; i >= 0; --i) {
-      try {
-        Response response = await dio.post("/contract/addvoter",
-            data: {'itsc': _addList[i], 'campaignId': campaignId});
-        print(response.data);
-        if (response.statusCode != 200) {
-          print("fail");
-          // failed_item.add(_addList[i]);
-          errDialog(
-              context,
-              "Fail to add " +
-                  _addList[i] +
-                  ", Reason: " +
-                  response.data["message"]);
-          return;
-        } else {
-          _addList.removeAt(i);
-        }
-      } catch (e) {
-        DioError err = e as DioError;
-
-        Map<String, dynamic> response = (err.response?.data);
-
-        errDialog(context,
-            "Fail to add " + _addList[i] + ", Reason: " + response["message"]!);
-
+    try {
+      Response response = await dio.post("/contract/addvoter",
+          data: {'itsc': _addList, 'campaignId': campaignId});
+      print(response.data);
+      if (response.statusCode != 200) {
+        print("fail");
+        // failed_item.add(_addList[i]);
+        errDialog(context, "Fail to add, Reason: " + response.data["message"]);
         return;
       }
+    } catch (e) {
+      DioError err = e as DioError;
+
+      Map<String, dynamic> response = (err.response?.data);
+
+      errDialog(context, "Fail to add, Reason: " + response["message"]!);
+
+      return;
     }
+    // for (int i = _addList.length - 1; i >= 0; --i) {
+    //   try {
+    //     Response response = await dio.post("/contract/addvoter",
+    //         data: {'itsc': _addList[i], 'campaignId': campaignId});
+    //     print(response.data);
+    //     if (response.statusCode != 200) {
+    //       print("fail");
+    //       // failed_item.add(_addList[i]);
+    //       errDialog(
+    //           context,
+    //           "Fail to add " +
+    //               _addList[i] +
+    //               ", Reason: " +
+    //               response.data["message"]);
+    //       return;
+    //     } else {
+    //       _addList.removeAt(i);
+    //     }
+    //   } catch (e) {
+    //     DioError err = e as DioError;
+
+    //     Map<String, dynamic> response = (err.response?.data);
+
+    //     errDialog(context,
+    //         "Fail to add " + _addList[i] + ", Reason: " + response["message"]!);
+
+    //     return;
+    //   }
+    // }
     SuccessPageArg arg = new SuccessPageArg(
         message: 'All Selected has been added successfully!', returnPage: 'h');
     Navigator.pop(context);
