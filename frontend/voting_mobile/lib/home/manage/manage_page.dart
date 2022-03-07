@@ -7,6 +7,7 @@ import '../campaign.dart';
 import 'edit_page.dart';
 import '../../success_page.dart';
 import '../../global_variable.dart';
+import '../../shared_dialog.dart';
 
 class ManagePage extends StatefulWidget {
   const ManagePage({Key? key}) : super(key: key);
@@ -15,75 +16,9 @@ class ManagePage extends StatefulWidget {
   _ManagePageState createState() => _ManagePageState();
 }
 
-class _ManagePageState extends State<ManagePage> {
+class _ManagePageState extends State<ManagePage> with SharedDialog {
   late Campaign campaign;
   final TextEditingController _pkController = TextEditingController();
-
-  void _errDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("ok"))
-        ],
-      ),
-    );
-  }
-
-  void showLoaderDialog(BuildContext context, String loadingMsg) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-            margin: EdgeInsets.only(left: 7),
-            child: Text(loadingMsg + "..."),
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void _requestKey(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Please input your EOSIO account Private Key"),
-              content: TextField(
-                decoration: InputDecoration(hintText: "Private Key"),
-                controller: _pkController,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    showLoaderDialog(context, "Deleting");
-
-                    _deleteCampaign(context, _pkController.text);
-                  },
-                  child: Text("Submit"),
-                )
-              ],
-            ));
-  }
 
   void _deleteCampaign(BuildContext context, String pk) async {
     eos.EOSClient voteClient = client;
@@ -121,7 +56,7 @@ class _ManagePageState extends State<ManagePage> {
               await voteClient.pushTransaction(transaction, broadcast: true);
           // print(response);
           if (!response.containsKey('transaction_id')) {
-            _errDialog(context, "Unknown Error");
+            errDialog(context, "Unknown Error");
           } else {
             String transHex = response["transaction_id"];
             SuccessPageArg arg = new SuccessPageArg(
@@ -138,16 +73,16 @@ class _ManagePageState extends State<ManagePage> {
           Map error = json.decode(e as String);
           print(error);
 
-          _errDialog(context, error["error"]["details"][0]["message"]);
+          errDialog(context, error["error"]["details"][0]["message"]);
         }
       } catch (e) {
         print(e);
         Navigator.pop(context);
-        _errDialog(context, "Invalid Private Key format");
+        errDialog(context, "Invalid Private Key format");
       }
     } else {
       Navigator.pop(context);
-      _errDialog(context, "Haven't login");
+      errDialog(context, "Haven't login");
     }
   }
 
@@ -163,13 +98,13 @@ class _ManagePageState extends State<ManagePage> {
             padding: EdgeInsets.only(right: 10),
             child: GestureDetector(
               onTap: () {
-                if (campaign.getCampaignStat() == CampaignStat.Coming) {
-                  _requestKey(context);
+                if (campaign.getCampaignStat() != CampaignStat.Ongoing) {
+                  requestKey(context, _deleteCampaign, "Deleting");
                 }
               },
               child: Icon(
                 Icons.delete,
-                color: campaign.getCampaignStat() == CampaignStat.Coming
+                color: campaign.getCampaignStat() != CampaignStat.Ongoing
                     ? Colors.white
                     : Colors.white.withOpacity(0.3),
               ),

@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import '../../global_variable.dart';
 import '../../success_page.dart';
 import 'add_page.dart';
+import '../../shared_dialog.dart';
 
 enum EditType { Choice, Voter }
 
@@ -24,7 +25,7 @@ class EditPage extends StatefulWidget {
       campaignId: campaignId, editType: editType, editingList: editingList);
 }
 
-class _EditPageState extends State<EditPage> {
+class _EditPageState extends State<EditPage> with SharedDialog {
   final EditType editType;
   final int campaignId;
   List<String> editingList = [];
@@ -42,44 +43,6 @@ class _EditPageState extends State<EditPage> {
   }
 
   List<int> _searchResult = [];
-
-  void _errDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("ok"))
-        ],
-      ),
-    );
-  }
-
-  void showLoaderDialog(BuildContext context, String loadingMsg) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-            margin: EdgeInsets.only(left: 7),
-            child: Text(loadingMsg + "..."),
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
 
   void _searchHandler(String keyword) {
     _searchResult.clear();
@@ -124,7 +87,7 @@ class _EditPageState extends State<EditPage> {
           TextButton(
             onPressed: () {
               if (editType == EditType.Choice) {
-                _requestKey();
+                requestKey(context, _delChoice, "Deleting");
               } else {
                 _delVoter(context);
               }
@@ -134,34 +97,6 @@ class _EditPageState extends State<EditPage> {
         ],
       ),
     );
-  }
-
-  void _requestKey() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Please input your EOSIO account Private Key"),
-              content: TextField(
-                decoration: InputDecoration(hintText: "Private Key"),
-                controller: _pkController,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    showLoaderDialog(context, "Deleting");
-
-                    _delChoice(context, _pkController.text);
-                  },
-                  child: Text("Submit"),
-                )
-              ],
-            ));
   }
 
   void _delChoice(BuildContext context, String pk) async {
@@ -203,7 +138,7 @@ class _EditPageState extends State<EditPage> {
                   broadcast: true);
               if (!response.containsKey('transaction_id')) {
                 print(response);
-                _errDialog("Unknown Error");
+                errDialog(context, "Unknown Error");
                 break;
               }
             }
@@ -219,16 +154,16 @@ class _EditPageState extends State<EditPage> {
           print(error);
           // print(error["error"]["details"][0]["message"]);
           // print(e.runtimeType);
-          _errDialog(error["error"]["details"][0]["message"]);
+          errDialog(context, error["error"]["details"][0]["message"]);
         }
       } catch (e) {
         // print(e);
         Navigator.pop(context);
-        _errDialog("Invalid Private Key format");
+        errDialog(context, "Invalid Private Key format");
       }
     } else {
       Navigator.pop(context);
-      _errDialog("Haven't login");
+      errDialog(context, "Haven't login");
     }
   }
 
@@ -245,10 +180,12 @@ class _EditPageState extends State<EditPage> {
           if (response.statusCode != 200) {
             print("fail");
             // failed_item.add(editingList[i]);
-            _errDialog("Cannot delete " +
-                editingList[i] +
-                ", Reason: " +
-                response.data["message"]);
+            errDialog(
+                context,
+                "Cannot delete " +
+                    editingList[i] +
+                    ", Reason: " +
+                    response.data["message"]);
             return;
           } else {
             editingList.removeAt(i);
@@ -259,10 +196,12 @@ class _EditPageState extends State<EditPage> {
 
           Map<String, dynamic> response = (err.response?.data);
 
-          _errDialog("Cannot delete " +
-              editingList[i] +
-              ", Reason: " +
-              response["message"]!);
+          errDialog(
+              context,
+              "Cannot delete " +
+                  editingList[i] +
+                  ", Reason: " +
+                  response["message"]!);
 
           return;
         }

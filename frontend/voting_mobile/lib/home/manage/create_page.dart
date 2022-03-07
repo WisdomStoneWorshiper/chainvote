@@ -7,8 +7,9 @@ import 'dart:convert';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
+import '../../shared_dialog.dart';
 
-class CreatePage extends StatelessWidget {
+class CreatePage extends StatelessWidget with SharedDialog {
   final String _dateFormat = 'yyyy-MM-dd kk:mm';
   final String _createDateFormat = 'yyyy-MM-ddTkk:mm:00.000';
   final form = GlobalKey<FormState>();
@@ -22,72 +23,6 @@ class CreatePage extends StatelessWidget {
   DateTime _endtime = DateTime.now().add(Duration(hours: 1));
 
   CreatePage({Key? key}) : super(key: key);
-
-  void _errDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("ok"))
-        ],
-      ),
-    );
-  }
-
-  void showLoaderDialog(BuildContext context, String loadingMsg) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-            margin: EdgeInsets.only(left: 7),
-            child: Text(loadingMsg + "..."),
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void _requestKey(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Please input your EOSIO account Private Key"),
-              content: TextField(
-                decoration: InputDecoration(hintText: "Private Key"),
-                controller: _pkController,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    showLoaderDialog(context, "Creating");
-
-                    _createCampaign(context, _pkController.text);
-                  },
-                  child: Text("Submit"),
-                )
-              ],
-            ));
-  }
 
   void _createCampaign(BuildContext context, String pk) async {
     eos.EOSClient voteClient = client;
@@ -129,7 +64,7 @@ class CreatePage extends StatelessWidget {
               await voteClient.pushTransaction(transaction, broadcast: true);
           // print(response);
           if (!response.containsKey('transaction_id')) {
-            _errDialog(context, "Unknown Error");
+            errDialog(context, "Unknown Error");
           } else {
             String transHex = response["transaction_id"];
             SuccessPageArg arg = new SuccessPageArg(
@@ -146,28 +81,28 @@ class CreatePage extends StatelessWidget {
           Map error = json.decode(e as String);
           print(error);
 
-          _errDialog(context, error["error"]["details"][0]["message"]);
+          errDialog(context, error["error"]["details"][0]["message"]);
         }
       } catch (e) {
         print(e);
         Navigator.pop(context);
-        _errDialog(context, "Invalid Private Key format");
+        errDialog(context, "Invalid Private Key format");
       }
     } else {
       Navigator.pop(context);
-      _errDialog(context, "Haven't login");
+      errDialog(context, "Haven't login");
     }
   }
 
   bool _dataChecker(BuildContext context) {
     if (_campaignNameController.text.isEmpty) {
-      _errDialog(context, "Campaign name cannot be empty.");
+      errDialog(context, "Campaign name cannot be empty.");
       return false;
     } else if (_starttime.isBefore(DateTime.now())) {
-      _errDialog(context, "Start time cannot earlier than current time");
+      errDialog(context, "Start time cannot earlier than current time");
       return false;
     } else if (_endtime.isBefore(_starttime)) {
-      _errDialog(context, "ENd time cannot earlier than start time");
+      errDialog(context, "ENd time cannot earlier than start time");
       return false;
     }
     return true;
@@ -283,7 +218,7 @@ class CreatePage extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () {
                           if (_dataChecker(context)) {
-                            _requestKey(context);
+                            requestKey(context, _createCampaign, "Creating");
                           }
                         },
                         child: Text("Create")),

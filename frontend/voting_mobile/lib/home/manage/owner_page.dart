@@ -27,6 +27,7 @@ class _OwnerPageState extends State<OwnerPage> {
   _OwnerPageState({required this.itsc, required this.eosAccountName});
 
   bool _isLoad = false;
+
   Future<List<Campaign>> init(String voterName) async {
     user = Voter(voterName: eosAccountName);
     await user.init();
@@ -46,17 +47,9 @@ class _OwnerPageState extends State<OwnerPage> {
     return Future<List<Campaign>>.value(t);
   }
 
-  Future<void> _onRefresh() async {
-    _isLoad = false;
+  Future _onRefresh() async {
+    // return init(eosAccountName);
     setState(() {});
-    await Future.doWhile(() async {
-      if (_isLoad == true) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    // return Future.delayed(Duration(seconds: 2));
   }
 
   void _viewManageCampaign(Campaign c) {
@@ -73,8 +66,10 @@ class _OwnerPageState extends State<OwnerPage> {
           List<Widget> ongoing = [];
           List<Widget> coming = [];
           List<Widget> ended = [];
-
+          print("building");
           if (snapshot.hasData) {
+            _isLoad = true;
+            print("nani");
             List<Campaign> tempList = snapshot.data as List<Campaign>;
             for (Campaign c in tempList) {
               if (c.getCampaignStat() == CampaignStat.Coming) {
@@ -86,6 +81,7 @@ class _OwnerPageState extends State<OwnerPage> {
               }
             }
           } else {
+            print("why not here");
             Widget loading = SizedBox(
               width: 200,
               height: 200,

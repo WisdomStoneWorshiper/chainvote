@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import '../../global_variable.dart';
 import '../../success_page.dart';
 import 'edit_page.dart';
+import '../../shared_dialog.dart';
 
 class AddPage extends StatefulWidget {
   final EditType editType;
@@ -23,7 +24,7 @@ class AddPage extends StatefulWidget {
       _AddPageState(editType: editType, campaignId: campaignId);
 }
 
-class _AddPageState extends State<AddPage> {
+class _AddPageState extends State<AddPage> with SharedDialog {
   final EditType editType;
   final int campaignId;
 
@@ -35,72 +36,6 @@ class _AddPageState extends State<AddPage> {
   TextEditingController _pkController = TextEditingController();
 
   _AddPageState({required this.campaignId, required this.editType});
-
-  void _errDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("ok"))
-        ],
-      ),
-    );
-  }
-
-  void showLoaderDialog(BuildContext context, String loadingMsg) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-            margin: EdgeInsets.only(left: 7),
-            child: Text(loadingMsg + "..."),
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void _requestKey() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Please input your EOSIO account Private Key"),
-              content: TextField(
-                decoration: InputDecoration(hintText: "Private Key"),
-                controller: _pkController,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    showLoaderDialog(context, "Adding");
-
-                    _addChoice(context, _pkController.text);
-                  },
-                  child: Text("Submit"),
-                )
-              ],
-            ));
-  }
 
   void _addChoice(BuildContext context, String pk) async {
     eos.EOSClient voteClient = client;
@@ -140,7 +75,7 @@ class _AddPageState extends State<AddPage> {
                 await voteClient.pushTransaction(transaction, broadcast: true);
             print(response);
             if (!response.containsKey('transaction_id')) {
-              _errDialog("Unknown Error");
+              errDialog(context, "Unknown Error");
               break;
             }
           }
@@ -154,16 +89,16 @@ class _AddPageState extends State<AddPage> {
           Map error = json.decode(e as String);
           print(error);
 
-          _errDialog(error["error"]["details"][0]["message"]);
+          errDialog(context, error["error"]["details"][0]["message"]);
         }
       } catch (e) {
         print(e);
         Navigator.pop(context);
-        _errDialog("Invalid Private Key format");
+        errDialog(context, "Invalid Private Key format");
       }
     } else {
       Navigator.pop(context);
-      _errDialog("Haven't login");
+      errDialog(context, "Haven't login");
     }
   }
 
@@ -179,10 +114,12 @@ class _AddPageState extends State<AddPage> {
         if (response.statusCode != 200) {
           print("fail");
           // failed_item.add(_addList[i]);
-          _errDialog("Fail to add " +
-              _addList[i] +
-              ", Reason: " +
-              response.data["message"]);
+          errDialog(
+              context,
+              "Fail to add " +
+                  _addList[i] +
+                  ", Reason: " +
+                  response.data["message"]);
           return;
         } else {
           _addList.removeAt(i);
@@ -192,7 +129,7 @@ class _AddPageState extends State<AddPage> {
 
         Map<String, dynamic> response = (err.response?.data);
 
-        _errDialog(
+        errDialog(context,
             "Fail to add " + _addList[i] + ", Reason: " + response["message"]!);
 
         return;
@@ -336,7 +273,7 @@ class _AddPageState extends State<AddPage> {
                 : FloatingActionButton(
                     onPressed: () {
                       if (editType == EditType.Choice) {
-                        _requestKey();
+                        requestKey(context, _addChoice, "Adding");
                       } else {
                         _addVoter(context);
                       }

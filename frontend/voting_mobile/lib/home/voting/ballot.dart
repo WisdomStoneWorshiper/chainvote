@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../campaign.dart';
 import '../../success_page.dart';
 import '../../global_variable.dart';
+import '../../shared_dialog.dart';
 
 class Ballot extends StatefulWidget {
   Ballot({Key? key}) : super(key: key);
@@ -14,50 +15,12 @@ class Ballot extends StatefulWidget {
   _BallotState createState() => _BallotState();
 }
 
-class _BallotState extends State<Ballot> {
+class _BallotState extends State<Ballot> with SharedDialog {
   late Campaign campaign;
 
   int _selected = -1;
 
   TextEditingController _pkController = new TextEditingController();
-
-  void _errDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Error"),
-        content: Text(message),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("ok"))
-        ],
-      ),
-    );
-  }
-
-  void showLoaderDialog(BuildContext context, String loadingMsg) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-            margin: EdgeInsets.only(left: 7),
-            child: Text(loadingMsg + "..."),
-          ),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
 
   void _confirmBallot() {
     showDialog(
@@ -81,38 +44,13 @@ class _BallotState extends State<Ballot> {
                 ),
                 TextButton(
                   onPressed: () {
-                    _requestKey();
+                    requestKey(context, _vote, "Voting");
                   },
                   child: Text("Vote"),
                 )
               ],
             ));
   }
-
-  void _requestKey() => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text("Please input your EOSIO account Private Key"),
-            content: TextField(
-              decoration: InputDecoration(hintText: "Private Key"),
-              controller: _pkController,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () {
-                  showLoaderDialog(context, "Posting transaction");
-                  _vote(context, _pkController.text);
-                },
-                child: Text("Submit"),
-              )
-            ],
-          ));
 
   void _vote(BuildContext context, String pk) async {
     eos.EOSClient voteClient = client;
@@ -161,7 +99,7 @@ class _BallotState extends State<Ballot> {
           } else {
             print(response);
             Navigator.pop(context);
-            _errDialog("Unknown Error");
+            errDialog(context, "Unknown Error");
           }
         } catch (e) {
           Navigator.pop(context);
@@ -169,16 +107,16 @@ class _BallotState extends State<Ballot> {
           print(error);
           // print(error["error"]["details"][0]["message"]);
           // print(e.runtimeType);
-          _errDialog(error["error"]["details"][0]["message"]);
+          errDialog(context, error["error"]["details"][0]["message"]);
         }
       } catch (e) {
         Navigator.pop(context);
         // print(e);
-        _errDialog("Invalid Private Key format");
+        errDialog(context, "Invalid Private Key format");
       }
     } else {
       Navigator.pop(context);
-      _errDialog("Haven't login");
+      errDialog(context, "Haven't login");
     }
   }
 
