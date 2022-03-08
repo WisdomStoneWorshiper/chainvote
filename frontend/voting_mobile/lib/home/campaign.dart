@@ -121,9 +121,9 @@ class Campaign extends StatelessWidget {
   }
 
   CampaignStat getCampaignStat() {
-    print("now:" + DateTime.now().toUtc().toString());
-    print("start:" + _startTime.toString());
-    print("end:" + _endTime.toString());
+    // print("now:" + DateTime.now().toUtc().toString());
+    // print("start:" + _startTime.toString());
+    // print("end:" + _endTime.toString());
     if (DateTime.now().toUtc().isBefore(_startTime)) {
       return CampaignStat.Coming;
     } else if (DateTime.now().toUtc().isAfter(_endTime)) {

@@ -26,9 +26,16 @@ class _OwnerPageState extends State<OwnerPage> {
 
   _OwnerPageState({required this.itsc, required this.eosAccountName});
 
-  bool _isLoad = false;
+  bool _isReload = false;
+  List<Campaign> _reloadResult = [];
 
   Future<List<Campaign>> init(String voterName) async {
+    if (_isReload == true && _reloadResult.isNotEmpty) {
+      print("no need init");
+      _isReload = false;
+      return Future<List<Campaign>>.value(_reloadResult);
+    }
+
     user = Voter(voterName: eosAccountName);
     await user.init();
     List<Campaign> t = [];
@@ -42,12 +49,18 @@ class _OwnerPageState extends State<OwnerPage> {
       await c.init();
       t.add(c);
     }
-    _isLoad = true;
+    if (_isReload == true) {
+      _reloadResult = t;
+    }
+
     // print(t.length);
     return Future<List<Campaign>>.value(t);
   }
 
   Future _onRefresh() async {
+    _isReload = true;
+    _reloadResult = [];
+    await init(eosAccountName);
     // return init(eosAccountName);
     setState(() {});
   }
@@ -68,7 +81,6 @@ class _OwnerPageState extends State<OwnerPage> {
           List<Widget> ended = [];
           print("building");
           if (snapshot.hasData) {
-            _isLoad = true;
             print("nani");
             List<Campaign> tempList = snapshot.data as List<Campaign>;
             for (Campaign c in tempList) {
