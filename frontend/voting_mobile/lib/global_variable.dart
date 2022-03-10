@@ -1,4 +1,5 @@
 import 'package:eosdart/eosdart.dart' as eos;
+// import 'dart:io' show Platform;
 
 const String backendServerUrl = "http://localhost:3000";
 const String eosEndPoint = "https://api.testnet.eos.io"; // testnet
