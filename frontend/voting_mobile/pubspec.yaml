@@ -51,6 +51,7 @@ dependencies:
   intl: ^0.17.0
   logging_appenders: ^1.0.0
   biometric_storage: ^4.0.0
+  flutter_locker: ^2.0.3
 
 dev_dependencies:
   flutter_test:

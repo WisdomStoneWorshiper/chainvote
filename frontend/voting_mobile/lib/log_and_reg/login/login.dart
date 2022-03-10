@@ -37,7 +37,8 @@ class Login extends StatelessWidget {
       var dio = Dio(opt);
 
       final prefs = await SharedPreferences.getInstance();
-
+      print(_itscFieldController.text);
+      print(_publicKeyFieldController.text);
       Response response = await dio.post("/contract/login", data: {
         'itsc': _itscFieldController.text,
         'publicKey': _publicKeyFieldController.text
@@ -66,6 +67,7 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(_title),
       ),
