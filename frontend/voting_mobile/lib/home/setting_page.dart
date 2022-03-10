@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:biometric_storage/biometric_storage.dart';
-import 'package:flutter_locker/flutter_locker.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 
 import '../shared_dialog.dart';
+import '../biometric_encrypt.dart';
 
-class SettingPage extends StatelessWidget with SharedDialog {
-  // BiometricStorageFile? _pkStorage;
-
+class SettingPage extends StatefulWidget {
   SettingPage({Key? key}) : super(key: key);
+
+  @override
+  State<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> with SharedDialog {
+  // BiometricStorageFile? _pkStorage;
+  final LocalAuthentication auth = LocalAuthentication();
+  bool _isBio = false;
+  final BiometricEncrypt _bio = BiometricEncrypt();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _bio.isStored("pk").then((value) {
+      setState(() {
+        _isBio = value;
+      });
+    });
+  }
 
   void _logoutHandler(BuildContext context) async {
     showDialog(
@@ -35,46 +58,27 @@ class SettingPage extends StatelessWidget with SharedDialog {
             ));
   }
 
-  void _biometricHandler(BuildContext context) async {
-    final canAuthenticate = await FlutterLocker.canAuthenticate();
-    print("Can authenticate:" + canAuthenticate.toString());
-    await FlutterLocker.save(
-      SaveSecretRequest("pk", "test", AndroidPrompt('Authenticate', 'Cancel')),
-    );
-    final retrieved = await FlutterLocker.retrieve(RetrieveSecretRequest("pk",
-        AndroidPrompt('Authenticate', 'Cancel'), IOsPrompt('Authenticate')));
-    print(retrieved);
-    // final response = await BiometricStorage().canAuthenticate();
-    // if (response == CanAuthenticateResponse.unsupported) {
-    //   print("rip");
-    //   errDialog(context, "This device do not support biometric");
-    //   return;
-    // } else {
-    //   print(response);
-    // }
-    // _pkStorage = await BiometricStorage().getStorage(
-    //   'pk',
-    //   options: StorageFileInitOptions(
-    //     authenticationValidityDurationSeconds: 30,
-    //     authenticationRequired: false,
-    //   ),
-    //   promptInfo: const PromptInfo(
-    //     iosPromptInfo: IosPromptInfo(
-    //       saveTitle: 'Custom save title',
-    //       accessTitle: 'Custom access title.',
-    //     ),
-    //   ),
-    // );
-    // await _pkStorage!.write("test1");
-    // _getPk(_pkStorage!);
+  void _savePK(BuildContext context, String pk) async {
+    try {
+      await _bio.write("pk", pk, "Please lock your private key");
+      print(pk);
+      _isBio = true;
+      Navigator.pop(context);
+      setState(() {});
+    } on PlatformException catch (e) {
+      // print("no");
+    }
   }
 
-  // void _getPk(BiometricStorageFile bs) async {
-  //   // print("hi");
-
-  //   String? test = await bs.read();
-  //   print(test);
-  // }
+  void _biometricPKHandler(BuildContext context) async {
+    if (_isBio == true) {
+      await _bio.delete("pk");
+      _isBio = false;
+      setState(() {});
+    } else {
+      requestKey(context, _savePK, "", needLoading: false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +93,13 @@ class SettingPage extends StatelessWidget with SharedDialog {
           ),
           ListTile(
             title: Text("Use biometric to save private key"),
-            onTap: () async {
-              _biometricHandler(context);
-            },
+            trailing: Switch(
+              value: _isBio,
+              onChanged: (bool) async {
+                var canBio = await _bio.supportBiometric();
+                if (canBio) _biometricPKHandler(context);
+              },
+            ),
           )
         ],
       ),

@@ -22,6 +22,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
@@ -43,8 +45,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>LSMinimumSystemVersion</key>
-	<string>10.0</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

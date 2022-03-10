@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'biometric_encrypt.dart';
 
 class SharedDialog {
   final TextEditingController _pkController = TextEditingController();
+  final BiometricEncrypt _bio = BiometricEncrypt();
   void errDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -41,31 +43,42 @@ class SharedDialog {
   }
 
   void requestKey(BuildContext context,
-      void Function(BuildContext b, String s) action, String loadingMsg) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Please input your EOSIO account Private Key"),
-              content: TextField(
-                decoration: InputDecoration(hintText: "Private Key"),
-                controller: _pkController,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel"),
+      void Function(BuildContext b, String s) action, String loadingMsg,
+      {bool needLoading = true}) async {
+    var isStored = await _bio.isStored("pk");
+    if (isStored == false) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text("Please input your EOSIO account Private Key"),
+                content: TextField(
+                  decoration: InputDecoration(hintText: "Private Key"),
+                  controller: _pkController,
                 ),
-                TextButton(
-                  onPressed: () async {
-                    showLoaderDialog(context, loadingMsg);
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      if (needLoading == true)
+                        showLoaderDialog(context, loadingMsg);
 
-                    action(context, _pkController.text);
-                  },
-                  child: Text("Submit"),
-                )
-              ],
-            ));
+                      action(context, _pkController.text);
+                      _pkController.clear();
+                    },
+                    child: Text("Submit"),
+                  )
+                ],
+              ));
+    } else {
+      var pk = await _bio.read("pk", "Please unlock the private key");
+      print(pk);
+      if (needLoading == true) showLoaderDialog(context, loadingMsg);
+      action(context, pk!);
+    }
   }
 }
