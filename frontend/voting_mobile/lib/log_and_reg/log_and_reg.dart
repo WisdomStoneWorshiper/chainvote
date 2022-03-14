@@ -58,21 +58,15 @@ class _LogAndRegState extends State<LogAndReg> {
             ),
             Column(children: [
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   text: 'Welcome to our Blockchain based',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 23.0,
-                      fontWeight: FontWeight.normal),
+                  style: Theme.of(context).textTheme.headline1,
                 ),
               ),
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   text: 'Voting App',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 45.0,
-                      fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
             ]),
@@ -83,10 +77,6 @@ class _LogAndRegState extends State<LogAndReg> {
               RichText(
                 text: const TextSpan(
                   text: 'Already registered?',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold),
                 ),
               ),
               LogAndRegButton("Login", () {
@@ -104,10 +94,6 @@ class _LogAndRegState extends State<LogAndReg> {
               RichText(
                 text: const TextSpan(
                   text: 'Create a new account?',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.normal),
                 ),
               ),
               LogAndRegButton("Register", () {

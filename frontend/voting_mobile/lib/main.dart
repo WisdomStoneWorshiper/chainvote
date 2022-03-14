@@ -26,6 +26,29 @@ class VotingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.from(
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xe02a2940),
+          background: Color(0xcf222233),
+        ),
+        textTheme: const TextTheme(
+          headline1: TextStyle(
+            color: Color(0x4da5a4b7),
+            fontSize: 23.0,
+            fontWeight: FontWeight.normal,
+          ),
+          headline2: TextStyle(
+            color: Color(0xfce4e280),
+            fontSize: 45.0,
+            fontWeight: FontWeight.bold,
+          ),
+          button: TextStyle(
+            color: Color(0x4da5a4b7),
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       initialRoute: 'sp',
       routes: {
         'l&r': (context) => const LogAndReg(),

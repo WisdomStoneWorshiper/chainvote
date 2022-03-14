@@ -11,7 +11,7 @@ class LogAndRegButton extends StatelessWidget {
       child: ElevatedButton(
         child: Text(
           _labelText,
-          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.button,
         ),
         onPressed: _callback,
         style: ElevatedButton.styleFrom(
