@@ -39,7 +39,7 @@ describe("Full testing", function (){
                 itsc: process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accountName : null,
-                publicKey : null,
+                // publicKey : null,
                 created : false
             });
             return temp.save()
@@ -89,7 +89,7 @@ describe("Full testing", function (){
                 itsc: process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accountName : null,
-                publicKey : null,
+                // publicKey : null,
                 created : false
             });
             await temp.save();
@@ -111,7 +111,7 @@ describe("Full testing", function (){
                 itsc : process.env.FAKE_NAME,
                 key : process.env.CONF_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -128,7 +128,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.FAKE_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -145,7 +145,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: (fixedName + "a"),
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -162,7 +162,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: "." + getRandomString(11),
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -196,7 +196,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(200);
@@ -212,7 +212,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .then(res => {
                 return chai.request(app)
@@ -221,7 +221,7 @@ describe("Full testing", function (){
                     itsc : process.env.REAL_NAME,
                     key : process.env.CONF_KEY,
                     accname: fixedName,
-                    pkey : keypair.public
+                    // pkey : keypair.public
                 })
                 .then((res) => {
                     res.should.have.status(500);
@@ -247,7 +247,7 @@ describe("Full testing", function (){
                 itsc: process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accountName : null,
-                publicKey : null,
+                // publicKey : null,
                 created : true
             });
             await temp.save();
@@ -276,7 +276,7 @@ describe("Full testing", function (){
                 itsc : process.env.FAKE_NAME,
                 key : process.env.CONF_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err,res) => {
                 res.should.have.status(500);
@@ -293,7 +293,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.FAKE_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err,res) => {
                 res.should.have.status(500);
@@ -309,7 +309,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: (fixedName + "a"),
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -326,7 +326,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: "." + getRandomString(11),
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -361,7 +361,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .end((err,res) => {
                 res.should.have.status(200);
@@ -378,7 +378,7 @@ describe("Full testing", function (){
                 itsc : process.env.REAL_NAME,
                 key : process.env.CONF_KEY,
                 accname: fixedName,
-                pkey : keypair.public
+                // pkey : keypair.public
             })
             .then(res => {
                 return chai.request(app)
@@ -387,7 +387,7 @@ describe("Full testing", function (){
                     itsc : process.env.REAL_NAME,
                     key : process.env.CONF_KEY,
                     accname: fixedName,
-                    pkey : keypair.public
+                    // pkey : keypair.public
                 })
                 .then(res => {
                     res.should.have.status(500);

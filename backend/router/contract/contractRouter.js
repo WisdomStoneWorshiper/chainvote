@@ -122,25 +122,25 @@ router.post("/delvoter", async (req, res) => {
 
 
 
-router.post("/login", async (req, res) => {
-    const { itsc, publicKey } = req.body;
-    accModel.findOne({
-        itsc : itsc,
-        publicKey : publicKey
-    })
-    .then( result => {
-        res.json({
-            error : false,
-            accountName : result != null ? result.accountName : null
-        });
-    })
-    .catch( err => {
-        res.status(500).json({
-            error : true,
-            message : err.message
-        })
-    })
-});
+// router.post("/login", async (req, res) => {
+//     const { itsc, publicKey } = req.body;
+//     accModel.findOne({
+//         itsc : itsc,
+//         publicKey : publicKey
+//     })
+//     .then( result => {
+//         res.json({
+//             error : false,
+//             accountName : result != null ? result.accountName : null
+//         });
+//     })
+//     .catch( err => {
+//         res.status(500).json({
+//             error : true,
+//             message : err.message
+//         })
+//     })
+// });
 
 router.post("/getITSC", async (req, res) => {
     const { accountName } = req.body;
@@ -161,30 +161,30 @@ router.post("/getITSC", async (req, res) => {
     })
 });
 
-router.post("/checkPubKey", async (req, res) => {
-    const { itsc , publicKey } = req.body;
-    accModel.findOne({
-        itsc : itsc
-    })
-    .then( result => {
-        if (result.publicKey == publicKey) {
-            res.json({
-                error : false,
-                match : true
-            })
-        } else {
-            res.json({
-                error : false,
-                match : false
-            });
-        }
-    })
-    .catch( err => {
-        res.status(500).json({
-            error : true,
-            message : "Invalid ITSC"
-        })
-    })
-});
+// router.post("/checkPubKey", async (req, res) => {
+//     const { itsc , publicKey } = req.body;
+//     accModel.findOne({
+//         itsc : itsc
+//     })
+//     .then( result => {
+//         if (result.publicKey == publicKey) {
+//             res.json({
+//                 error : false,
+//                 match : true
+//             })
+//         } else {
+//             res.json({
+//                 error : false,
+//                 match : false
+//             });
+//         }
+//     })
+//     .catch( err => {
+//         res.status(500).json({
+//             error : true,
+//             message : "Invalid ITSC"
+//         })
+//     })
+// });
 
 module.exports = router;

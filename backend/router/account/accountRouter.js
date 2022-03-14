@@ -96,7 +96,7 @@ router.post("/confirm", async (req, res) => {
     // console.log("Entering confirmation")
     // console.log(req.body)
 
-    const {itsc, key, accname, pkey} = req.body;
+    const {itsc, key, accname} = req.body;
     Account.findOne({ itsc : itsc}, async (err, result) => {
         if(err || result === null) {
           res.status(500).json({
@@ -111,14 +111,6 @@ router.post("/confirm", async (req, res) => {
                 res.status(500).json({
                     error: true,
                     message : "Invalid confirmation key"
-                })
-                return;
-            }
-            if(result.publicKey){
-                // console.log("dead3")
-                res.status(500).json({
-                    error: true,
-                    message : "Account has been linked"
                 })
                 return;
             }
@@ -138,7 +130,7 @@ router.post("/confirm", async (req, res) => {
                 expireSeconds: 30,
                 })
             .then(result => {
-                Account.findOneAndUpdate({itsc: itsc}, {publicKey : pkey, accountName : accname})
+                Account.findOneAndUpdate({itsc: itsc}, {accountName : accname})
                 .then(result => {
                     // console.log("entering to save")
                 //   console.log(result);
