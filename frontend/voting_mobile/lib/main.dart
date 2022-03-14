@@ -43,7 +43,7 @@ class VotingApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
           button: TextStyle(
-            color: Color(0x4da5a4b7),
+            color: Color.fromARGB(255, 165, 164, 183),
             fontSize: 22.0,
             fontWeight: FontWeight.bold,
           ),
