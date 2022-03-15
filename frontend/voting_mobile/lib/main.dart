@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'log_and_reg/log_and_reg.dart';
 import 'log_and_reg/login/login.dart';
 import 'log_and_reg/registration/register.dart';
 import 'log_and_reg/registration/eosio_acc_create.dart';
 import 'log_and_reg/registration/link_up.dart';
-import 'home/voting/voter_page.dart';
 import 'home/navigation_bar_view.dart';
 import 'home/voting/votable_page.dart';
 import 'home/voting/ballot.dart';

@@ -66,75 +66,102 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            // alignment: Alignment.center,
-            child: Column(
-              children: [
-                Expanded(flex: 2, child: Container()),
-                Expanded(
-                  flex: 2,
-                  child: Image(
-                    image: AssetImage('assets/app_logo_largest.png'),
-                  ),
-                ),
-                Expanded(flex: 1, child: Container()),
-                Expanded(
-                  flex: 2,
-                  child: Row(
-                    children: [
-                      Expanded(flex: 2, child: Container()),
-                      Expanded(
-                        flex: 6,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            // border: OutlineInputBorder(),
-                            hintText: 'ITSC Account',
-                            suffixIcon: Icon(Icons.person),
-                          ),
-                          controller: _itscFieldController,
-                        ),
-                      ),
-                      Expanded(flex: 2, child: Container()),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Row(
-                    children: [
-                      Expanded(flex: 2, child: Container()),
-                      Expanded(
-                        flex: 6,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            // border: OutlineInputBorder(),
-                            hintText: 'EOSIO Public Key',
-                            suffixIcon: Icon(Icons.key),
-                          ),
-                          controller: _publicKeyFieldController,
-                        ),
-                      ),
-                      Expanded(flex: 2, child: Container()),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ElevatedButton(
-                    onPressed: _loginRequestHandler,
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(
-                          fontSize: 25.0, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: Center(
+            child: Container(
+              // alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Expanded(flex: 2, child: Container()),
+                  Expanded(
+                    flex: 2,
+                    child: Image(
+                      image: AssetImage('assets/app_logo_largest.png'),
                     ),
                   ),
-                ),
-                Expanded(flex: 2, child: Container()),
-              ],
+                  Expanded(flex: 1, child: Container()),
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                      children: [
+                        Expanded(flex: 2, child: Container()),
+                        Expanded(
+                          flex: 6,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              // border: OutlineInputBorder(),
+                              hintText: 'ITSC Account',
+                              suffixIcon: Icon(Icons.person),
+                            ),
+                            controller: _itscFieldController,
+                          ),
+                        ),
+                        Expanded(flex: 2, child: Container()),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                      children: [
+                        Expanded(flex: 2, child: Container()),
+                        Expanded(
+                          flex: 6,
+                          child: TextField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              // border: OutlineInputBorder(),
+                              hintText: 'EOSIO Public Key',
+                              suffixIcon: Icon(Icons.key),
+                            ),
+                            controller: _publicKeyFieldController,
+                          ),
+                        ),
+                        Expanded(flex: 2, child: Container()),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: _loginRequestHandler,
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                            fontSize: 25.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  // Expanded(flex: 2, child: Container()),
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                      children: [
+                        Expanded(flex: 20, child: Container()),
+                        Expanded(
+                          flex: 30,
+                          child: Text("New to Chainvote? "),
+                        ),
+                        Expanded(
+                          flex: 30,
+                          child: TextButton(
+                            child: Text("Join us!"),
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'r');
+                            },
+                          ),
+                        ),
+                        Expanded(flex: 20, child: Container()),
+                      ],
+                    ),
+                  ),
+                  Expanded(flex: 2, child: Container()),
+                ],
+              ),
             ),
           ),
         ),

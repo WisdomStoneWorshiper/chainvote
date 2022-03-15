@@ -53,6 +53,7 @@ dependencies:
   local_auth: ^1.1.11
   flutter_secure_storage: ^5.0.2
   flutter_app_name: ^0.1.1
+  flex_color_scheme: ^4.2.0
 
 dev_dependencies:
   flutter_test:
