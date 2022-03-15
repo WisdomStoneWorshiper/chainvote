@@ -143,16 +143,17 @@ class Login extends StatelessWidget {
                       children: [
                         Expanded(flex: 20, child: Container()),
                         Expanded(
-                          flex: 30,
-                          child: Text("New to Chainvote? "),
-                        ),
-                        Expanded(
-                          flex: 30,
-                          child: TextButton(
-                            child: Text("Join us!"),
-                            onPressed: () {
-                              Navigator.pushNamed(context, 'r');
-                            },
+                          flex: 60,
+                          child: Row(
+                            children: [
+                              Text("New to Chainvote? "),
+                              TextButton(
+                                child: Text("Join us!"),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, 'r');
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         Expanded(flex: 20, child: Container()),

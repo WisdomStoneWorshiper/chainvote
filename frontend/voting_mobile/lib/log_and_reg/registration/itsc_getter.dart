@@ -85,103 +85,39 @@ class _ITSCGetterState extends State<ITSCGetter>
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return Container(
-      alignment: Alignment.center,
+    return Center(
       child: Column(
         children: [
-          Flexible(
-            child: Container(
-              // alignment: Alignment.center,
-              child: FractionallySizedBox(
-                alignment: Alignment.topCenter,
-                heightFactor: 1,
-                child: Column(
-                  children: [
-                    Expanded(flex: 10, child: Container()),
-                    Expanded(
-                      flex: 2,
-                      child: RichText(
-                        text: const TextSpan(
-                          text: 'Step 1: Generate EOSIO key pair',
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    Expanded(flex: 1, child: Container()),
-                    // Flexible(
-                    //   child: FractionallySizedBox(
-                    //     heightFactor: 0.25,
-                    //   ),
-                    // ),
-                    Expanded(
-                      flex: 2,
-                      child: ElevatedButton(
-                        child: Text(
-                          "Get Key Pair!",
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                        onPressed: _gotoKeyGen,
-                      ),
-                    ),
-                    Expanded(flex: 1, child: Container()),
-                  ],
-                ),
-              ),
+          Expanded(flex: 2, child: Container()),
+          Expanded(
+            flex: 2,
+            child: Image(
+              image: AssetImage('assets/app_logo_largest.png'),
             ),
           ),
-          Flexible(
-            child: Container(
-              // color: Colors.yellow,
-              // alignment: Alignment.center,
-              child: FractionallySizedBox(
-                heightFactor: 1,
-                child: Column(
-                  children: [
-                    Expanded(flex: 10, child: Container()),
-                    Expanded(
-                      flex: 10,
-                      child: Text(
-                        "Step 2: Get verification code",
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
+          Expanded(flex: 1, child: Container()),
+          Expanded(
+            flex: 2,
+            child: Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(flex: 2, child: Container()),
+                  Expanded(
+                    flex: 6,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        // border: OutlineInputBorder(),
+                        hintText: 'ITSC Account',
+                        suffixIcon: Icon(Icons.email),
                       ),
+                      onSubmitted: _sendRegistrationRequest,
+                      controller: _itscFieldController,
+                      focusNode: _focusNode,
                     ),
-                    Expanded(
-                        flex: 10,
-                        child: Row(
-                          children: [
-                            Expanded(flex: 15, child: Container()),
-                            Expanded(
-                              flex: 70,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  // border: OutlineInputBorder(),
-                                  hintText: 'ITSC Account',
-                                  suffixIcon: Icon(Icons.email),
-                                ),
-                                onSubmitted: _sendRegistrationRequest,
-                                controller: _itscFieldController,
-                                focusNode: _focusNode,
-                              ),
-                            ),
-                            Expanded(flex: 15, child: Container()),
-                          ],
-                        )),
-                    Expanded(flex: 10, child: Container()),
-                    Expanded(
-                      flex: 10,
-                      child: ElevatedButton(
-                        onPressed: _registerBtnHandler,
-                        child: Text(
-                          "Register",
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                      ),
-                    ),
-                    Expanded(flex: 50, child: Container()),
-                  ],
-                ),
+                  ),
+                  Expanded(flex: 2, child: Container()),
+                ],
               ),
             ),
           )
@@ -190,3 +126,59 @@ class _ITSCGetterState extends State<ITSCGetter>
     );
   }
 }
+
+// Flexible(
+//             child: Container(
+//               // color: Colors.yellow,
+//               // alignment: Alignment.center,
+//               child: FractionallySizedBox(
+//                 heightFactor: 1,
+//                 child: Column(
+//                   children: [
+//                     Expanded(flex: 10, child: Container()),
+//                     Expanded(
+//                       flex: 10,
+//                       child: Text(
+//                         "Step 2: Get verification code",
+//                         style: TextStyle(
+//                             fontSize: 18.0, fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     Expanded(
+//                         flex: 10,
+//                         child: Row(
+//                           children: [
+//                             Expanded(flex: 15, child: Container()),
+//                             Expanded(
+//                               flex: 70,
+//                               child: TextField(
+//                                 decoration: InputDecoration(
+//                                   // border: OutlineInputBorder(),
+//                                   hintText: 'ITSC Account',
+//                                   suffixIcon: Icon(Icons.email),
+//                                 ),
+//                                 onSubmitted: _sendRegistrationRequest,
+//                                 controller: _itscFieldController,
+//                                 focusNode: _focusNode,
+//                               ),
+//                             ),
+//                             Expanded(flex: 15, child: Container()),
+//                           ],
+//                         )),
+//                     Expanded(flex: 10, child: Container()),
+//                     Expanded(
+//                       flex: 10,
+//                       child: ElevatedButton(
+//                         onPressed: _registerBtnHandler,
+//                         child: Text(
+//                           "Register",
+//                           style: Theme.of(context).textTheme.button,
+//                         ),
+//                       ),
+//                     ),
+//                     Expanded(flex: 50, child: Container()),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           )
