@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       Navigator.pushReplacementNamed(context, 'h', arguments: arg);
     } else {
-      Navigator.pushReplacementNamed(context, 'l&r');
+      Navigator.pushReplacementNamed(context, 'l');
     }
   }
 

@@ -52,6 +52,7 @@ dependencies:
   logging_appenders: ^1.0.0
   local_auth: ^1.1.11
   flutter_secure_storage: ^5.0.2
+  flutter_app_name: ^0.1.1
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +77,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -105,3 +107,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon_small.png"
+
+flutter_app_name:
+  name: "Chainvote"

@@ -68,69 +68,75 @@ class Login extends StatelessWidget {
     _context = context;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 150,
-            ),
-            const Text(
-              "ITSC Account",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "ITSC",
-                  hintText: 'ITSC Account',
+      body: SafeArea(
+        child: Center(
+          child: Container(
+            // alignment: Alignment.center,
+            child: Column(
+              children: [
+                Expanded(flex: 2, child: Container()),
+                Expanded(
+                  flex: 2,
+                  child: Image(
+                    image: AssetImage('assets/app_logo_largest.png'),
+                  ),
                 ),
-                controller: _itscFieldController,
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            const Text(
-              "EOSIO Public Key",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Public Key",
-                  hintText: 'EOSIO Public Key',
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                  flex: 2,
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Container()),
+                      Expanded(
+                        flex: 6,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            // border: OutlineInputBorder(),
+                            hintText: 'ITSC Account',
+                            suffixIcon: Icon(Icons.person),
+                          ),
+                          controller: _itscFieldController,
+                        ),
+                      ),
+                      Expanded(flex: 2, child: Container()),
+                    ],
+                  ),
                 ),
-                controller: _publicKeyFieldController,
-              ),
+                Expanded(
+                  flex: 2,
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Container()),
+                      Expanded(
+                        flex: 6,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            // border: OutlineInputBorder(),
+                            hintText: 'EOSIO Public Key',
+                            suffixIcon: Icon(Icons.key),
+                          ),
+                          controller: _publicKeyFieldController,
+                        ),
+                      ),
+                      Expanded(flex: 2, child: Container()),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    onPressed: _loginRequestHandler,
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                          fontSize: 25.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Expanded(flex: 2, child: Container()),
+              ],
             ),
-            const SizedBox(
-              height: 150,
-            ),
-            ElevatedButton(
-              onPressed: _loginRequestHandler,
-              child: const Text(
-                "Login",
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                //primary: Colors.blue,
-                minimumSize: const Size(300, 42),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

@@ -13,94 +13,63 @@ class LogAndReg extends StatefulWidget {
 
 class _LogAndRegState extends State<LogAndReg> {
   final String _title = "Voting App";
-  // const LogAndReg();
-
-  // @override
-  // void initState() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   print(prefs.containsKey('itsc'));
-
-  //   if (prefs.containsKey('itsc') && prefs.containsKey('eosName')) {
-  //     HomeArg arg = HomeArg(prefs.getString('itsc') as String,
-  //         prefs.getString('eosName') as String);
-
-  //     Navigator.pushReplacementNamed(context, 'h', arguments: arg);
-  //   }
-  //   super.initState();
-  // }
-
-  // void _loginHander(BuildContext context) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   print(prefs.containsKey('itsc'));
-
-  //   if (prefs.containsKey('itsc') && prefs.containsKey('eosName')) {
-  //     HomeArg arg = HomeArg(prefs.getString('itsc') as String,
-  //         prefs.getString('eosName') as String);
-
-  //     Navigator.pushReplacementNamed(context, 'h', arguments: arg);
-  //   } else {
-  //     Navigator.pushNamed(context, 'l');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 150,
-            ),
-            Column(children: [
-              RichText(
-                text: TextSpan(
-                  text: 'Welcome to our Blockchain based',
-                  style: Theme.of(context).textTheme.headline1,
-                ),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 150,
               ),
-              RichText(
-                text: TextSpan(
-                  text: 'Voting App',
-                  style: Theme.of(context).textTheme.headline2,
+              Column(children: [
+                RichText(
+                  text: TextSpan(
+                    text: 'Welcome to our Blockchain based',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
                 ),
-              ),
-            ]),
-            const SizedBox(
-              height: 200,
-            ),
-            Column(children: [
-              RichText(
-                text: const TextSpan(
-                  text: 'Already registered?',
+                RichText(
+                  text: TextSpan(
+                    text: 'Voting App',
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
                 ),
+              ]),
+              const SizedBox(
+                height: 200,
               ),
-              LogAndRegButton("Login", () {
-                Navigator.pushNamed(context, 'l');
-                // _loginHander(context);
-                // final prefs = await SharedPreferences.getInstance();
+              Column(children: [
+                RichText(
+                  text: const TextSpan(
+                    text: 'Already registered?',
+                  ),
+                ),
+                LogAndRegButton("Login", () {
+                  Navigator.pushNamed(context, 'l');
+                  // _loginHander(context);
+                  // final prefs = await SharedPreferences.getInstance();
 
-                // Navigator.pushNamed(context, 'l');
-              }),
-            ]),
-            const SizedBox(
-              height: 80,
-            ),
-            Column(children: [
-              RichText(
-                text: const TextSpan(
-                  text: 'Create a new account?',
-                ),
+                  // Navigator.pushNamed(context, 'l');
+                }),
+              ]),
+              const SizedBox(
+                height: 80,
               ),
-              LogAndRegButton("Register", () {
-                Navigator.pushNamed(context, 'r');
-              })
-            ]),
-          ],
+              Column(children: [
+                RichText(
+                  text: const TextSpan(
+                    text: 'Create a new account?',
+                  ),
+                ),
+                LogAndRegButton("Register", () {
+                  Navigator.pushNamed(context, 'r');
+                })
+              ]),
+            ],
+          ),
         ),
       ),
     );
