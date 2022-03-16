@@ -13,6 +13,7 @@ import '../../global_variable.dart';
 import '../../success_page.dart';
 import 'edit_page.dart';
 import '../../shared_dialog.dart';
+import '../navigation_bar_view.dart';
 
 class AddPage extends StatefulWidget {
   final EditType editType;
@@ -42,6 +43,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
     if (eosName != "") {
       try {
         voteClient.privateKeys = [pk];
@@ -79,9 +81,11 @@ class _AddPageState extends State<AddPage> with SharedDialog {
               break;
             }
           }
-          SuccessPageArg arg = new SuccessPageArg(
+          HomeArg homeArg = HomeArg(itsc, eosName);
+          SuccessPageArg arg = SuccessPageArg(
               message: 'All Selected has been added successfully!',
-              returnPage: 'h');
+              returnPage: 'h',
+              arg: homeArg);
           Navigator.pop(context);
           Navigator.pushNamed(context, 's', arguments: arg);
         } catch (e) {
@@ -104,6 +108,11 @@ class _AddPageState extends State<AddPage> with SharedDialog {
 
   void _addVoter(BuildContext context) async {
     // List<String> failed_item = [];
+    final prefs = await SharedPreferences.getInstance();
+
+    final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
+
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
@@ -125,37 +134,11 @@ class _AddPageState extends State<AddPage> with SharedDialog {
 
       return;
     }
-    // for (int i = _addList.length - 1; i >= 0; --i) {
-    //   try {
-    //     Response response = await dio.post("/contract/addvoter",
-    //         data: {'itsc': _addList[i], 'campaignId': campaignId});
-    //     print(response.data);
-    //     if (response.statusCode != 200) {
-    //       print("fail");
-    //       // failed_item.add(_addList[i]);
-    //       errDialog(
-    //           context,
-    //           "Fail to add " +
-    //               _addList[i] +
-    //               ", Reason: " +
-    //               response.data["message"]);
-    //       return;
-    //     } else {
-    //       _addList.removeAt(i);
-    //     }
-    //   } catch (e) {
-    //     DioError err = e as DioError;
-
-    //     Map<String, dynamic> response = (err.response?.data);
-
-    //     errDialog(context,
-    //         "Fail to add " + _addList[i] + ", Reason: " + response["message"]!);
-
-    //     return;
-    //   }
-    // }
+    HomeArg homeArg = HomeArg(itsc, eosName);
     SuccessPageArg arg = new SuccessPageArg(
-        message: 'All Selected has been added successfully!', returnPage: 'h');
+        message: 'All Selected has been added successfully!',
+        returnPage: 'h',
+        arg: homeArg);
     Navigator.pop(context);
     Navigator.pushNamed(context, 's', arguments: arg);
   }

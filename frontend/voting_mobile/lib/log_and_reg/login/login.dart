@@ -71,62 +71,55 @@ class Login extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: Center(
+          child: SingleChildScrollView(
             child: Container(
-              // alignment: Alignment.center,
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.1,
+                left: MediaQuery.of(context).size.width * 0.1,
+                bottom: MediaQuery.of(context).size.height * 0.1,
+                right: MediaQuery.of(context).size.width * 0.1,
+              ),
               child: Column(
                 children: [
-                  Expanded(flex: 2, child: Container()),
-                  Expanded(
-                    flex: 2,
-                    child: Image(
-                      image: AssetImage('assets/app_logo_largest.png'),
+                  Image(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    image: AssetImage('assets/app_logo_transparent.png'),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.15,
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        // border: OutlineInputBorder(),
+                        labelText: 'ITSC',
+                        hintText: 'ITSC Account',
+                        suffixIcon: Icon(Icons.person),
+                      ),
+                      controller: _itscFieldController,
                     ),
                   ),
-                  Expanded(flex: 1, child: Container()),
-                  Expanded(
-                    flex: 2,
-                    child: Row(
-                      children: [
-                        Expanded(flex: 2, child: Container()),
-                        Expanded(
-                          flex: 6,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              // border: OutlineInputBorder(),
-                              hintText: 'ITSC Account',
-                              suffixIcon: Icon(Icons.person),
-                            ),
-                            controller: _itscFieldController,
-                          ),
-                        ),
-                        Expanded(flex: 2, child: Container()),
-                      ],
+
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        // border: OutlineInputBorder(),
+                        labelText: 'EOSIO Public Key',
+                        hintText: 'EOSIO Public Key',
+                        suffixIcon: Icon(Icons.key),
+                      ),
+                      controller: _publicKeyFieldController,
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Row(
-                      children: [
-                        Expanded(flex: 2, child: Container()),
-                        Expanded(
-                          flex: 6,
-                          child: TextField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              // border: OutlineInputBorder(),
-                              hintText: 'EOSIO Public Key',
-                              suffixIcon: Icon(Icons.key),
-                            ),
-                            controller: _publicKeyFieldController,
-                          ),
-                        ),
-                        Expanded(flex: 2, child: Container()),
-                      ],
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.05,
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
                     child: ElevatedButton(
                       onPressed: _loginRequestHandler,
                       child: const Text(
@@ -137,30 +130,19 @@ class Login extends StatelessWidget {
                     ),
                   ),
                   // Expanded(flex: 2, child: Container()),
-                  Expanded(
-                    flex: 2,
-                    child: Row(
-                      children: [
-                        Expanded(flex: 20, child: Container()),
-                        Expanded(
-                          flex: 60,
-                          child: Row(
-                            children: [
-                              Text("New to Chainvote? "),
-                              TextButton(
-                                child: Text("Join us!"),
-                                onPressed: () {
-                                  Navigator.pushNamed(context, 'r');
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(flex: 20, child: Container()),
-                      ],
-                    ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("New to Chainvote? "),
+                      TextButton(
+                        child: Text("Join us!"),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'r');
+                        },
+                      ),
+                    ],
                   ),
-                  Expanded(flex: 2, child: Container()),
                 ],
               ),
             ),

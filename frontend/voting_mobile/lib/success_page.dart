@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class SuccessPageArg {
   String message;
   String returnPage;
-  SuccessPageArg({required this.message, required this.returnPage});
+  Object? arg;
+  SuccessPageArg({required this.message, required this.returnPage, this.arg});
 }
 
 class SuccessPage extends StatelessWidget {
@@ -33,8 +34,9 @@ class SuccessPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(args.returnPage));
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, args.returnPage, (r) => false,
+                      arguments: args.arg);
                 },
                 child: Text("OK"),
               )

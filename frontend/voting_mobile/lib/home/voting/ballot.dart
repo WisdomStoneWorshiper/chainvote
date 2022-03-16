@@ -7,6 +7,7 @@ import '../campaign.dart';
 import '../../success_page.dart';
 import '../../global_variable.dart';
 import '../../shared_dialog.dart';
+import '../navigation_bar_view.dart';
 
 class Ballot extends StatefulWidget {
   Ballot({Key? key}) : super(key: key);
@@ -57,6 +58,7 @@ class _BallotState extends State<Ballot> with SharedDialog {
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
 
     if (eosName != "") {
       try {
@@ -90,10 +92,12 @@ class _BallotState extends State<Ballot> with SharedDialog {
           if (response.containsKey('transaction_id')) {
             campaign.setIsVoted(CampaignVoteStat.Yes);
             String transHex = response["transaction_id"];
-            SuccessPageArg arg = new SuccessPageArg(
+            HomeArg homeArg = HomeArg(itsc, eosName);
+            SuccessPageArg arg = SuccessPageArg(
                 message:
                     'Your Vote Submitted Successfully \n Transaction hash: $transHex',
-                returnPage: 'h');
+                returnPage: 'h',
+                arg: homeArg);
             Navigator.pop(context);
             Navigator.pushNamed(context, 's', arguments: arg);
           } else {
