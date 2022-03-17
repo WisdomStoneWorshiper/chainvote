@@ -52,7 +52,7 @@ class _SettingPageState extends State<SettingPage> with SharedDialog {
                     final prefs = await SharedPreferences.getInstance();
                     prefs.remove('itsc');
                     prefs.remove('eosName');
-                    Navigator.pushReplacementNamed(context, 'l&r');
+                    Navigator.pushReplacementNamed(context, 'l');
                   },
                   child: Text("Logout"),
                 )

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:expandable/expandable.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../global_variable.dart';
@@ -26,8 +27,15 @@ class _VoterPageState extends State<VoterPage> {
 
   _VoterPageState({required this.itsc, required this.eosAccountName});
 
-  bool _isLoad = false;
+  bool _isReload = false;
+  List<Campaign> _reloadResult = [];
+
   Future<List<Campaign>> init(String voterName) async {
+    if (_isReload == true && _reloadResult.isNotEmpty) {
+      print("no need init");
+      _isReload = false;
+      return Future<List<Campaign>>.value(_reloadResult);
+    }
     user = Voter(voterName: eosAccountName);
     await user.init();
     List<Campaign> t = [];
@@ -42,26 +50,40 @@ class _VoterPageState extends State<VoterPage> {
       await c.init();
       t.add(c);
     }
-    _isLoad = true;
+    if (_isReload == true) {
+      _reloadResult = t;
+    }
     // print(t.length);
     return Future<List<Campaign>>.value(t);
   }
 
-  Future<void> _onRefresh() async {
-    _isLoad = false;
+  Future _onRefresh() async {
+    _isReload = true;
+    _reloadResult = [];
+    await init(eosAccountName);
+    // return init(eosAccountName);
     setState(() {});
-    await Future.doWhile(() async {
-      if (_isLoad == true) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    // return Future.delayed(Duration(seconds: 2));
   }
 
   void _viewVotableCampaign(Campaign c) {
     Navigator.pushNamed(context, 'v', arguments: c);
+  }
+
+  _expandView(String title, List<Widget> w) {
+    return ExpandablePanel(
+      theme: ExpandableThemeData(iconColor: Colors.cyan),
+      header: Container(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+      ),
+      collapsed: Text("test"),
+      expanded: Column(
+        children: [for (var x in w) x],
+      ),
+    );
   }
 
   @override
@@ -96,32 +118,14 @@ class _VoterPageState extends State<VoterPage> {
             ended = [loading];
             coming = [loading];
           }
-          return Center(
-              child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                title: Text("Ongoing Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(ongoing),
-              ),
-              SliverAppBar(
-                title: Text("Coming Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(coming),
-              ),
-              SliverAppBar(
-                title: Text("Ended Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(ended),
-              )
+          print(ongoing.length);
+          return ListView(
+            children: [
+              _expandView("Ongoing Campaign", ongoing),
+              _expandView("Upcoming Campaign", coming),
+              _expandView("Ended Campaign", ended),
             ],
-          ));
+          );
         },
       ),
     );

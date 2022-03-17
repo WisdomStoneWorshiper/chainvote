@@ -120,6 +120,14 @@ class Campaign extends StatelessWidget {
     isVoted = s;
   }
 
+  int getTotalVoted() {
+    int total = 0;
+    for (var c in _choiceList) {
+      total += c.result;
+    }
+    return total;
+  }
+
   CampaignStat getCampaignStat() {
     // print("now:" + DateTime.now().toUtc().toString());
     // print("start:" + _startTime.toString());

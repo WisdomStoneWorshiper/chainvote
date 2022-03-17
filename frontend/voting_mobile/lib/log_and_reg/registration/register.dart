@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'dart:async';
 
-import './email_sent.dart';
-import './itsc_getter.dart';
 import '../../global_variable.dart';
 import '../../success_page.dart';
 
