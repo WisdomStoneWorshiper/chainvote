@@ -55,6 +55,7 @@ dependencies:
   flutter_app_name: ^0.1.1
   flex_color_scheme: ^4.2.0
   expandable: ^5.0.1
+  pie_chart: ^5.1.0
 
 dev_dependencies:
   flutter_test:

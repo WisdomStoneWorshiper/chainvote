@@ -129,6 +129,15 @@ class _BallotState extends State<Ballot> with SharedDialog {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
 
+    final theme = Theme.of(context);
+    final oldCheckboxTheme = theme.checkboxTheme;
+
+    final newCheckBoxTheme = oldCheckboxTheme.copyWith(
+      shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(MediaQuery.of(context).size.width * 0.1)),
+    );
+
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -137,25 +146,47 @@ class _BallotState extends State<Ballot> with SharedDialog {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Campaign Name: " + campaign.getCampaignName()),
-              Text("Owner: " + campaign.getOwner()),
+              Container(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.03,
+                ),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text("Vote"),
+                      Text("Vote by clicking on the choice"),
+                    ],
+                  ),
+                ),
+              ),
               ListView.builder(
                 shrinkWrap: true,
                 itemCount: campaign.getChoiceList().length,
                 itemBuilder: (_, index) => Container(
-                  child: ListTile(
-                    leading: Text((index + 1).toString()),
-                    title: Text(campaign.getChoiceList()[index].choiceName),
-                    tileColor: _selected == index
-                        ? Colors.blue.withOpacity(0.5)
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selected = index;
-                      });
-                    },
-                  ),
-                ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05,
+                      vertical: MediaQuery.of(context).size.height * 0.01,
+                    ),
+                    child: Card(
+                      child: Theme(
+                        data: theme.copyWith(checkboxTheme: newCheckBoxTheme),
+                        child: CheckboxListTile(
+                          shape: CircleBorder(),
+                          title:
+                              Text(campaign.getChoiceList()[index].choiceName),
+                          value: index == _selected,
+                          onChanged: (bool) {
+                            setState(() {
+                              if (_selected == index) {
+                                _selected = -1;
+                              } else {
+                                _selected = index;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    )),
               ),
             ],
           ),
