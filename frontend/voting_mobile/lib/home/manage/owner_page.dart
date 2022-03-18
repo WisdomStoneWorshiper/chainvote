@@ -6,34 +6,30 @@ import 'package:flutter/material.dart';
 import '../../../global_variable.dart';
 import '../campaign.dart';
 import '../voter.dart';
+import '../home_view.dart';
 
-class OwnerPage extends StatefulWidget {
-  final String itsc;
-  final String eosAccountName;
-  const OwnerPage({required this.itsc, required this.eosAccountName, Key? key})
-      : super(key: key);
+class OwnerPage extends CampaignList {
+  const OwnerPage(
+      {required String itsc, required String eosAccountName, Key? key})
+      : super(itsc: itsc, eosAccountName: eosAccountName);
 
   @override
   _OwnerPageState createState() =>
       _OwnerPageState(itsc: itsc, eosAccountName: eosAccountName);
 }
 
-class _OwnerPageState extends State<OwnerPage> {
-  final String itsc;
-  final String eosAccountName;
+class _OwnerPageState extends CampaignListState {
+  _OwnerPageState({
+    required String itsc,
+    required String eosAccountName,
+  }) : super(itsc: itsc, eosAccountName: eosAccountName);
 
-  late Voter user;
-
-  _OwnerPageState({required this.itsc, required this.eosAccountName});
-
-  bool _isReload = false;
-  List<Campaign> _reloadResult = [];
-
+  @override
   Future<List<Campaign>> init(String voterName) async {
-    if (_isReload == true && _reloadResult.isNotEmpty) {
+    if (isReload == true && reloadResult.isNotEmpty) {
       print("no need init");
-      _isReload = false;
-      return Future<List<Campaign>>.value(_reloadResult);
+      isReload = false;
+      return Future<List<Campaign>>.value(reloadResult);
     }
 
     user = Voter(voterName: eosAccountName);
@@ -41,7 +37,7 @@ class _OwnerPageState extends State<OwnerPage> {
     List<Campaign> t = [];
     for (int vr in user.getOwnerCampaigns()) {
       print(vr.toString());
-      Campaign c = new Campaign(
+      Campaign c = Campaign(
         campaignId: vr,
         view: CampaignView.List,
         callback: _viewManageCampaign,
@@ -49,88 +45,15 @@ class _OwnerPageState extends State<OwnerPage> {
       await c.init();
       t.add(c);
     }
-    if (_isReload == true) {
-      _reloadResult = t;
+    if (isReload == true) {
+      reloadResult = t;
     }
 
     // print(t.length);
     return Future<List<Campaign>>.value(t);
   }
 
-  Future _onRefresh() async {
-    _isReload = true;
-    _reloadResult = [];
-    await init(eosAccountName);
-    // return init(eosAccountName);
-    setState(() {});
-  }
-
   void _viewManageCampaign(Campaign c) {
     Navigator.pushNamed(context, 'm', arguments: c);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: FutureBuilder(
-        future: init(eosAccountName),
-        builder: (context, snapshot) {
-          List<Widget> ongoing = [];
-          List<Widget> coming = [];
-          List<Widget> ended = [];
-          print("building");
-          if (snapshot.hasData) {
-            print("nani");
-            List<Campaign> tempList = snapshot.data as List<Campaign>;
-            for (Campaign c in tempList) {
-              if (c.getCampaignStat() == CampaignStat.Coming) {
-                coming.add(c);
-              } else if (c.getCampaignStat() == CampaignStat.Ended) {
-                ended.add(c);
-              } else {
-                ongoing.add(c);
-              }
-            }
-          } else {
-            print("why not here");
-            Widget loading = SizedBox(
-              width: 200,
-              height: 200,
-              child: CircularProgressIndicator(),
-            );
-            ongoing = [loading];
-            ended = [loading];
-            coming = [loading];
-          }
-          return Center(
-              child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                title: Text("Ongoing Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(ongoing),
-              ),
-              SliverAppBar(
-                title: Text("Coming Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(coming),
-              ),
-              SliverAppBar(
-                title: Text("Ended Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(ended),
-              )
-            ],
-          ));
-        },
-      ),
-    );
   }
 }

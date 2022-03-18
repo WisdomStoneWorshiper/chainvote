@@ -2,45 +2,40 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
-// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../global_variable.dart';
 import '../campaign.dart';
 import '../voter.dart';
+import '../home_view.dart';
 
-class VoterPage extends StatefulWidget {
-  final String itsc;
-  final String eosAccountName;
-  const VoterPage({required this.itsc, required this.eosAccountName, Key? key})
-      : super(key: key);
+class VoterPage extends CampaignList {
+  const VoterPage(
+      {required String itsc, required String eosAccountName, Key? key})
+      : super(itsc: itsc, eosAccountName: eosAccountName);
 
   @override
   _VoterPageState createState() =>
       _VoterPageState(itsc: itsc, eosAccountName: eosAccountName);
 }
 
-class _VoterPageState extends State<VoterPage> {
-  final String itsc;
-  final String eosAccountName;
+class _VoterPageState extends CampaignListState {
+  _VoterPageState({
+    required String itsc,
+    required String eosAccountName,
+  }) : super(itsc: itsc, eosAccountName: eosAccountName);
 
-  late Voter user;
-
-  _VoterPageState({required this.itsc, required this.eosAccountName});
-
-  bool _isReload = false;
-  List<Campaign> _reloadResult = [];
-
+  @override
   Future<List<Campaign>> init(String voterName) async {
-    if (_isReload == true && _reloadResult.isNotEmpty) {
+    if (isReload == true && reloadResult.isNotEmpty) {
       print("no need init");
-      _isReload = false;
-      return Future<List<Campaign>>.value(_reloadResult);
+      isReload = false;
+      return Future<List<Campaign>>.value(reloadResult);
     }
     user = Voter(voterName: eosAccountName);
     await user.init();
     List<Campaign> t = [];
     for (VotingRecord vr in user.getVotableCampaigns()) {
-      Campaign c = new Campaign(
+      Campaign c = Campaign(
         campaignId: vr.campaignId,
         view: CampaignView.List,
         callback: _viewVotableCampaign,
@@ -50,84 +45,14 @@ class _VoterPageState extends State<VoterPage> {
       await c.init();
       t.add(c);
     }
-    if (_isReload == true) {
-      _reloadResult = t;
+    if (isReload == true) {
+      reloadResult = t;
     }
     // print(t.length);
     return Future<List<Campaign>>.value(t);
   }
 
-  Future _onRefresh() async {
-    _isReload = true;
-    _reloadResult = [];
-    await init(eosAccountName);
-    // return init(eosAccountName);
-    setState(() {});
-  }
-
   void _viewVotableCampaign(Campaign c) {
     Navigator.pushNamed(context, 'v', arguments: c);
-  }
-
-  _expandView(String title, List<Widget> w) {
-    return ExpandablePanel(
-      theme: ExpandableThemeData(iconColor: Colors.cyan),
-      header: Container(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-      ),
-      collapsed: Text("test"),
-      expanded: Column(
-        children: [for (var x in w) x],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: FutureBuilder(
-        future: init(eosAccountName),
-        builder: (context, snapshot) {
-          List<Widget> ongoing = [];
-          List<Widget> coming = [];
-          List<Widget> ended = [];
-
-          if (snapshot.hasData) {
-            List<Campaign> tempList = snapshot.data as List<Campaign>;
-            for (Campaign c in tempList) {
-              if (c.getCampaignStat() == CampaignStat.Coming) {
-                coming.add(c);
-              } else if (c.getCampaignStat() == CampaignStat.Ended) {
-                ended.add(c);
-              } else {
-                ongoing.add(c);
-              }
-            }
-          } else {
-            Widget loading = SizedBox(
-              width: 200,
-              height: 200,
-              child: CircularProgressIndicator(),
-            );
-            ongoing = [loading];
-            ended = [loading];
-            coming = [loading];
-          }
-          print(ongoing.length);
-          return ListView(
-            children: [
-              _expandView("Ongoing Campaign", ongoing),
-              _expandView("Upcoming Campaign", coming),
-              _expandView("Ended Campaign", ended),
-            ],
-          );
-        },
-      ),
-    );
   }
 }

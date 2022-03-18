@@ -66,7 +66,20 @@ class _NavBarViewState extends State<NavBarView> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Voting App"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.02),
+              child: Image(
+                height: MediaQuery.of(context).size.height * 0.05,
+                image: AssetImage('assets/app_logo_transparent.png'),
+              ),
+            ),
+            Text("Chainvote")
+          ],
+        ),
       ),
       body: Center(
         child: _pageOpts.elementAt(_selectedIndex),
