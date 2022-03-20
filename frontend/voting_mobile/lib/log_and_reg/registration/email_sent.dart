@@ -6,43 +6,43 @@ class EmailSent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newHeight = height - padding.top - padding.bottom;
+
     return Center(
       child: Column(
         children: [
-          const SizedBox(
-            height: 150,
+          SizedBox(
+            height: newHeight * 0.18,
           ),
-          const Icon(
+          Icon(
             IconData(0xf588, fontFamily: 'MaterialIcons'),
-            size: 200,
+            size: newHeight * 0.2,
+            color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(
-            height: 25,
+          SizedBox(
+            height: newHeight * 0.045,
           ),
           RichText(
             text: const TextSpan(
               text: "The code has been sent to ",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.normal),
+              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.normal),
             ),
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: newHeight * 0.025,
           ),
           RichText(
             text: TextSpan(
               text:
                   email + "@connect.ust.hk", // ADD CORRECT EMAIL VARIABLE HERE
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 23.0,
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 23.0, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(
-            height: 75,
+          SizedBox(
+            height: newHeight * 0.055,
           ),
           ElevatedButton(
             onPressed: () {
@@ -55,7 +55,7 @@ class EmailSent extends StatelessWidget {
             ),
             style: ElevatedButton.styleFrom(
               //primary: Colors.blue,
-              minimumSize: const Size(300, 42),
+              minimumSize: Size(width * 0.78, 42),
             ),
           )
         ],

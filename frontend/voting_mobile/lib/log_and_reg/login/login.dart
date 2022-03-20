@@ -14,51 +14,62 @@ class Login extends StatelessWidget {
   Login();
 
   void _loginRequestHandler() async {
-    if (_itscFieldController.text.isEmpty ||
-        _publicKeyFieldController.text.isEmpty) {
-      final errBar = SnackBar(
-        content: const Text("Please fill in all fields!"),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {},
-        ),
-      );
-      ScaffoldMessenger.of(_context).showSnackBar(errBar);
+    // NOTE REMOVE THE FIRST IF FOR UI/UX TESTING ONLY
+    if (_itscFieldController.text == "mpsanghavia") {
+      String eosName = "Mudit";
+      // final prefs = await SharedPreferences.getInstance();
+      // prefs.setString('eosName', eosName);
+      // prefs.setString('itsc', _itscFieldController.text);
+      HomeArg arg = HomeArg(_itscFieldController.text, eosName);
+      Navigator.pop(_context);
+      Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
     } else {
-      final wrongInputErrBar = SnackBar(
-        content: const Text("Incorrect ITSC or EOSIO Public Key"),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {},
-        ),
-      );
+      if (_itscFieldController.text.isEmpty ||
+          _publicKeyFieldController.text.isEmpty) {
+        final errBar = SnackBar(
+          content: const Text("Please fill in all fields!"),
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(_context).showSnackBar(errBar);
+      } else {
+        final wrongInputErrBar = SnackBar(
+          content: const Text("Incorrect ITSC or EOSIO Public Key"),
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {},
+          ),
+        );
 
-      BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
-      var dio = Dio(opt);
+        BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+        var dio = Dio(opt);
 
-      final prefs = await SharedPreferences.getInstance();
-      print(_itscFieldController.text);
-      print(_publicKeyFieldController.text);
-      Response response = await dio.post("/contract/login", data: {
-        'itsc': _itscFieldController.text,
-        'publicKey': _publicKeyFieldController.text
-      });
-      // print(response.data);
-      if (response.statusCode == 200) {
-        print(response.data);
+        final prefs = await SharedPreferences.getInstance();
+        print(_itscFieldController.text);
+        print(_publicKeyFieldController.text);
+        Response response = await dio.post("/contract/login", data: {
+          'itsc': _itscFieldController.text,
+          'publicKey': _publicKeyFieldController.text
+        });
+        // print(response.data);
+        if (response.statusCode == 200) {
+          print(response.data);
 
-        if (response.data["accountName"] != null) {
-          String eosName = response.data["accountName"];
-          prefs.setString('eosName', eosName);
-          prefs.setString('itsc', _itscFieldController.text);
-          HomeArg arg = HomeArg(_itscFieldController.text, eosName);
-          Navigator.pop(_context);
-          Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
+          if (response.data["accountName"] != null) {
+            String eosName = response.data["accountName"];
+            prefs.setString('eosName', eosName);
+            prefs.setString('itsc', _itscFieldController.text);
+            HomeArg arg = HomeArg(_itscFieldController.text, eosName);
+            Navigator.pop(_context);
+            Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
+          } else {
+            ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
+          }
         } else {
           ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
         }
-      } else {
-        ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
       }
     }
   }
@@ -66,23 +77,28 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newHeight = height - padding.top - padding.bottom;
+
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(_title),
       ),
       body: Center(
         child: Column(
           children: [
-            const SizedBox(
-              height: 150,
+            SizedBox(
+              height: newHeight * 0.15,
             ),
             const Text(
               "ITSC Account",
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(
-              height: 15,
+            SizedBox(
+              height: newHeight * 0.02,
             ),
             SizedBox(
               width: 300,
@@ -95,15 +111,15 @@ class Login extends StatelessWidget {
                 controller: _itscFieldController,
               ),
             ),
-            const SizedBox(
-              height: 40,
+            SizedBox(
+              height: newHeight * 0.05,
             ),
             const Text(
               "EOSIO Public Key",
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(
-              height: 15,
+            SizedBox(
+              height: newHeight * 0.02,
             ),
             SizedBox(
               width: 300,
@@ -116,8 +132,8 @@ class Login extends StatelessWidget {
                 controller: _publicKeyFieldController,
               ),
             ),
-            const SizedBox(
-              height: 150,
+            SizedBox(
+              height: newHeight * 0.1,
             ),
             ElevatedButton(
               onPressed: _loginRequestHandler,

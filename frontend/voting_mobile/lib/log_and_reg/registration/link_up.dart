@@ -61,15 +61,25 @@ class LinkUp extends StatelessWidget {
         args.itsc; //args.itsc; UNCOMMENT LATER PLEASE ADD RIGHT EMAIL VARIABLE
     _needCreateEOSIO = args.needCreateEOSIO;
     _context = context;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newHeight = height - padding.top - padding.bottom;
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Link ITSC"),
       ),
       body: Column(
         children: [
-          const SizedBox(
-            height: 125,
-          ),
+          _needCreateEOSIO == true
+              ? SizedBox(
+                  height: newHeight * 0.075,
+                )
+              : SizedBox(
+                  height: newHeight * 0.15,
+                ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -84,8 +94,8 @@ class LinkUp extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(
-            height: 45,
+          SizedBox(
+            height: newHeight * 0.05,
           ),
           Column(
             children: [
@@ -94,41 +104,41 @@ class LinkUp extends StatelessWidget {
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
-                height: 15,
+                height: 17.5,
               ),
               SizedBox(
-                width: 300,
+                width: width * 0.78,
                 height: 50,
                 child: TextField(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Confirmation Code",
-                    hintText: 'Please Enter the Code',
+                    hintText: 'Confirmation Code',
                   ),
                   controller: _codeController,
                 ),
               )
             ],
           ),
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: newHeight * 0.05,
           ),
           Column(
             children: [
               const Text(
-                "EOSIO Account Name : ",
+                "EOSIO Account Name ",
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
-                height: 15,
+                height: 17.5,
               ),
               SizedBox(
-                width: 300,
+                width: width * 0.78,
                 height: 50,
                 child: TextField(
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Please enter the account name',
+                    hintText: 'Account name',
                     labelText: "Account Name",
                   ),
                   controller: _eosAccController,
@@ -139,11 +149,11 @@ class LinkUp extends StatelessWidget {
           _needCreateEOSIO == true
               ? Column(
                   children: [
-                    const SizedBox(
-                      height: 40,
+                    SizedBox(
+                      height: newHeight * 0.05,
                     ),
                     const Text(
-                      "EOSIO Public Key : ",
+                      "EOSIO Public Key ",
                       style: TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
@@ -151,7 +161,7 @@ class LinkUp extends StatelessWidget {
                       height: 15,
                     ),
                     SizedBox(
-                      width: 300,
+                      width: width * 0.78,
                       height: 50,
                       child: TextField(
                         decoration: const InputDecoration(
@@ -162,15 +172,15 @@ class LinkUp extends StatelessWidget {
                         controller: _eosPublicKeyController,
                       ),
                     ),
-                    const SizedBox(
-                      height: 80,
+                    SizedBox(
+                      height: newHeight * 0.075,
                     ),
                   ],
                 )
               : Column(
                   children: [
-                    const SizedBox(
-                      height: 150,
+                    SizedBox(
+                      height: newHeight * 0.1,
                     ),
                   ],
                 ),
@@ -182,7 +192,7 @@ class LinkUp extends StatelessWidget {
             ),
             style: ElevatedButton.styleFrom(
               //primary: Colors.blue,
-              minimumSize: const Size(300, 42),
+              minimumSize: Size(width * 0.78, 42),
             ),
           )
         ],

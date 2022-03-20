@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/link.dart';
 import 'package:dio/dio.dart';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 import '../../global_variable.dart';
 
@@ -42,10 +43,10 @@ class ITSCGetter extends StatelessWidget {
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
-      // print("itsc:" + itsc);
-      // Response response = await dio.post("/registration", data: {'itsc': itsc});
-      // print("itsc response");
-      // print(response);
+      //print("itsc:" + itsc);
+      Response response = await dio.post("/registration", data: {'itsc': itsc});
+      //print("itsc response");
+      //print(response);
       emailSentCallback(itsc);
     } catch (e) {
       print(e);
@@ -59,25 +60,28 @@ class ITSCGetter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newHeight = height - padding.top - padding.bottom;
+    debugPrint('NEW HEIGHT : $newHeight !!!!!!!!!!!!!!!!');
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 200,
+          SizedBox(
+            height: newHeight * 0.20,
           ),
           Column(
             children: [
               RichText(
                 text: const TextSpan(
                   text: 'Step 1: Generate EOSIO key pair',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: newHeight * 0.025,
               ),
               ElevatedButton(
                 child: const Text(
@@ -87,13 +91,13 @@ class ITSCGetter extends StatelessWidget {
                 onPressed: _gotoKeyGen,
                 style: ElevatedButton.styleFrom(
                   //primary: Colors.blue,
-                  minimumSize: const Size(300, 42),
+                  minimumSize: Size(width * 0.8, 42),
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 75,
+          SizedBox(
+            height: newHeight * 0.08,
           ),
           Column(
             children: [
@@ -101,13 +105,13 @@ class ITSCGetter extends StatelessWidget {
                 "Step 2: Get verification code",
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: newHeight * 0.025,
               ),
               Column(
                 children: [
                   SizedBox(
-                    width: 275,
+                    width: width * 0.75,
                     child: TextField(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -117,8 +121,8 @@ class ITSCGetter extends StatelessWidget {
                       controller: _itscFieldController,
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: newHeight * 0.025,
                   ),
                   ElevatedButton(
                     onPressed: _registerBtnHandler,
@@ -129,7 +133,7 @@ class ITSCGetter extends StatelessWidget {
                     ),
                     style: ElevatedButton.styleFrom(
                       //primary: Colors.blue,
-                      minimumSize: const Size(300, 45),
+                      minimumSize: Size(width * 0.8, 42),
                     ),
                   )
                 ],

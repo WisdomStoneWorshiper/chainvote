@@ -42,6 +42,7 @@ class _VoterPageState extends State<VoterPage> {
       await c.init();
       t.add(c);
     }
+    print(user.getVotableCampaigns());
     _isLoad = true;
     // print(t.length);
     return Future<List<Campaign>>.value(t);
@@ -64,6 +65,77 @@ class _VoterPageState extends State<VoterPage> {
     Navigator.pushNamed(context, 'v', arguments: c);
   }
 
+  Widget _createCampaignElement(Campaign c) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newHeight = height - padding.top - padding.bottom;
+
+    Campaign currentCampaign = c;
+    int maxLimitForCampaignName = 18;
+    String name = currentCampaign.getCampaignName();
+    //name = "asdjanfjenfqenfiefneqigfqegiqebgeqbgqegbeqgqe";
+    //name = "abcdeabcdeabcde";
+    //name = "abc";
+    //name = "abcdeabcdeabcde";
+
+    if (name.length >= maxLimitForCampaignName - 2) {
+      name = name.substring(1, maxLimitForCampaignName - 2) + "..";
+      name = name.padLeft(25);
+    } else {
+      print("ELSE REACHED");
+      String spaces = " " * (maxLimitForCampaignName - name.length);
+      name.padLeft(20);
+
+      name = name + spaces;
+    }
+
+    name = name + " ";
+    DateTime endTime = currentCampaign.getEndTime();
+    return Container(
+        width: double.infinity,
+        height: 50,
+        decoration: new BoxDecoration(
+          color: Theme.of(context).colorScheme.background,
+        ),
+        alignment: Alignment.center,
+        child:
+            // width: width * 0.9,
+            // height: 40,
+            // decoration: new BoxDecoration(
+            //     color:
+            //         Theme.of(context).colorScheme.secondary,
+            //     borderRadius: BorderRadius.circular(20)),
+            ElevatedButton(
+                onPressed: () {
+                  print("BUTTON PRESSED"); //add routing function here
+                },
+                style: ElevatedButton.styleFrom(
+                    //primary: Colors.blue,
+                    minimumSize: Size(width * 0.9, 40),
+                    maximumSize: Size(width * 0.9, 40),
+                    primary: Theme.of(context).colorScheme.secondary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                        ))),
+                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  Text(
+                    "$name",
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "${endTime.day.toString()}-${endTime.month.toString().padLeft(2, '0')}-${endTime.year.toString().padLeft(2, '0')}    ",
+                        style: TextStyle(
+                            fontSize: 12.0, fontWeight: FontWeight.w500),
+                      ))
+                ])));
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -71,9 +143,9 @@ class _VoterPageState extends State<VoterPage> {
       child: FutureBuilder(
         future: init(eosAccountName),
         builder: (context, snapshot) {
-          List<Widget> ongoing = [];
-          List<Widget> coming = [];
-          List<Widget> ended = [];
+          List<Campaign> ongoing = [];
+          List<Campaign> coming = [];
+          List<Campaign> ended = [];
 
           if (snapshot.hasData) {
             List<Campaign> tempList = snapshot.data as List<Campaign>;
@@ -92,36 +164,76 @@ class _VoterPageState extends State<VoterPage> {
               height: 200,
               child: CircularProgressIndicator(),
             );
-            ongoing = [loading];
-            ended = [loading];
-            coming = [loading];
+            // ongoing = [loading];
+            // ended = [loading];
+            // coming = [loading];
           }
-          return Center(
-              child: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                title: Text("Ongoing Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(ongoing),
-              ),
-              SliverAppBar(
-                title: Text("Coming Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(coming),
-              ),
-              SliverAppBar(
-                title: Text("Ended Campaign"),
-                pinned: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(ended),
-              )
-            ],
-          ));
+          double width = MediaQuery.of(context).size.width;
+          double height = MediaQuery.of(context).size.height;
+          var padding = MediaQuery.of(context).padding;
+          double newHeight = height - padding.top - padding.bottom;
+          if (ongoing.length == 0 && coming.length == 0 && ended.length == 0) {
+            return Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                  Image.asset(
+                    'assets/app_logo_largest_without_bg.png',
+                    height: newHeight * 0.2,
+                  ),
+                  SizedBox(height: 20),
+                  RichText(
+                    text: const TextSpan(
+                      text: 'No Campaigns to Show',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                ]));
+          } else {
+            return Center(
+                child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  title: Text("Ongoing Campaign"),
+                  pinned: true,
+                ),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return _createCampaignElement(ongoing[index]);
+                  },
+                  childCount: ongoing.length,
+                )),
+                SliverAppBar(
+                  title: Text("Coming Campaign"),
+                  pinned: true,
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return _createCampaignElement(coming[index]);
+                    },
+                    childCount: coming.length,
+                  ),
+                ),
+                SliverAppBar(
+                  title: Text("Ended Campaign"),
+                  pinned: true,
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return _createCampaignElement(ended[index]);
+                    },
+                    childCount: coming.length,
+                  ),
+                )
+              ],
+            ));
+          }
         },
       ),
     );

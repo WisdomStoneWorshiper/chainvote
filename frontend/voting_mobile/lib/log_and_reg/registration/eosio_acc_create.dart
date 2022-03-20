@@ -17,19 +17,24 @@ class EOSIOAccCreate extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     _itsc = ModalRoute.of(context)!.settings.arguments as String;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newHeight = height - padding.top - padding.bottom;
+
     return Scaffold(
         appBar: AppBar(
-          title: Text(_title + _itsc),
+          title: Text(_title), // + _itsc),
         ),
         body: Center(
             child: Column(
           children: [
-            const SizedBox(
-              height: 225,
+            SizedBox(
+              height: newHeight * 0.25,
             ),
             const Text(
               "Already have an EOSIO account?",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(
               height: 10,
@@ -45,15 +50,15 @@ class EOSIOAccCreate extends StatelessWidget {
               ),
               style: ElevatedButton.styleFrom(
                 //primary: Colors.blue,
-                minimumSize: const Size(300, 42),
+                minimumSize: Size(width * 0.8, 42),
               ),
             ),
-            const SizedBox(
-              height: 125,
+            SizedBox(
+              height: newHeight * 0.15,
             ),
             const Text(
               "Don't have an EOSIO account?",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
             ),
             const SizedBox(
               height: 10,
@@ -69,7 +74,7 @@ class EOSIOAccCreate extends StatelessWidget {
               ),
               style: ElevatedButton.styleFrom(
                 //primary: Colors.blue,
-                minimumSize: const Size(300, 42),
+                minimumSize: Size(width * 0.8, 42),
               ),
             )
           ],

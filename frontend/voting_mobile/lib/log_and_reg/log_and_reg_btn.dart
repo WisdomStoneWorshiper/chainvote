@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class LogAndRegButton extends StatelessWidget {
   final String _labelText;
   final void Function() _callback;
-  const LogAndRegButton(this._labelText, this._callback);
+  final Color _bgColor;
+  const LogAndRegButton(this._labelText, this._bgColor, this._callback);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,8 @@ class LogAndRegButton extends StatelessWidget {
         onPressed: _callback,
         style: ElevatedButton.styleFrom(
           //primary: Colors.blue,
-          minimumSize: const Size(300, 42),
+          minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 42),
+          primary: _bgColor,
         ),
       ),
     );
