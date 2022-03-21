@@ -33,6 +33,7 @@ router.post("/addvoter", async (req, res) => {
         }
     )
     .then( result => {
+        console.log(result);
         res.json({
             error : false
         });
