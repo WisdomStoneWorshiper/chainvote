@@ -127,6 +127,12 @@ ACTION votingplat::addvoter(uint64_t campaign_id, name voter) {
   check(campaign_itr->start_time > current_time_point(),
         "Campaign has already started");
 
+  auto campaign_voter_list_itr = campaign_itr->voter_list.begin();
+
+  while (campaign_voter_list_itr != campaign_itr->voter_list.end()) {
+    check(*campaign_voter_list_itr != voter, "voter added already");
+  }
+
   voter_table _voter(get_self(), get_self().value);
 
   auto voting_itr = _voter.find(voter.value);  // edited value
