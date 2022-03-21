@@ -131,6 +131,7 @@ ACTION votingplat::addvoter(uint64_t campaign_id, name voter) {
 
   while (campaign_voter_list_itr != campaign_itr->voter_list.end()) {
     check(*campaign_voter_list_itr != voter, "voter added already");
+    ++campaign_voter_list_itr;
   }
 
   voter_table _voter(get_self(), get_self().value);
