@@ -21,8 +21,8 @@ app.use((req, res, next) => {
     next();
 })
 
-app.get("/test", (req, res) => {
-    res.send("Hello Back !")
+app.get("/", (req, res) => {
+    res.json({ name : "yes" });
 })
 
 app.use("/registration", registration);
