@@ -90,232 +90,161 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).padding;
-    double newHeight = height - padding.top - padding.bottom;
-
     // campaign.setview(CampaignView.Owner);
-    DateTime endTime = campaign.getEndTime();
-    DateTime startTime = campaign.getStartTime();
     return Scaffold(
-        appBar: AppBar(
-          title: Text(campaign.getCampaignName()),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: GestureDetector(
-                onTap: () {
-                  if (campaign.getCampaignStat() != CampaignStat.Ongoing) {
-                    requestKey(context, _deleteCampaign, "Deleting");
-                  }
-                },
-                child: Icon(
-                  Icons.delete,
-                  color: campaign.getCampaignStat() != CampaignStat.Ongoing
-                      ? Colors.white
-                      : Colors.white.withOpacity(0.3),
-                ),
-              ),
-            ),
-          ],
-        ),
-        body: Container(
-          child: Align(
-            alignment: Alignment.center,
-            child: Center(
-              child: Column(
-                //crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //Text("Owner: " + campaign.getOwner()),
-                  // //Text(campaign.getStartTime().toLocal().toString() +
-                  //     "  -  " +
-                  //     campaign.getEndTime().toLocal().toString()),
-
-                  RichText(
-                    text: TextSpan(
-                        text:
-                            "\n Start Date: ${startTime.day.toString().padLeft(2, '0')}-${startTime.month.toString().padLeft(2, '0')}-${startTime.year.toString().padLeft(2, '0')}    \n",
-                        style: TextStyle(
-                            color: Colors
-                                .white, //Theme.of(context).colorScheme.secondary,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text:
-                                "\n End Date: ${endTime.day.toString().padLeft(2, '0')}-${endTime.month.toString().padLeft(2, '0')}-${endTime.year.toString().padLeft(2, '0')}",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ]),
-                  ),
-                  SizedBox(
-                    height: 0.05 * newHeight,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        // style: ButtonStyle(
-                        //backgroundColor: Colors.white,
-                        //   MaterialStateProperty.resolveWith<Color?>(
-                        // (Set<MaterialState> states) {
-                        //   if (campaign.getCampaignStat() !=
-                        //       CampaignStat.Coming)
-                        //     return Theme.of(context)
-                        //         .colorScheme
-                        //         .primary
-                        //         .withOpacity(0.3);
-                        //   return null; // Use the component's default.
-                        // },
-                        // ),
-                        onPressed: () {
-                          if (campaign.getCampaignStat() ==
-                              CampaignStat.Coming) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return EditPage(
-                                      campaignId: campaign.campaignId,
-                                      editType: EditType.Choice,
-                                      editingList: campaign
-                                          .getChoiceList()
-                                          .map((c) => c.choiceName)
-                                          .toList());
-                                },
-                              ),
-                            );
-                          }
-                        },
-                        child: Text(
-                          "Edit choice",
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 0.075 * width,
-                      ),
-                      ElevatedButton(
-                        // style: ButtonStyle(
-                        //   backgroundColor:
-                        //       MaterialStateProperty.resolveWith<Color?>(
-                        //     (Set<MaterialState> states) {
-                        //       if (campaign.getCampaignStat() !=
-                        //           CampaignStat.Coming)
-                        //         return Theme.of(context)
-                        //             .colorScheme
-                        //             .primary
-                        //             .withOpacity(0.3);
-                        //       return null; // Use the component's default.
-                        //     },
-                        //   ),
-                        // ),
-
-                        onPressed: () {
-                          if (campaign.getCampaignStat() ==
-                              CampaignStat.Coming) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return EditPage(
-                                      campaignId: campaign.campaignId,
-                                      editType: EditType.Voter,
-                                      editingList: campaign.getVoterList());
-                                },
-                              ),
-                            );
-                          }
-                        },
-                        child: Text(
-                          "Edit voter",
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                      child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Container(
-                        alignment: Alignment.topCenter,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: campaign.getChoiceList().length + 1,
-                            itemBuilder: (_, index) {
-                              if (index == 0) {
-                                return Container(
-                                  alignment: Alignment.center,
-                                  child: ListTile(
-                                    title: Text(
-                                      "Choices",
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return Container(
-                                child: ListTile(
-                                  leading: Text((index).toString()),
-                                  title: Text(
-                                    campaign
-                                        .getChoiceList()[index - 1]
-                                        .choiceName,
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: campaign.getVoterList().length + 1,
-                            itemBuilder: (_, index) {
-                              if (index == 0) {
-                                return Container(
-                                  child: ListTile(
-                                    title: Text(
-                                      "Voters",
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return Container(
-                                child: ListTile(
-                                  leading: Text((index).toString()),
-                                  title: Text(
-                                    campaign.getVoterList()[index - 1],
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
-                  ))
-                ],
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: GestureDetector(
+              onTap: () {
+                if (campaign.getCampaignStat() != CampaignStat.Ongoing) {
+                  requestKey(context, _deleteCampaign, "Deleting");
+                }
+              },
+              child: Icon(
+                Icons.delete,
+                color: campaign.getCampaignStat() != CampaignStat.Ongoing
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.3),
               ),
             ),
           ),
-        ));
+        ],
+      ),
+      body: Container(
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Campaign Name: " + campaign.getCampaignName()),
+              Text("Owner: " + campaign.getOwner()),
+              Text("Start: " + campaign.getStartTime().toLocal().toString()),
+              Text("End: " + campaign.getEndTime().toLocal().toString()),
+              Row(
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.resolveWith<Color?>(
+                        (Set<MaterialState> states) {
+                          if (campaign.getCampaignStat() != CampaignStat.Coming)
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.3);
+                          return null; // Use the component's default.
+                        },
+                      ),
+                    ),
+                    onPressed: () {
+                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return EditPage(
+                                  campaignId: campaign.campaignId,
+                                  editType: EditType.Choice,
+                                  editingList: campaign
+                                      .getChoiceList()
+                                      .map((c) => c.choiceName)
+                                      .toList());
+                            },
+                          ),
+                        );
+                      }
+                    },
+                    child: Text("Edit choice"),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.resolveWith<Color?>(
+                        (Set<MaterialState> states) {
+                          if (campaign.getCampaignStat() != CampaignStat.Coming)
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.3);
+                          return null; // Use the component's default.
+                        },
+                      ),
+                    ),
+                    onPressed: () {
+                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return EditPage(
+                                  campaignId: campaign.campaignId,
+                                  editType: EditType.Voter,
+                                  editingList: campaign.getVoterList());
+                            },
+                          ),
+                        );
+                      }
+                    },
+                    child: Text("Edit voter"),
+                  ),
+                ],
+              ),
+              Expanded(
+                  child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: campaign.getChoiceList().length + 1,
+                        itemBuilder: (_, index) {
+                          if (index == 0) {
+                            return Container(
+                              child: ListTile(
+                                title: Text("Choices"),
+                              ),
+                            );
+                          }
+                          return Container(
+                            child: ListTile(
+                              leading: Text((index).toString()),
+                              title: Text(campaign
+                                  .getChoiceList()[index - 1]
+                                  .choiceName),
+                            ),
+                          );
+                        }),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: campaign.getVoterList().length + 1,
+                        itemBuilder: (_, index) {
+                          if (index == 0) {
+                            return Container(
+                              child: ListTile(
+                                title: Text("Voters"),
+                              ),
+                            );
+                          }
+                          return Container(
+                            child: ListTile(
+                              leading: Text((index).toString()),
+                              title: Text(campaign.getVoterList()[index - 1]),
+                            ),
+                          );
+                        }),
+                  ),
+                ],
+              ))
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -112,21 +112,13 @@ class CreatePage extends StatelessWidget with SharedDialog {
   Widget build(BuildContext context) {
     _starttimeController.text = DateFormat(_dateFormat).format(_starttime);
     _endtimeController.text = DateFormat(_dateFormat).format(_endtime);
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).padding;
-    double newHeight = height - padding.top - padding.bottom;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Create new campaign"),
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: newHeight * 0.075,
-          ),
           Padding(
             padding: EdgeInsets.all(16),
             child: Material(
