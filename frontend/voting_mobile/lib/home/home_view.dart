@@ -15,13 +15,30 @@ abstract class CampaignList extends StatefulWidget {
       : super(key: key);
 }
 
-abstract class CampaignListState extends State<CampaignList> {
+abstract class CampaignListState extends State<CampaignList>
+    with SingleTickerProviderStateMixin {
   final String itsc;
   final String eosAccountName;
+  late AnimationController _loadingAnimationController;
 
   late Voter user;
 
   CampaignListState({required this.itsc, required this.eosAccountName});
+
+  @override
+  void initState() {
+    _loadingAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    )..repeat();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _loadingAnimationController.dispose();
+    super.dispose();
+  }
 
   bool isReload = false;
   List<Campaign> reloadResult = [];
@@ -46,7 +63,7 @@ abstract class CampaignListState extends State<CampaignList> {
           style: Theme.of(context).textTheme.headline6,
         ),
       ),
-      collapsed: Text("test"),
+      collapsed: Text("Total campaign: " + w.length.toString()),
       expanded: Column(
         children: [for (var x in w) x],
       ),
@@ -75,24 +92,47 @@ abstract class CampaignListState extends State<CampaignList> {
                 ongoing.add(c);
               }
             }
-          } else {
-            Widget loading = SizedBox(
-              width: 200,
-              height: 200,
-              child: CircularProgressIndicator(),
+            print(ongoing.length);
+            return ListView(
+              children: [
+                _expandView("Ongoing Campaign", ongoing),
+                _expandView("Upcoming Campaign", coming),
+                _expandView("Ended Campaign", ended),
+              ],
             );
-            ongoing = [loading];
-            ended = [loading];
-            coming = [loading];
+          } else {
+            // Widget loading = SizedBox(
+            //   width: 200,
+            //   height: 200,
+            //   child: CircularProgressIndicator(),
+            // );
+            // ongoing = [loading];
+            // ended = [loading];
+            // coming = [loading];
+            return Container(
+              alignment: Alignment.center,
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.2,
+                          bottom: MediaQuery.of(context).size.height * 0.1),
+                      child: RotationTransition(
+                        turns: Tween(begin: 0.0, end: 1.0)
+                            .animate(_loadingAnimationController),
+                        child: Image(
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          image: AssetImage('assets/app_logo_transparent.png'),
+                        ),
+                      ),
+                    ),
+                    Text("Loading ... "),
+                  ],
+                ),
+              ),
+            );
           }
-          print(ongoing.length);
-          return ListView(
-            children: [
-              _expandView("Ongoing Campaign", ongoing),
-              _expandView("Upcoming Campaign", coming),
-              _expandView("Ended Campaign", ended),
-            ],
-          );
         },
       ),
     );

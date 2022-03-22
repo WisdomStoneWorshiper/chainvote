@@ -228,7 +228,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
                 if (_checkedCount > 0) _comfirmDelete();
               },
               child: Icon(
-                IconData(0xf695, fontFamily: 'MaterialIcons'),
+                Icons.delete_forever_rounded,
                 color: _checkedCount > 0
                     ? Colors.white
                     : Colors.white.withOpacity(0.3),

@@ -238,21 +238,33 @@ class _AddPageState extends State<AddPage> with SharedDialog {
                 child: ListView.builder(
               shrinkWrap: true,
               itemCount: _addList.length,
-              itemBuilder: (_, index) => Container(
-                  child: CheckboxListTile(
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(_addList[index]),
-                value: _isChecked[index],
-                onChanged: (value) {
-                  _isChecked[index] = value as bool;
-                  if (value as bool == true) {
-                    ++_checkedCount;
-                  } else {
-                    --_checkedCount;
+              itemBuilder: (_, index) => Dismissible(
+                key: Key(_addList[index]),
+                onDismissed: (direction) {
+                  if (direction == DismissDirection.endToStart) {
+                    if (_isChecked[index] == true) {
+                      --_checkedCount;
+                    }
+                    _addList.removeAt(index);
+                    _isChecked.removeAt(index);
                   }
-                  setState(() {});
                 },
-              )),
+                child: Container(
+                    child: CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text(_addList[index]),
+                  value: _isChecked[index],
+                  onChanged: (value) {
+                    _isChecked[index] = value as bool;
+                    if (value as bool == true) {
+                      ++_checkedCount;
+                    } else {
+                      --_checkedCount;
+                    }
+                    setState(() {});
+                  },
+                )),
+              ),
             ))
           ],
         ),
@@ -270,7 +282,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
                         }
                       });
                     },
-                    child: Icon(IconData(0xf695, fontFamily: 'MaterialIcons')),
+                    child: Icon(Icons.delete_forever_rounded),
                   )
                 : FloatingActionButton(
                     onPressed: () {
