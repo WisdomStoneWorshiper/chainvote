@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 
 import '../../global_variable.dart';
 import 'campaign_list_view.dart';
-import 'voting_view.dart';
 
 enum CampaignStat { Coming, Ongoing, Ended }
 
@@ -143,27 +142,8 @@ class Campaign extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (view) {
-      case CampaignView.List:
-        {
-          return CampaignListView(
-            campaign: this,
-          );
-        }
-        break;
-      case CampaignView.Voter:
-        {
-          return VotingView(campaign: this);
-        }
-        break;
-
-      default:
-        {
-          return CampaignListView(
-            campaign: this,
-          );
-        }
-        break;
-    }
+    return CampaignListView(
+      campaign: this,
+    );
   }
 }

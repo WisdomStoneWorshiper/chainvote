@@ -81,19 +81,21 @@ class _VotablePageState extends State<VotablePage> {
                 ),
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: campaign.getChoiceList().length,
-              itemBuilder: (_, index) => Container(
-                child: ListTile(
-                  leading: Container(
-                    width: MediaQuery.of(context).size.width * 0.04,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: _chartColor[index]),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: campaign.getChoiceList().length,
+                itemBuilder: (_, index) => Container(
+                  child: ListTile(
+                    leading: Container(
+                      width: MediaQuery.of(context).size.width * 0.04,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: _chartColor[index]),
+                    ),
+                    title: Text(campaign.getChoiceList()[index].choiceName),
+                    trailing:
+                        Text(campaign.getChoiceList()[index].result.toString()),
                   ),
-                  title: Text(campaign.getChoiceList()[index].choiceName),
-                  trailing:
-                      Text(campaign.getChoiceList()[index].result.toString()),
                 ),
               ),
             ),
