@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
@@ -173,6 +174,15 @@ class _AddPageState extends State<AddPage> with SharedDialog {
     }
   }
 
+  void _deleteElement(int index) {
+    if (_isChecked[index] == true) {
+      --_checkedCount;
+    }
+    _addList.removeAt(index);
+    _isChecked.removeAt(index);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -238,17 +248,25 @@ class _AddPageState extends State<AddPage> with SharedDialog {
                 child: ListView.builder(
               shrinkWrap: true,
               itemCount: _addList.length,
-              itemBuilder: (_, index) => Dismissible(
+              itemBuilder: (_, index) => Slidable(
                 key: Key(_addList[index]),
-                onDismissed: (direction) {
-                  if (direction == DismissDirection.endToStart) {
-                    if (_isChecked[index] == true) {
-                      --_checkedCount;
-                    }
-                    _addList.removeAt(index);
-                    _isChecked.removeAt(index);
-                  }
-                },
+                endActionPane: ActionPane(
+                  dismissible: DismissiblePane(onDismissed: () {
+                    _deleteElement(index);
+                  }),
+                  motion: ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {
+                        _deleteElement(index);
+                      },
+                      backgroundColor: Color(0xFFFE4A49),
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
+                ),
                 child: Container(
                     child: CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,

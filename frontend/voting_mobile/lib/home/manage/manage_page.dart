@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:eosdart/eosdart.dart' as eos;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:card_swiper/card_swiper.dart';
 
 import '../campaign.dart';
 import 'edit_page.dart';
@@ -90,10 +91,42 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     }
   }
 
+  Widget _getList(String title, List<String> list) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.05),
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: list.length + 1,
+          itemBuilder: (_, index) {
+            if (index == 0) {
+              return Container(
+                child: ListTile(
+                  title: Text(title),
+                ),
+              );
+            }
+            return Container(
+              child: ListTile(
+                leading: Text((index).toString()),
+                title: Text(list[index - 1]),
+              ),
+            );
+          }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
+
+    List<Widget> bigList = [
+      _getList(
+          "Choices", [for (Choice c in campaign.getChoiceList()) c.choiceName]),
+      _getList("Voters", campaign.getVoterList()),
+    ];
     // campaign.setview(CampaignView.Owner);
     return Scaffold(
       appBar: AppBar(
@@ -196,55 +229,16 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                 ],
               ),
               Expanded(
-                  child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: campaign.getChoiceList().length + 1,
-                        itemBuilder: (_, index) {
-                          if (index == 0) {
-                            return Container(
-                              child: ListTile(
-                                title: Text("Choices"),
-                              ),
-                            );
-                          }
-                          return Container(
-                            child: ListTile(
-                              leading: Text((index).toString()),
-                              title: Text(campaign
-                                  .getChoiceList()[index - 1]
-                                  .choiceName),
-                            ),
-                          );
-                        }),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: campaign.getVoterList().length + 1,
-                        itemBuilder: (_, index) {
-                          if (index == 0) {
-                            return Container(
-                              child: ListTile(
-                                title: Text("Voters"),
-                              ),
-                            );
-                          }
-                          return Container(
-                            child: ListTile(
-                              leading: Text((index).toString()),
-                              title: Text(campaign.getVoterList()[index - 1]),
-                            ),
-                          );
-                        }),
-                  ),
-                ],
-              ))
+                child: Swiper(
+                  itemCount: 2,
+                  pagination: SwiperPagination(),
+                  control: SwiperControl(),
+                  loop: false,
+                  itemBuilder: (context, index) {
+                    return bigList[index];
+                  },
+                ),
+              ),
             ],
           ),
         ),
