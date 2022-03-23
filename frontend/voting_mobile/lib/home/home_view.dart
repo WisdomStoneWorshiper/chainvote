@@ -10,8 +10,12 @@ import 'voter.dart';
 abstract class CampaignList extends StatefulWidget {
   final String itsc;
   final String eosAccountName;
+  final void Function(bool) refreshLock;
   const CampaignList(
-      {required this.itsc, required this.eosAccountName, Key? key})
+      {required this.itsc,
+      required this.eosAccountName,
+      required this.refreshLock,
+      Key? key})
       : super(key: key);
 }
 
@@ -20,10 +24,14 @@ abstract class CampaignListState extends State<CampaignList>
   final String itsc;
   final String eosAccountName;
   late AnimationController _loadingAnimationController;
+  final void Function(bool) refreshLock;
 
   late Voter user;
 
-  CampaignListState({required this.itsc, required this.eosAccountName});
+  CampaignListState(
+      {required this.itsc,
+      required this.eosAccountName,
+      required this.refreshLock});
 
   @override
   void initState() {
@@ -48,9 +56,11 @@ abstract class CampaignListState extends State<CampaignList>
   Future _onRefresh() async {
     isReload = true;
     reloadResult = [];
+    refreshLock(true);
     await init(eosAccountName);
     // return init(eosAccountName);
     setState(() {});
+    refreshLock(false);
   }
 
   _expandView(String title, List<Widget> w) {

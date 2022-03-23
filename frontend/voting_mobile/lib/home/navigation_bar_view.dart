@@ -24,6 +24,12 @@ class _NavBarViewState extends State<NavBarView> {
 
   List<Widget> _pageOpts = <Widget>[];
 
+  bool _refreshLock = false;
+
+  void _setRefreshLock(bool val) {
+    _refreshLock = val;
+  }
+
   static const List<BottomNavigationBarItem> _barItem =
       <BottomNavigationBarItem>[
     BottomNavigationBarItem(
@@ -44,9 +50,11 @@ class _NavBarViewState extends State<NavBarView> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (_refreshLock == false) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -56,10 +64,12 @@ class _NavBarViewState extends State<NavBarView> {
       _pageOpts.add(VoterPage(
         itsc: args.itsc,
         eosAccountName: args.eosAccountName,
+        refreshLock: _setRefreshLock,
       ));
       _pageOpts.add(OwnerPage(
         itsc: args.itsc,
         eosAccountName: args.eosAccountName,
+        refreshLock: _setRefreshLock,
       ));
       _pageOpts.add(SettingPage());
       _isInit = true;

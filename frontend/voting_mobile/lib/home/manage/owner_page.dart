@@ -10,19 +10,29 @@ import '../home_view.dart';
 
 class OwnerPage extends CampaignList {
   const OwnerPage(
-      {required String itsc, required String eosAccountName, Key? key})
-      : super(itsc: itsc, eosAccountName: eosAccountName);
+      {required String itsc,
+      required String eosAccountName,
+      required void Function(bool) refreshLock,
+      Key? key})
+      : super(
+            itsc: itsc,
+            eosAccountName: eosAccountName,
+            refreshLock: refreshLock);
 
   @override
-  _OwnerPageState createState() =>
-      _OwnerPageState(itsc: itsc, eosAccountName: eosAccountName);
+  _OwnerPageState createState() => _OwnerPageState(
+      itsc: itsc, eosAccountName: eosAccountName, refreshLock: refreshLock);
 }
 
 class _OwnerPageState extends CampaignListState {
   _OwnerPageState({
     required String itsc,
     required String eosAccountName,
-  }) : super(itsc: itsc, eosAccountName: eosAccountName);
+    required void Function(bool) refreshLock,
+  }) : super(
+            itsc: itsc,
+            eosAccountName: eosAccountName,
+            refreshLock: refreshLock);
 
   @override
   Future<List<Campaign>> init(String voterName) async {

@@ -11,6 +11,8 @@ import '../../global_variable.dart';
 import '../../shared_dialog.dart';
 import '../navigation_bar_view.dart';
 
+enum ItemType { Choice, Voter, Delete }
+
 class ManagePage extends StatefulWidget {
   const ManagePage({Key? key}) : super(key: key);
 
@@ -131,22 +133,63 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                if (campaign.getCampaignStat() != CampaignStat.Ongoing) {
+          PopupMenuButton(
+            onSelected: ((value) {
+              switch (value) {
+                case ItemType.Choice:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return EditPage(
+                            campaignId: campaign.campaignId,
+                            editType: EditType.Choice,
+                            editingList: campaign
+                                .getChoiceList()
+                                .map((c) => c.choiceName)
+                                .toList());
+                      },
+                    ),
+                  );
+                  break;
+                case ItemType.Voter:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return EditPage(
+                            campaignId: campaign.campaignId,
+                            editType: EditType.Voter,
+                            editingList: campaign.getVoterList());
+                      },
+                    ),
+                  );
+                  break;
+                case ItemType.Delete:
                   requestKey(context, _deleteCampaign, "Deleting");
-                }
-              },
-              child: Icon(
-                Icons.delete,
-                color: campaign.getCampaignStat() != CampaignStat.Ongoing
-                    ? Colors.white
-                    : Colors.white.withOpacity(0.3),
+                  break;
+                default:
+                  break;
+              }
+            }),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: campaign.getCampaignStat() == CampaignStat.Coming,
+                value: ItemType.Choice,
+                child: Text("Edit choice"),
               ),
-            ),
-          ),
+              PopupMenuItem(
+                enabled: campaign.getCampaignStat() == CampaignStat.Coming,
+                value: ItemType.Voter,
+                child: Text("Edit voter"),
+              ),
+              PopupMenuItem(
+                enabled: campaign.getCampaignStat() == CampaignStat.Coming,
+                value: ItemType.Delete,
+                child: Text("Delete"),
+              ),
+            ],
+          )
         ],
       ),
       body: Container(
@@ -155,78 +198,59 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Campaign Name: " + campaign.getCampaignName()),
-              Text("Owner: " + campaign.getOwner()),
-              Text("Start: " + campaign.getStartTime().toLocal().toString()),
-              Text("End: " + campaign.getEndTime().toLocal().toString()),
-              Row(
-                children: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                          if (campaign.getCampaignStat() != CampaignStat.Coming)
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.3);
-                          return null; // Use the component's default.
-                        },
-                      ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Card(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.01,
+                      vertical: MediaQuery.of(context).size.height * 0.01,
                     ),
-                    onPressed: () {
-                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return EditPage(
-                                  campaignId: campaign.campaignId,
-                                  editType: EditType.Choice,
-                                  editingList: campaign
-                                      .getChoiceList()
-                                      .map((c) => c.choiceName)
-                                      .toList());
-                            },
-                          ),
-                        );
-                      }
-                    },
-                    child: Text("Edit choice"),
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                          if (campaign.getCampaignStat() != CampaignStat.Coming)
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.3);
-                          return null; // Use the component's default.
-                        },
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          campaign.getCampaignName(),
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * 0.01,
+                              ),
+                              child: Icon(Icons.person),
+                            ),
+                            Text(campaign.getOwner()),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * 0.01,
+                              ),
+                              child: Icon(Icons.timer_outlined),
+                            ),
+                            Text(campaign.getStartTime().toLocal().toString()),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * 0.01,
+                              ),
+                              child: Icon(Icons.timer_off_outlined),
+                            ),
+                            Text(campaign.getEndTime().toLocal().toString()),
+                          ],
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return EditPage(
-                                  campaignId: campaign.campaignId,
-                                  editType: EditType.Voter,
-                                  editingList: campaign.getVoterList());
-                            },
-                          ),
-                        );
-                      }
-                    },
-                    child: Text("Edit voter"),
                   ),
-                ],
+                ),
               ),
               Expanded(
                 child: Swiper(
