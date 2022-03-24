@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
+import '../../shared_dialog.dart';
 
 class LinkUpArg {
   final String itsc;
@@ -18,7 +19,7 @@ class LinkUp extends StatefulWidget {
   State<LinkUp> createState() => _LinkUpState();
 }
 
-class _LinkUpState extends State<LinkUp> {
+class _LinkUpState extends State<LinkUp> with SharedDialog {
   String _itsc = "";
 
   bool _needCreateEOSIO = false;
@@ -66,15 +67,22 @@ class _LinkUpState extends State<LinkUp> {
           'accname': _eosAccController.text,
           'pkey': _eosPublicKeyController.text
         });
-        if (response.statusCode == 200) {
-          SuccessPageArg arg = SuccessPageArg(
-              message: 'Your Account Created Successfully', returnPage: 'l&r');
-          Navigator.pushNamed(_context, 's', arguments: arg);
+        if (response.statusCode != 200) {
+          // errDialog(context, "Fail to create, Reason: " + response["message"]!);
         }
         print(response);
       } catch (e) {
-        print(e);
+        DioError err = e as DioError;
+
+        Map<String, dynamic> response = (err.response?.data);
+
+        errDialog(context, "Fail to create, Reason: " + response["message"]!);
+
+        return;
       }
+      SuccessPageArg arg = SuccessPageArg(
+          message: 'Your Account Created Successfully', returnPage: 'l&r');
+      Navigator.pushNamed(_context, 's', arguments: arg);
     }
   }
 
@@ -206,123 +214,3 @@ class _LinkUpState extends State<LinkUp> {
     );
   }
 }
-
-
-// const SizedBox(
-//             height: 125,
-//           ),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               const Text(
-//                 "ITSC : ",
-//                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-//               ),
-//               Text(
-//                 _itsc,
-//                 style: const TextStyle(
-//                     fontSize: 20.0, fontWeight: FontWeight.bold),
-//               ),
-//             ],
-//           ),
-//           const SizedBox(
-//             height: 45,
-//           ),
-//           Column(
-//             children: [
-//               const Text(
-//                 "Confirmation Code ",
-//                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-//               ),
-//               const SizedBox(
-//                 height: 15,
-//               ),
-//               SizedBox(
-//                 width: 300,
-//                 height: 50,
-//                 child: TextField(
-//                   decoration: const InputDecoration(
-//                     border: OutlineInputBorder(),
-//                     labelText: "Confirmation Code",
-//                     hintText: 'Please Enter the Code',
-//                   ),
-//                   controller: _codeController,
-//                 ),
-//               )
-//             ],
-//           ),
-//           const SizedBox(
-//             height: 40,
-//           ),
-//           Column(
-//             children: [
-//               const Text(
-//                 "EOSIO Account Name : ",
-//                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-//               ),
-//               const SizedBox(
-//                 height: 15,
-//               ),
-//               SizedBox(
-//                 width: 300,
-//                 height: 50,
-//                 child: TextField(
-//                   decoration: const InputDecoration(
-//                     border: OutlineInputBorder(),
-//                     hintText: 'Please enter the account name',
-//                     labelText: "Account Name",
-//                   ),
-//                   controller: _eosAccController,
-//                 ),
-//               )
-//             ],
-//           ),
-//           _needCreateEOSIO == true
-//               ? Column(
-//                   children: [
-//                     const SizedBox(
-//                       height: 40,
-//                     ),
-//                     const Text(
-//                       "EOSIO Public Key : ",
-//                       style: TextStyle(
-//                           fontSize: 18.0, fontWeight: FontWeight.bold),
-//                     ),
-//                     const SizedBox(
-//                       height: 15,
-//                     ),
-//                     SizedBox(
-//                       width: 300,
-//                       height: 50,
-//                       child: TextField(
-//                         decoration: const InputDecoration(
-//                           border: OutlineInputBorder(),
-//                           labelText: "Public Key",
-//                           hintText: 'Please enter the public key',
-//                         ),
-//                         controller: _eosPublicKeyController,
-//                       ),
-//                     ),
-//                     const SizedBox(
-//                       height: 80,
-//                     ),
-//                   ],
-//                 )
-//               : Column(
-//                   children: [
-//                     const SizedBox(
-//                       height: 150,
-//                     ),
-//                   ],
-//                 ),
-//           ElevatedButton(
-//             onPressed: _submitLinpUpRequest,
-//             child: const Text(
-//               "Submit",
-//               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-//             ),
-//             style: ElevatedButton.styleFrom(
-//               //primary: Colors.blue,
-//               minimumSize: const Size(300, 42),
-//             ),
-//           )

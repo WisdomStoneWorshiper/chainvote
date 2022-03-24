@@ -93,11 +93,11 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     }
   }
 
-  Widget _getList(String title, List<String> list) {
+  Widget _getList(String title, List<String> list, var tilteTheme) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05),
+          horizontal: MediaQuery.of(context).size.width * 0.04),
       child: ListView.builder(
           shrinkWrap: true,
           itemCount: list.length + 1,
@@ -105,7 +105,10 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
             if (index == 0) {
               return Container(
                 child: ListTile(
-                  title: Text(title),
+                  title: Text(
+                    title,
+                    style: tilteTheme,
+                  ),
                 ),
               );
             }
@@ -124,10 +127,21 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
 
+    final theme = Theme.of(context);
+    final oldTextTheme = theme.textTheme.headline4;
+
+    final campaignTextTheme =
+        oldTextTheme!.copyWith(fontWeight: FontWeight.bold);
+
+    final listTitleTheme = oldTextTheme!.copyWith(
+        fontSize: oldTextTheme.fontSize! * 0.75, fontWeight: FontWeight.bold);
+
     List<Widget> bigList = [
       _getList(
-          "Choices", [for (Choice c in campaign.getChoiceList()) c.choiceName]),
-      _getList("Voters", campaign.getVoterList()),
+          "Choices",
+          [for (Choice c in campaign.getChoiceList()) c.choiceName],
+          listTitleTheme),
+      _getList("Voters", campaign.getVoterList(), listTitleTheme),
     ];
     // campaign.setview(CampaignView.Owner);
     return Scaffold(
@@ -202,6 +216,7 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                 padding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width * 0.05),
                 child: Card(
+                  color: Color.fromARGB(255, 2, 21, 27),
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width * 0.01,
@@ -210,31 +225,49 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          campaign.getCampaignName(),
-                          style: Theme.of(context).textTheme.headline5,
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          child: Text(
+                            campaign.getCampaignName(),
+                            style: campaignTextTheme,
+                          ),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                right: MediaQuery.of(context).size.width * 0.01,
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.003,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                ),
+                                child: Icon(Icons.person),
                               ),
-                              child: Icon(Icons.person),
-                            ),
-                            Text(campaign.getOwner()),
-                          ],
+                              Text(campaign.getOwner()),
+                            ],
+                          ),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                right: MediaQuery.of(context).size.width * 0.01,
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.003,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                ),
+                                child: Icon(Icons.timer_outlined),
                               ),
-                              child: Icon(Icons.timer_outlined),
-                            ),
-                            Text(campaign.getStartTime().toLocal().toString()),
-                          ],
+                              Text(
+                                  campaign.getStartTime().toLocal().toString()),
+                            ],
+                          ),
                         ),
                         Row(
                           children: [

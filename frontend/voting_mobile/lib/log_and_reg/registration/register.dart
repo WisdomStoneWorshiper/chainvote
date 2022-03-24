@@ -4,6 +4,7 @@ import 'dart:async';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
+import '../../shared_dialog.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class Register extends StatefulWidget {
   _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterState extends State<Register> with SharedDialog {
   late BuildContext _context;
   TextEditingController _itscFieldController = TextEditingController();
   final String _title = "Register";
@@ -46,16 +47,26 @@ class _RegisterState extends State<Register> {
       // print("itsc response");
       // print(response);
 
-      SuccessPageArg arg = SuccessPageArg(
-          message: 'The code has been sent to \n ' + itsc + '@connect.ust.hk',
-          returnPage: 'lu',
-          arg: itsc);
-      Navigator.pushNamed(_context, 's', arguments: arg);
-
-      // Navigator.pushNamed(context, 'es', arguments: itsc);
+      // if (response.statusCode != 200) {
+      //   print("fail");
+      //   // failed_item.add(_addList[i]);
+      //   errDialog(context, "Fail to register, Reason: " + response.data["message"]);
+      //   return;
+      // }
     } catch (e) {
-      print(e);
+      DioError err = e as DioError;
+
+      Map<String, dynamic> response = (err.response?.data);
+
+      errDialog(context, "Fail to register, Reason: " + response["message"]!);
+
+      return;
     }
+    SuccessPageArg arg = SuccessPageArg(
+        message: 'The code has been sent to \n ' + itsc + '@connect.ust.hk',
+        returnPage: 'lu',
+        arg: itsc);
+    Navigator.pushNamed(_context, 's', arguments: arg);
   }
 
   void _registerBtnHandler() {

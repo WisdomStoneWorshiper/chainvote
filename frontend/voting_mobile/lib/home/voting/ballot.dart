@@ -139,7 +139,9 @@ class _BallotState extends State<Ballot> with SharedDialog {
     );
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Vote"),
+      ),
       body: Container(
         child: Align(
           alignment: Alignment.topLeft,
@@ -148,15 +150,13 @@ class _BallotState extends State<Ballot> with SharedDialog {
             children: [
               Container(
                 padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.03,
+                  left: MediaQuery.of(context).size.width * 0.05,
                   bottom: MediaQuery.of(context).size.height * 0.03,
                 ),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text("Vote"),
-                      Text("Vote by clicking on the choice"),
-                    ],
-                  ),
+                child: Text(
+                  "Vote by clicking on the choice",
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               ListView.builder(

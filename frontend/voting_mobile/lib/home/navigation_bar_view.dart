@@ -35,17 +35,17 @@ class _NavBarViewState extends State<NavBarView> {
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
       label: 'Voting',
-      backgroundColor: Colors.red,
+      backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe04e, fontFamily: 'MaterialIcons')),
       label: 'Manage Campaign',
-      backgroundColor: Colors.green,
+      backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.settings),
       label: 'Settings',
-      backgroundColor: Colors.pink,
+      backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
   ];
 

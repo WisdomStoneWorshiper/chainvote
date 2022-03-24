@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:pie_chart/src/utils.dart';
+import 'package:intl/intl.dart';
 
 import '../campaign.dart';
 import 'dart:math';
@@ -37,18 +39,29 @@ class _VotablePageState extends State<VotablePage> {
     campaign = args;
     campaign.setview(CampaignView.Voter);
     print("is voted: " + (campaign.isVoted.toString()));
+    final theme = Theme.of(context);
+    final oldTextTheme = theme.textTheme.headline3;
+
+    // TextStyle newHeadline5 = ;
+    // newHeadline5.fontWeight = FontWeight.bold;
+    // print(oldTextTheme!.fontSize);
+    final summaryTextTheme =
+        oldTextTheme!.copyWith(fontWeight: FontWeight.bold);
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text(campaign.getCampaignName()),
+        ),
         body: Column(
           children: [
             Container(
               padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.01,
                 left: MediaQuery.of(context).size.width * 0.04,
               ),
               alignment: Alignment.centerLeft,
               child: Text(
                 "Summary",
-                style: Theme.of(context).textTheme.headline3,
+                style: summaryTextTheme,
               ),
             ),
             Container(
@@ -57,18 +70,25 @@ class _VotablePageState extends State<VotablePage> {
               ),
               alignment: Alignment.centerLeft,
               child: Text(
-                "Result",
+                campaign.getCampaignStat() == CampaignStat.Coming
+                    ? "Start: " +
+                        DateFormat("yyyy-MM-dd kk:mm:ss")
+                            .format(campaign.getStartTime().toLocal())
+                    : "End: " +
+                        DateFormat("yyyy-MM-dd kk:mm:ss")
+                            .format(campaign.getEndTime().toLocal()),
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
             Container(
               padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.05,
+                top: MediaQuery.of(context).size.height * 0.03,
                 left: MediaQuery.of(context).size.width * 0.04,
+                bottom: MediaQuery.of(context).size.height * 0.03,
               ),
               child: Center(
                 child: PieChart(
-                  colorList: _chartColor,
+                  // colorList: _chartColor,
                   chartRadius: MediaQuery.of(context).size.width * 0.5,
                   dataMap: _getVoteDistribution(),
                   chartType: ChartType.ring,
@@ -82,19 +102,26 @@ class _VotablePageState extends State<VotablePage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: campaign.getChoiceList().length,
-                itemBuilder: (_, index) => Container(
-                  child: ListTile(
-                    leading: Container(
-                      width: MediaQuery.of(context).size.width * 0.04,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: _chartColor[index]),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: campaign.getChoiceList().length,
+                  itemBuilder: (_, index) => Container(
+                    child: ListTile(
+                      minLeadingWidth: 10,
+                      leading: Container(
+                        width: MediaQuery.of(context).size.width * 0.04,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: defaultColorList[index]),
+                      ),
+                      title: Text(campaign.getChoiceList()[index].choiceName),
+                      trailing: Text(
+                          campaign.getChoiceList()[index].result.toString()),
                     ),
-                    title: Text(campaign.getChoiceList()[index].choiceName),
-                    trailing:
-                        Text(campaign.getChoiceList()[index].result.toString()),
                   ),
                 ),
               ),
