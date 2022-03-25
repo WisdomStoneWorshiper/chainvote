@@ -140,6 +140,27 @@ class Campaign extends StatelessWidget {
     }
   }
 
+  Color getTimeColor() {
+    var time;
+    if (getCampaignStat() == CampaignStat.Ended) {
+      return Colors.grey;
+    } else if (getCampaignStat() == CampaignStat.Coming) {
+      time = _startTime;
+    } else {
+      time = _endTime;
+    }
+    print("called");
+    var timeDiff = time.difference(DateTime.now().toUtc());
+    if (timeDiff < Duration(hours: 1)) {
+      print(timeDiff.toString());
+      return Colors.red;
+    } else if (timeDiff < Duration(days: 1)) {
+      return Colors.amber;
+    } else {
+      return Colors.green;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CampaignListView(

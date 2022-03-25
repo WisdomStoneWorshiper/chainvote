@@ -52,8 +52,9 @@ class Login extends StatelessWidget {
           prefs.setString('eosName', eosName);
           prefs.setString('itsc', _itscFieldController.text);
           HomeArg arg = HomeArg(_itscFieldController.text, eosName);
-          Navigator.pop(_context);
-          Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
+          // Navigator.pop(_context);
+          Navigator.pushNamedAndRemoveUntil(_context, 'h', (r) => false,
+              arguments: arg);
         } else {
           ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
         }
