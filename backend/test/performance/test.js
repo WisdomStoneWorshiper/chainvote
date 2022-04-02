@@ -20,8 +20,15 @@ const getRandomString = (length) => {
     return result;
 }
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+
 const main = async () => {
     // Collect all account
+    console.log("=== PERFORMANCE TESTING STARTS ===")
     const data = getAccount("./test/performance/username.txt")
     let account = []
     let failedAccount = []
@@ -58,18 +65,19 @@ const main = async () => {
                 blocksBehind: 3,
                 expireSeconds: 30,
                }
-            ).then(res => console.log(res))
+            )
             .catch(err => {
-            console.log(err.message);
-            console.log(`Failed Account ${acc.accname}`);
+            // console.log(err.message);
+            // console.log(`Failed Account ${acc.accname}`);
             failedAccount.push(acc);
         });
         }
     })
 
+    console.log("- Added Accounts to contract")
+
     // Generate Campaign
     const campaignName = getRandomString(10);
-    console.log(campaignName);
     const HALF_MINUTE = new Date(1000*15)
     const MINUTE_5 = new Date(1000*60*5)
     let currentDate = new Date();
@@ -114,7 +122,6 @@ const main = async () => {
           })
         campaignTable["rows"].forEach(value => {
             if(value.campaign_name === campaignName){
-                console.log("FOUND IT")
                 campaignId = value.id;
             }
         });
@@ -122,13 +129,10 @@ const main = async () => {
             break;
         }
         else if(campaignTable.more){
-            console.log("going next")
-            console.log(campaignTable)
             nextKey = campaignTable.next_key;
         }
         else{
             console.log("FAILED TO FIND CAMPAIGN");
-            console.log(campaignTable)
             exit(1);
         }
     }
@@ -187,24 +191,14 @@ const main = async () => {
     });
     })
 
-    function sleep(ms) {
-        return new Promise((resolve) => {
-          setTimeout(resolve, ms);
-        });
-    }
+    console.log(`- Set up the campaign -> ${campaignName}`)
 
     //checking time 
-    let reachedTime = true;
-    while(reachedTime){
-        let time = new Date()
-        console.log(`Current Time :${time}`)
-        console.log(`Start Time :${ startTime}`)
-        if(time > startTime){
-            reachedTime = false;
-        }
-        console.log("Sleeping continues")
-        await sleep(10000);
-    }
+    let currentTime = new Date();
+    console.log(`Delaying for ${startTime.getTime() - currentTime.getTime() + 1000} before voting`)
+    await sleep(startTime.getTime() - currentTime.getTime() + 2000);
+
+    console.log(`Starting to vote now at ${new Date()}`)
 
     //time to vote
     let promisedVoter = []
@@ -265,15 +259,6 @@ const main = async () => {
 
     Promise.all(promisedVoter)
     .then( result => {
-        // console.log(result)
-        // result.forEach(value => {
-        //     if(value.success){
-        //         console.log(`Acc : ${value.username} Time : ${value.time}`)
-        //     }
-        //     else{
-        //         console.log(`Acc : ${value.username} error : ${value.error}`)
-        //     }
-        // })
         let totalAccount = 0;
         let avgTime = 0;
         let failedAccount = [];
@@ -287,10 +272,7 @@ const main = async () => {
                 failedAccount.push(value)
             }
         })
-
         console.log(`Num of Acc : ${totalAccount} Time : ${avgTime}`)
-        console.log('Failed Accounts :')
-        console.log(failedAccount)
     })
 
 
