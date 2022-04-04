@@ -6,46 +6,111 @@ const eosDriver = require("../../Helper functions/eosDriver");
 const { addVoterPlaceholder, delVoterPlaceholder } = require("../../Helper functions/eosPlaceholder")
 require("dotenv").config();
 
+// router.post("/addvoter", async (req, res) => {
+//     const { itsc, campaignId } = req.body;
+    
+//     console.log("here");
+//     const data = await accModel.findOne({itsc : itsc});
+//     console.log("here2");
+//     console.log(data);
+//     if(!data || !data.accountName){
+//         res.status(400).json({
+//             error : true,
+//             message : "Cannot find accountName",
+//             itsc : itsc
+//         })
+//         return;
+//     };
+//     console.log("here3");
+
+//     eosDriver.transact({
+//         actions : [ 
+//             addVoterPlaceholder(data.accountName, campaignId)
+//         ]
+//         },
+//         {
+//             blocksBehind: 3,
+//             expireSeconds: 30,
+//         }
+//     )
+//     .then( result => {
+//         console.log(result);
+//         res.json({
+//             error : false
+//         });
+//     })
+//     .catch( err => {
+//         res.status(400).json({
+//             error : true,
+//             message : err.message,
+//             itsc : itsc
+//         })
+//     })
+//     console.log("here4");
+
+// });
+
 router.post("/addvoter", async (req, res) => {
     const { itsc, campaignId } = req.body;
-    console.log("here");
-    const data = await accModel.findOne({itsc : itsc});
-    console.log("here2");
-    console.log(data);
-    if(!data || !data.accountName){
-        res.status(400).json({
-            error : true,
-            message : "Cannot find accountName",
-            itsc : itsc
-        })
-        return;
-    };
-    console.log("here3");
 
-    eosDriver.transact({
-        actions : [ 
-            addVoterPlaceholder(data.accountName, campaignId)
-        ]
-        },
-        {
-            blocksBehind: 3,
-            expireSeconds: 30,
+    let accountList = [];
+    let errorAccount = [];
+
+    for(let i = 0; i < itsc.length; i++){
+        try{
+            const data = await accModel.findOne({itsc : itsc[i]});
+
+            if(!data || !data.accountName){
+                errorAccount.push(itsc[i]);
+            }
+            else{
+                accountList.push({
+                    itsc : itsc[i],
+                    acc : data.accountName
+                });
+            }
         }
-    )
-    .then( result => {
-        console.log(result);
+        catch(e){
+            console.log("Unexpected error idk")
+            console.log(e)
+            errorAccount.push(itsc[i]);
+        }
+    }
+
+    let promiseArray = []
+
+    for(let i = 0; i < accountList.length; i++){
+        promiseArray.push( new Promise( (resolve, reject) => {
+            console.log(`adding ${accountList[i].acc} to the contract`)
+            eosDriver.transact({
+                actions : [ 
+                    addVoterPlaceholder(accountList[i].acc, campaignId)
+                ]
+                },
+                {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                }
+            )
+            .then( result => {
+                resolve()
+            })
+            .catch( err => {
+                errorVoter.push(delvoterList[i].itsc)
+                console.log(`User ${delvoterList[i].itsc} has faield`)
+                resolve();
+            })
+        }))
+    }
+
+    await Promise.all(promiseArray)
+    .then( () => {
         res.json({
-            error : false
-        });
-    })
-    .catch( err => {
-        res.status(400).json({
-            error : true,
-            message : err.message,
-            itsc : itsc
+            error: false,
+            failed : errorAccount
         })
     })
-    console.log("here4");
+    
 
 });
 
