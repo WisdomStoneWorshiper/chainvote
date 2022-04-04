@@ -131,7 +131,7 @@ router.post("/delvoter", async (req, res) => {
         scope: `${process.env.ACC_NAME}`,         // Account that owns the data
         table: 'campaign',        // Table name,
         lower_bound : campaignId,
-        // limit: 10,                // Maximum number of rows that we want to get
+        limit: 3,                // Maximum number of rows that we want to get
         reverse: false,           // Optional: Get reversed data
         show_payer: false          // Optional: Show ram payer
     });
@@ -177,23 +177,35 @@ router.post("/delvoter", async (req, res) => {
     console.log("Current voter found");
     console.log(delvoterList);
 
+    let promiseArray = [] //this is quite stupid no?
+
     for(let i = 0; i < delvoterList.length; i++){
-        await eosDriver.transact({
-            actions : [delVoterPlaceholder(campaignId, delvoterList[i].indexData)]},
-            {
-                blocksBehind: 3,
-                expireSeconds: 30,
-            }
-        )
-        .then( result => console.log(result))
-        .catch( err => {
-            errorVoter.push(delvoterList[i].acc)
-        })
+        promiseArray.push( new Promise( (resolve, reject) => {
+            await eosDriver.transact({
+                actions : [delVoterPlaceholder(campaignId, delvoterList[i].indexData)]},
+                {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                }
+            )
+            .then( result => {
+                console.log(f`User ${delvoterList[i]} has been deleted`);
+                resolve();
+            })
+            .catch( err => {
+                errorVoter.push(delvoterList[i].acc)
+                console.log(f`User ${delvoterList[i]} has faield`)
+                resolve();
+            })
+        }))
     }
 
-    res.json({
-        error : false,
-        data : errorVoter
+    await Promise.all(promiseArray)
+    .then( () => {
+        res.json({
+            error: false,
+            failed : errorVoter
+        })
     })
 
 });
