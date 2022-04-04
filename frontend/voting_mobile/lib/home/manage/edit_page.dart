@@ -188,8 +188,10 @@ class _EditPageState extends State<EditPage> with SharedDialog {
       }
     }
     try {
+      print("request");
       Response response = await dio.post("/contract/delvoter",
           data: {'itsc': deleteList, 'campaignId': campaignId});
+
       if (response.statusCode != 200) {
         print("fail");
         // failed_item.add(editingList[i]);
@@ -198,6 +200,8 @@ class _EditPageState extends State<EditPage> with SharedDialog {
         return;
       }
     } catch (e) {
+      print("fail1");
+
       DioError err = e as DioError;
 
       Map<String, dynamic> response = (err.response?.data);

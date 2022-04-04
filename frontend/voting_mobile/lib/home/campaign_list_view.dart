@@ -52,7 +52,7 @@ class CampaignListView extends StatelessWidget {
                       children: [
                         Container(
                           // alignment: Alignment.centerLeft,
-                          width: 50,
+                          width: 25,
                           // height: double.infinity,
                           // width: MediaQuery.of(context).size.width * 0.01,
                           color: campaign.getTimeColor(),

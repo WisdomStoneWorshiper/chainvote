@@ -43,16 +43,17 @@ class _RegisterState extends State<Register> with SharedDialog {
     var dio = Dio(opt);
     try {
       // print("itsc:" + itsc);
-      // Response response = await dio.post("/registration", data: {'itsc': itsc});
-      // print("itsc response");
-      // print(response);
+      Response response = await dio.post("/registration", data: {'itsc': itsc});
+      print("itsc response");
+      print(response);
 
-      // if (response.statusCode != 200) {
-      //   print("fail");
-      //   // failed_item.add(_addList[i]);
-      //   errDialog(context, "Fail to register, Reason: " + response.data["message"]);
-      //   return;
-      // }
+      if (response.statusCode != 200) {
+        print("fail");
+        // failed_item.add(_addList[i]);
+        errDialog(
+            context, "Fail to register, Reason: " + response.data["message"]);
+        return;
+      }
     } catch (e) {
       DioError err = e as DioError;
 

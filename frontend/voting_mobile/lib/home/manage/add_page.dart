@@ -117,9 +117,11 @@ class _AddPageState extends State<AddPage> with SharedDialog {
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
+      print(_addList);
       Response response = await dio.post("/contract/addvoter",
           data: {'itsc': _addList, 'campaignId': campaignId});
-      print(response.data);
+      // print(response.statusCode);
+      // print(response.data);
       if (response.statusCode != 200) {
         print("fail");
         // failed_item.add(_addList[i]);
@@ -130,8 +132,16 @@ class _AddPageState extends State<AddPage> with SharedDialog {
       DioError err = e as DioError;
 
       Map<String, dynamic> response = (err.response?.data);
-
-      errDialog(context, "Fail to add, Reason: " + response["message"]!);
+      // print(response['failed']);
+      if (!response.containsKey('failed')) {
+        errDialog(context, "Fail to add, Reason: " + response["message"]!);
+      } else {
+        String failedName = '';
+        for (var n in response['failed']) {
+          failedName += (n + '\n');
+        }
+        errDialog(context, "Fail to add the following\n" + failedName);
+      }
 
       return;
     }

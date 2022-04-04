@@ -61,12 +61,24 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
       BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
       var dio = Dio(opt);
       try {
-        Response response = await dio.post("/account/create", data: {
-          'itsc': _itsc,
-          'key': _codeController.text,
-          'accname': _eosAccController.text,
-          'pkey': _eosPublicKeyController.text
-        });
+        var response;
+        if (_needCreateEOSIO) {
+          print("create");
+          response = await dio.post("/account/create", data: {
+            'itsc': _itsc,
+            'key': _codeController.text,
+            'accname': _eosAccController.text,
+            'pkey': _eosPublicKeyController.text
+          });
+        } else {
+          print("confirm");
+          response = await dio.post("/account/confirm", data: {
+            'itsc': _itsc,
+            'key': _codeController.text,
+            'accname': _eosAccController.text
+          });
+        }
+
         if (response.statusCode != 200) {
           // errDialog(context, "Fail to create, Reason: " + response["message"]!);
         }
@@ -81,7 +93,7 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
         return;
       }
       SuccessPageArg arg = SuccessPageArg(
-          message: 'Your Account Created Successfully', returnPage: 'l&r');
+          message: 'Your Account Created Successfully', returnPage: 'l');
       Navigator.pushNamed(_context, 's', arguments: arg);
     }
   }
@@ -153,7 +165,7 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                         hintText: 'EOS Account Name',
                         suffixIcon: Icon(Icons.account_box),
                       ),
-                      controller: _codeController,
+                      controller: _eosAccController,
                       // focusNode: _focusNode,
                     ),
                   ),
