@@ -1,6 +1,6 @@
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
-sgMail.setApiKey("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")
+sgMail.setApiKey(process.env.SG_API)
 
 const msgTemplate = (email, subject, content) => {
     return {
