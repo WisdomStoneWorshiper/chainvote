@@ -21,6 +21,10 @@ app.use((req, res, next) => {
     next();
 })
 
+app.get("/", (req, res) => {
+    res.json({ name : "yes" });
+})
+
 app.use("/registration", registration);
 // app.use("/confirmation", confirmation);
 app.use("/contract", contract);

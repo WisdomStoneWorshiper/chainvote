@@ -14,11 +14,12 @@ function getRandomString(length) {
 
 
 router.post('/', async (req, res) => {
-    const temp = new Account({itsc : req.body.itsc, key : getRandomString(5), accountName: null, publicKey : null, created : false});
+    const temp = new Account({itsc : req.body.itsc, key : getRandomString(5), accountName: req.body.istc, created : false});
     temp.save().then(result => {
         res.json(result);
     })
     .catch(err => {
+	console.log(err);
         res.json({
             error : true,
             message : "Cannot create test account"

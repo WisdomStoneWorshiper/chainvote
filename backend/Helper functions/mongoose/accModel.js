@@ -16,10 +16,10 @@ const regisSchema = new Schema({
         type: String,
         unique: true
     },
-    publicKey : {
-        type: String,
-        unique: true
-    },
+    // publicKey : {
+    //     type: String,
+    //     unique: true
+    // },
     created : {
         type : Boolean,
         required: true
