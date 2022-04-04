@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 
 import '../../global_variable.dart';
 import 'campaign_list_view.dart';
-import 'voting_view.dart';
 
 enum CampaignStat { Coming, Ongoing, Ended }
 
@@ -120,6 +119,14 @@ class Campaign extends StatelessWidget {
     isVoted = s;
   }
 
+  int getTotalVoted() {
+    int total = 0;
+    for (var c in _choiceList) {
+      total += c.result;
+    }
+    return total;
+  }
+
   CampaignStat getCampaignStat() {
     // print("now:" + DateTime.now().toUtc().toString());
     // print("start:" + _startTime.toString());
@@ -133,29 +140,31 @@ class Campaign extends StatelessWidget {
     }
   }
 
+  Color getTimeColor() {
+    var time;
+    if (getCampaignStat() == CampaignStat.Ended) {
+      return Colors.grey;
+    } else if (getCampaignStat() == CampaignStat.Coming) {
+      time = _startTime;
+    } else {
+      time = _endTime;
+    }
+    print("called");
+    var timeDiff = time.difference(DateTime.now().toUtc());
+    if (timeDiff < Duration(hours: 1)) {
+      print(timeDiff.toString());
+      return Colors.red;
+    } else if (timeDiff < Duration(days: 1)) {
+      return Colors.amber;
+    } else {
+      return Colors.green;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    switch (view) {
-      case CampaignView.List:
-        {
-          return CampaignListView(
-            campaign: this,
-          );
-        }
-        break;
-      case CampaignView.Voter:
-        {
-          return VotingView(campaign: this);
-        }
-        break;
-
-      default:
-        {
-          return CampaignListView(
-            campaign: this,
-          );
-        }
-        break;
-    }
+    return CampaignListView(
+      campaign: this,
+    );
   }
 }

@@ -8,6 +8,7 @@ import '../../global_variable.dart';
 import '../../success_page.dart';
 import 'add_page.dart';
 import '../../shared_dialog.dart';
+import '../navigation_bar_view.dart';
 
 enum EditType { Choice, Voter }
 
@@ -104,6 +105,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
     if (eosName != "") {
       try {
         voteClient.privateKeys = [pk];
@@ -143,9 +145,11 @@ class _EditPageState extends State<EditPage> with SharedDialog {
               }
             }
           }
-          SuccessPageArg arg = new SuccessPageArg(
+          HomeArg homeArg = HomeArg(itsc, eosName);
+          SuccessPageArg arg = SuccessPageArg(
               message: 'All Selected has been deleted successfully!',
-              returnPage: 'h');
+              returnPage: 'h',
+              arg: homeArg);
           Navigator.pop(context);
           Navigator.pushNamed(context, 's', arguments: arg);
         } catch (e) {
@@ -169,6 +173,11 @@ class _EditPageState extends State<EditPage> with SharedDialog {
 
   void _delVoter(BuildContext context) async {
     // List<String> failed_item = [];
+    final prefs = await SharedPreferences.getInstance();
+
+    final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
+
     List<String> deleteList = [];
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
@@ -179,8 +188,10 @@ class _EditPageState extends State<EditPage> with SharedDialog {
       }
     }
     try {
+      print("request");
       Response response = await dio.post("/contract/delvoter",
           data: {'itsc': deleteList, 'campaignId': campaignId});
+
       if (response.statusCode != 200) {
         print("fail");
         // failed_item.add(editingList[i]);
@@ -189,6 +200,8 @@ class _EditPageState extends State<EditPage> with SharedDialog {
         return;
       }
     } catch (e) {
+      print("fail1");
+
       DioError err = e as DioError;
 
       Map<String, dynamic> response = (err.response?.data);
@@ -197,10 +210,11 @@ class _EditPageState extends State<EditPage> with SharedDialog {
 
       return;
     }
-
+    HomeArg homeArg = HomeArg(itsc, eosName);
     SuccessPageArg arg = SuccessPageArg(
         message: 'All Selected has been deleted successfully!',
-        returnPage: 'h');
+        returnPage: 'h',
+        arg: homeArg);
     Navigator.pop(context);
     Navigator.pushNamed(context, 's', arguments: arg);
   }
@@ -218,7 +232,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
                 if (_checkedCount > 0) _comfirmDelete();
               },
               child: Icon(
-                IconData(0xf695, fontFamily: 'MaterialIcons'),
+                Icons.delete_forever_rounded,
                 color: _checkedCount > 0
                     ? Colors.white
                     : Colors.white.withOpacity(0.3),

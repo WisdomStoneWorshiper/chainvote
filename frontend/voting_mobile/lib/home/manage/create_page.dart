@@ -8,6 +8,7 @@ import 'dart:convert';
 import '../../global_variable.dart';
 import '../../success_page.dart';
 import '../../shared_dialog.dart';
+import '../navigation_bar_view.dart';
 
 class CreatePage extends StatelessWidget with SharedDialog {
   final String _dateFormat = 'yyyy-MM-dd kk:mm';
@@ -29,6 +30,7 @@ class CreatePage extends StatelessWidget with SharedDialog {
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
     // print(eosName);
     if (eosName != "") {
       try {
@@ -67,10 +69,12 @@ class CreatePage extends StatelessWidget with SharedDialog {
             errDialog(context, "Unknown Error");
           } else {
             String transHex = response["transaction_id"];
-            SuccessPageArg arg = new SuccessPageArg(
+            HomeArg homeArg = HomeArg(itsc, eosName);
+            SuccessPageArg arg = SuccessPageArg(
                 message:
                     'Campaign has been created successfully!\n Transaction hash: $transHex',
-                returnPage: 'h');
+                returnPage: 'h',
+                arg: homeArg);
             Navigator.pop(context);
             Navigator.pushNamed(context, 's', arguments: arg);
           }

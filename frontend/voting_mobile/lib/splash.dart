@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       Navigator.pushReplacementNamed(context, 'h', arguments: arg);
     } else {
-      Navigator.pushReplacementNamed(context, 'l&r');
+      Navigator.pushReplacementNamed(context, 'l');
     }
   }
 
@@ -39,7 +39,12 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("This is splash")],
+          children: [
+            Image(
+              height: MediaQuery.of(context).size.height * 0.6,
+              image: AssetImage('assets/app_logo_transparent.png'),
+            ),
+          ],
         ),
       ),
     );

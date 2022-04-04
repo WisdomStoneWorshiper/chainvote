@@ -24,29 +24,37 @@ class _NavBarViewState extends State<NavBarView> {
 
   List<Widget> _pageOpts = <Widget>[];
 
+  bool _refreshLock = false;
+
+  void _setRefreshLock(bool val) {
+    _refreshLock = val;
+  }
+
   static const List<BottomNavigationBarItem> _barItem =
       <BottomNavigationBarItem>[
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
       label: 'Voting',
-      backgroundColor: Colors.red,
+      backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe04e, fontFamily: 'MaterialIcons')),
       label: 'Manage Campaign',
-      backgroundColor: Colors.green,
+      backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.settings),
       label: 'Settings',
-      backgroundColor: Colors.pink,
+      backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (_refreshLock == false) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -56,17 +64,32 @@ class _NavBarViewState extends State<NavBarView> {
       _pageOpts.add(VoterPage(
         itsc: args.itsc,
         eosAccountName: args.eosAccountName,
+        refreshLock: _setRefreshLock,
       ));
       _pageOpts.add(OwnerPage(
         itsc: args.itsc,
         eosAccountName: args.eosAccountName,
+        refreshLock: _setRefreshLock,
       ));
       _pageOpts.add(SettingPage());
       _isInit = true;
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Voting App"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.02),
+              child: Image(
+                height: MediaQuery.of(context).size.height * 0.05,
+                image: AssetImage('assets/app_logo_transparent.png'),
+              ),
+            ),
+            Text("Chainvote")
+          ],
+        ),
       ),
       body: Center(
         child: _pageOpts.elementAt(_selectedIndex),

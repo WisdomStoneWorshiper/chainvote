@@ -52,8 +52,9 @@ class Login extends StatelessWidget {
           prefs.setString('eosName', eosName);
           prefs.setString('itsc', _itscFieldController.text);
           HomeArg arg = HomeArg(_itscFieldController.text, eosName);
-          Navigator.pop(_context);
-          Navigator.pushReplacementNamed(_context, 'h', arguments: arg);
+          // Navigator.pop(_context);
+          Navigator.pushNamedAndRemoveUntil(_context, 'h', (r) => false,
+              arguments: arg);
         } else {
           ScaffoldMessenger.of(_context).showSnackBar(wrongInputErrBar);
         }
@@ -66,71 +67,87 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 150,
-            ),
-            const Text(
-              "ITSC Account",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "ITSC",
-                  hintText: 'ITSC Account',
-                ),
-                controller: _itscFieldController,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.1,
+                left: MediaQuery.of(context).size.width * 0.1,
+                bottom: MediaQuery.of(context).size.height * 0.1,
+                right: MediaQuery.of(context).size.width * 0.1,
+              ),
+              child: Column(
+                children: [
+                  Image(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    image: AssetImage('assets/app_logo_transparent.png'),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.15,
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        // border: OutlineInputBorder(),
+                        labelText: 'ITSC',
+                        hintText: 'ITSC Account',
+                        suffixIcon: Icon(Icons.person),
+                      ),
+                      controller: _itscFieldController,
+                    ),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        // border: OutlineInputBorder(),
+                        labelText: 'EOSIO Public Key',
+                        hintText: 'EOSIO Public Key',
+                        suffixIcon: Icon(Icons.key),
+                      ),
+                      controller: _publicKeyFieldController,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.05,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _loginRequestHandler,
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                            fontSize: 25.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  // Expanded(flex: 2, child: Container()),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("New to Chainvote? "),
+                      TextButton(
+                        child: Text("Join us!"),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'r');
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(
-              height: 40,
-            ),
-            const Text(
-              "EOSIO Public Key",
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            SizedBox(
-              width: 300,
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Public Key",
-                  hintText: 'EOSIO Public Key',
-                ),
-                controller: _publicKeyFieldController,
-              ),
-            ),
-            const SizedBox(
-              height: 150,
-            ),
-            ElevatedButton(
-              onPressed: _loginRequestHandler,
-              child: const Text(
-                "Login",
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                //primary: Colors.blue,
-                minimumSize: const Size(300, 42),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

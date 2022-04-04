@@ -47,10 +47,12 @@ class _SettingPageState extends State<SettingPage> with SharedDialog {
                 ),
                 TextButton(
                   onPressed: () async {
+                    await _bio.delete("pk");
+                    _isBio = false;
                     final prefs = await SharedPreferences.getInstance();
                     prefs.remove('itsc');
                     prefs.remove('eosName');
-                    Navigator.pushReplacementNamed(context, 'l&r');
+                    Navigator.pushReplacementNamed(context, 'l');
                   },
                   child: Text("Logout"),
                 )

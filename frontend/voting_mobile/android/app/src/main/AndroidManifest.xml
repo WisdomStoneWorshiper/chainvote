@@ -2,7 +2,7 @@
     package="com.example.voting_mobile">
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
    <application
-        android:label="voting_mobile"
+        android:label="Chainvote"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

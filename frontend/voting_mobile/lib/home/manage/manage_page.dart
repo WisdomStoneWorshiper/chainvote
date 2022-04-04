@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:eosdart/eosdart.dart' as eos;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:card_swiper/card_swiper.dart';
 
 import '../campaign.dart';
 import 'edit_page.dart';
 import '../../success_page.dart';
 import '../../global_variable.dart';
 import '../../shared_dialog.dart';
+import '../navigation_bar_view.dart';
+
+enum ItemType { Choice, Voter, Delete }
 
 class ManagePage extends StatefulWidget {
   const ManagePage({Key? key}) : super(key: key);
@@ -25,6 +29,7 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
     // print(eosName);
     if (eosName != "") {
       try {
@@ -59,10 +64,12 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
             errDialog(context, "Unknown Error");
           } else {
             String transHex = response["transaction_id"];
-            SuccessPageArg arg = new SuccessPageArg(
+            HomeArg homeArg = HomeArg(itsc, eosName);
+            SuccessPageArg arg = SuccessPageArg(
                 message:
                     'Campaign has been deleted successfully!\n Transaction hash: $transHex',
-                returnPage: 'h');
+                returnPage: 'h',
+                arg: homeArg);
             Navigator.pop(context);
             Navigator.pushNamed(context, 's', arguments: arg);
           }
@@ -86,30 +93,117 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     }
   }
 
+  Widget _getList(String title, List<String> list, var tilteTheme) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.04),
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: list.length + 1,
+          itemBuilder: (_, index) {
+            if (index == 0) {
+              return Container(
+                child: ListTile(
+                  title: Text(
+                    title,
+                    style: tilteTheme,
+                  ),
+                ),
+              );
+            }
+            return Container(
+              child: ListTile(
+                leading: Text((index).toString()),
+                title: Text(list[index - 1]),
+              ),
+            );
+          }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
+
+    final theme = Theme.of(context);
+    final oldTextTheme = theme.textTheme.headline4;
+
+    final campaignTextTheme =
+        oldTextTheme!.copyWith(fontWeight: FontWeight.bold);
+
+    final listTitleTheme = oldTextTheme!.copyWith(
+        fontSize: oldTextTheme.fontSize! * 0.75, fontWeight: FontWeight.bold);
+
+    List<Widget> bigList = [
+      _getList(
+          "Choices",
+          [for (Choice c in campaign.getChoiceList()) c.choiceName],
+          listTitleTheme),
+      _getList("Voters", campaign.getVoterList(), listTitleTheme),
+    ];
     // campaign.setview(CampaignView.Owner);
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                if (campaign.getCampaignStat() != CampaignStat.Ongoing) {
+          PopupMenuButton(
+            onSelected: ((value) {
+              switch (value) {
+                case ItemType.Choice:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return EditPage(
+                            campaignId: campaign.campaignId,
+                            editType: EditType.Choice,
+                            editingList: campaign
+                                .getChoiceList()
+                                .map((c) => c.choiceName)
+                                .toList());
+                      },
+                    ),
+                  );
+                  break;
+                case ItemType.Voter:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return EditPage(
+                            campaignId: campaign.campaignId,
+                            editType: EditType.Voter,
+                            editingList: campaign.getVoterList());
+                      },
+                    ),
+                  );
+                  break;
+                case ItemType.Delete:
                   requestKey(context, _deleteCampaign, "Deleting");
-                }
-              },
-              child: Icon(
-                Icons.delete,
-                color: campaign.getCampaignStat() != CampaignStat.Ongoing
-                    ? Colors.white
-                    : Colors.white.withOpacity(0.3),
+                  break;
+                default:
+                  break;
+              }
+            }),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: campaign.getCampaignStat() == CampaignStat.Coming,
+                value: ItemType.Choice,
+                child: Text("Edit choice"),
               ),
-            ),
-          ),
+              PopupMenuItem(
+                enabled: campaign.getCampaignStat() == CampaignStat.Coming,
+                value: ItemType.Voter,
+                child: Text("Edit voter"),
+              ),
+              PopupMenuItem(
+                enabled: campaign.getCampaignStat() == CampaignStat.Coming,
+                value: ItemType.Delete,
+                child: Text("Delete"),
+              ),
+            ],
+          )
         ],
       ),
       body: Container(
@@ -118,129 +212,90 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Campaign Name: " + campaign.getCampaignName()),
-              Text("Owner: " + campaign.getOwner()),
-              Text("Start: " + campaign.getStartTime().toLocal().toString()),
-              Text("End: " + campaign.getEndTime().toLocal().toString()),
-              Row(
-                children: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                          if (campaign.getCampaignStat() != CampaignStat.Coming)
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.3);
-                          return null; // Use the component's default.
-                        },
-                      ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Card(
+                  color: Color.fromARGB(255, 2, 21, 27),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.01,
+                      vertical: MediaQuery.of(context).size.height * 0.01,
                     ),
-                    onPressed: () {
-                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return EditPage(
-                                  campaignId: campaign.campaignId,
-                                  editType: EditType.Choice,
-                                  editingList: campaign
-                                      .getChoiceList()
-                                      .map((c) => c.choiceName)
-                                      .toList());
-                            },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.02,
                           ),
-                        );
-                      }
-                    },
-                    child: Text("Edit choice"),
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                          if (campaign.getCampaignStat() != CampaignStat.Coming)
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.3);
-                          return null; // Use the component's default.
-                        },
-                      ),
+                          child: Text(
+                            campaign.getCampaignName(),
+                            style: campaignTextTheme,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.003,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                ),
+                                child: Icon(Icons.person),
+                              ),
+                              Text(campaign.getOwner()),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.003,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                ),
+                                child: Icon(Icons.timer_outlined),
+                              ),
+                              Text(
+                                  campaign.getStartTime().toLocal().toString()),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width * 0.01,
+                              ),
+                              child: Icon(Icons.timer_off_outlined),
+                            ),
+                            Text(campaign.getEndTime().toLocal().toString()),
+                          ],
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return EditPage(
-                                  campaignId: campaign.campaignId,
-                                  editType: EditType.Voter,
-                                  editingList: campaign.getVoterList());
-                            },
-                          ),
-                        );
-                      }
-                    },
-                    child: Text("Edit voter"),
                   ),
-                ],
+                ),
               ),
               Expanded(
-                  child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: campaign.getChoiceList().length + 1,
-                        itemBuilder: (_, index) {
-                          if (index == 0) {
-                            return Container(
-                              child: ListTile(
-                                title: Text("Choices"),
-                              ),
-                            );
-                          }
-                          return Container(
-                            child: ListTile(
-                              leading: Text((index).toString()),
-                              title: Text(campaign
-                                  .getChoiceList()[index - 1]
-                                  .choiceName),
-                            ),
-                          );
-                        }),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: campaign.getVoterList().length + 1,
-                        itemBuilder: (_, index) {
-                          if (index == 0) {
-                            return Container(
-                              child: ListTile(
-                                title: Text("Voters"),
-                              ),
-                            );
-                          }
-                          return Container(
-                            child: ListTile(
-                              leading: Text((index).toString()),
-                              title: Text(campaign.getVoterList()[index - 1]),
-                            ),
-                          );
-                        }),
-                  ),
-                ],
-              ))
+                child: Swiper(
+                  itemCount: 2,
+                  pagination: SwiperPagination(),
+                  control: SwiperControl(),
+                  loop: false,
+                  itemBuilder: (context, index) {
+                    return bigList[index];
+                  },
+                ),
+              ),
             ],
           ),
         ),

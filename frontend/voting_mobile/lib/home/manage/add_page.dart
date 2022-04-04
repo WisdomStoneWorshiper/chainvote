@@ -8,11 +8,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../global_variable.dart';
 import '../../success_page.dart';
 import 'edit_page.dart';
 import '../../shared_dialog.dart';
+import '../navigation_bar_view.dart';
 
 class AddPage extends StatefulWidget {
   final EditType editType;
@@ -42,6 +44,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
     if (eosName != "") {
       try {
         voteClient.privateKeys = [pk];
@@ -79,9 +82,11 @@ class _AddPageState extends State<AddPage> with SharedDialog {
               break;
             }
           }
-          SuccessPageArg arg = new SuccessPageArg(
+          HomeArg homeArg = HomeArg(itsc, eosName);
+          SuccessPageArg arg = SuccessPageArg(
               message: 'All Selected has been added successfully!',
-              returnPage: 'h');
+              returnPage: 'h',
+              arg: homeArg);
           Navigator.pop(context);
           Navigator.pushNamed(context, 's', arguments: arg);
         } catch (e) {
@@ -104,12 +109,19 @@ class _AddPageState extends State<AddPage> with SharedDialog {
 
   void _addVoter(BuildContext context) async {
     // List<String> failed_item = [];
+    final prefs = await SharedPreferences.getInstance();
+
+    final String eosName = prefs.getString('eosName') ?? "";
+    final String itsc = prefs.getString('itsc') ?? "";
+
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
     try {
+      print(_addList);
       Response response = await dio.post("/contract/addvoter",
           data: {'itsc': _addList, 'campaignId': campaignId});
-      print(response.data);
+      // print(response.statusCode);
+      // print(response.data);
       if (response.statusCode != 200) {
         print("fail");
         // failed_item.add(_addList[i]);
@@ -120,42 +132,24 @@ class _AddPageState extends State<AddPage> with SharedDialog {
       DioError err = e as DioError;
 
       Map<String, dynamic> response = (err.response?.data);
-
-      errDialog(context, "Fail to add, Reason: " + response["message"]!);
+      // print(response['failed']);
+      if (!response.containsKey('failed')) {
+        errDialog(context, "Fail to add, Reason: " + response["message"]!);
+      } else {
+        String failedName = '';
+        for (var n in response['failed']) {
+          failedName += (n + '\n');
+        }
+        errDialog(context, "Fail to add the following\n" + failedName);
+      }
 
       return;
     }
-    // for (int i = _addList.length - 1; i >= 0; --i) {
-    //   try {
-    //     Response response = await dio.post("/contract/addvoter",
-    //         data: {'itsc': _addList[i], 'campaignId': campaignId});
-    //     print(response.data);
-    //     if (response.statusCode != 200) {
-    //       print("fail");
-    //       // failed_item.add(_addList[i]);
-    //       errDialog(
-    //           context,
-    //           "Fail to add " +
-    //               _addList[i] +
-    //               ", Reason: " +
-    //               response.data["message"]);
-    //       return;
-    //     } else {
-    //       _addList.removeAt(i);
-    //     }
-    //   } catch (e) {
-    //     DioError err = e as DioError;
-
-    //     Map<String, dynamic> response = (err.response?.data);
-
-    //     errDialog(context,
-    //         "Fail to add " + _addList[i] + ", Reason: " + response["message"]!);
-
-    //     return;
-    //   }
-    // }
+    HomeArg homeArg = HomeArg(itsc, eosName);
     SuccessPageArg arg = new SuccessPageArg(
-        message: 'All Selected has been added successfully!', returnPage: 'h');
+        message: 'All Selected has been added successfully!',
+        returnPage: 'h',
+        arg: homeArg);
     Navigator.pop(context);
     Navigator.pushNamed(context, 's', arguments: arg);
   }
@@ -188,6 +182,15 @@ class _AddPageState extends State<AddPage> with SharedDialog {
         setState(() {});
       }
     }
+  }
+
+  void _deleteElement(int index) {
+    if (_isChecked[index] == true) {
+      --_checkedCount;
+    }
+    _addList.removeAt(index);
+    _isChecked.removeAt(index);
+    setState(() {});
   }
 
   @override
@@ -255,21 +258,41 @@ class _AddPageState extends State<AddPage> with SharedDialog {
                 child: ListView.builder(
               shrinkWrap: true,
               itemCount: _addList.length,
-              itemBuilder: (_, index) => Container(
-                  child: CheckboxListTile(
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(_addList[index]),
-                value: _isChecked[index],
-                onChanged: (value) {
-                  _isChecked[index] = value as bool;
-                  if (value as bool == true) {
-                    ++_checkedCount;
-                  } else {
-                    --_checkedCount;
-                  }
-                  setState(() {});
-                },
-              )),
+              itemBuilder: (_, index) => Slidable(
+                key: Key(_addList[index]),
+                endActionPane: ActionPane(
+                  dismissible: DismissiblePane(onDismissed: () {
+                    _deleteElement(index);
+                  }),
+                  motion: ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {
+                        _deleteElement(index);
+                      },
+                      backgroundColor: Color(0xFFFE4A49),
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
+                ),
+                child: Container(
+                    child: CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text(_addList[index]),
+                  value: _isChecked[index],
+                  onChanged: (value) {
+                    _isChecked[index] = value as bool;
+                    if (value as bool == true) {
+                      ++_checkedCount;
+                    } else {
+                      --_checkedCount;
+                    }
+                    setState(() {});
+                  },
+                )),
+              ),
             ))
           ],
         ),
@@ -287,7 +310,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
                         }
                       });
                     },
-                    child: Icon(IconData(0xf695, fontFamily: 'MaterialIcons')),
+                    child: Icon(Icons.delete_forever_rounded),
                   )
                 : FloatingActionButton(
                     onPressed: () {

@@ -52,6 +52,7 @@ class SharedDialog {
           builder: (context) => AlertDialog(
                 title: Text("Please input your EOSIO account Private Key"),
                 content: TextField(
+                  obscureText: true,
                   decoration: InputDecoration(hintText: "Private Key"),
                   controller: _pkController,
                 ),
