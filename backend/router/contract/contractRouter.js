@@ -152,7 +152,7 @@ router.post("/delvoter", async (req, res) => {
                     if(indexData >= 0){
                         console.log(`User ${data.accountName} index found at ${indexData}`)
                         delvoterList.push({
-                            acc : data.accountName,
+                            acc : itsc[j],
                             index : indexData
                         })
                     }
@@ -179,7 +179,7 @@ router.post("/delvoter", async (req, res) => {
 
     for(let i = 0; i < delvoterList.length; i++){
         await eosDriver.transact({
-            actions : [delVoterPlaceholder(campaignId, value.indexData)]},
+            actions : [delVoterPlaceholder(campaignId, delvoterList[i].indexData)]},
             {
                 blocksBehind: 3,
                 expireSeconds: 30,
@@ -187,7 +187,7 @@ router.post("/delvoter", async (req, res) => {
         )
         .then( result => console.log(result))
         .catch( err => {
-            errorVoter.push(value.acc)
+            errorVoter.push(delvoterList[i]..acc)
         })
     }
 
