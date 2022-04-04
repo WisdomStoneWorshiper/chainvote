@@ -49,19 +49,81 @@ router.post("/addvoter", async (req, res) => {
 
 });
 
+// router.post("/delvoter", async (req, res) => {
+//     const { itsc, campaignId } = req.body;
+//     const data = await accModel.findOne({itsc : itsc});
+    
+//     if(!data || !data.accountName){
+//         res.status(400).json({
+//             error : true,
+//             message : "Cannot find accountName",
+//             itsc : itsc
+//         })
+//         return;
+//     };
+//     console.log(data);
+
+//     const table = await eosDriver.rpc.get_table_rows({
+//         json: true,               // Get the response as json
+//         code: `${process.env.ACC_NAME}`,      // Contract that we target
+//         scope: `${process.env.ACC_NAME}`,         // Account that owns the data
+//         table: 'campaign',        // Table name,
+//         lower_bound : campaignId,
+//         // limit: 10,                // Maximum number of rows that we want to get
+//         reverse: false,           // Optional: Get reversed data
+//         show_payer: false          // Optional: Show ram payer
+//     });
+//     console.log(table);
+
+//     var index = -1;
+//     for (let i = 0; i < table["rows"].length; i++) {
+//         console.log(table["rows"][i]["id"]);
+//         if (table["rows"][i]["id"] == campaignId) {
+//             for (let j = 0; j < table["rows"][i]["voter_list"].length; j++) {
+//                 if (table["rows"][i]["voter_list"][j] == data.accountName) {
+//                     index = j;
+//                     break;
+//                 }
+//             }
+//         }
+//         if (index != -1) {
+//             break;
+//         }
+//     }
+
+//     if (index == -1) {
+//         res.status(400).json({
+//             error : true,
+//             message : "Voter not in the voter list",
+//             itsc : itsc
+//         })
+//         return;
+//     }
+
+//     eosDriver.transact({
+//         actions : [delVoterPlaceholder(campaignId, index)]},
+//         {
+//             blocksBehind: 3,
+//             expireSeconds: 30,
+//         }
+//     )
+//     .then( result => {
+//         res.json({
+//             error : false
+//         });
+//     })
+//     .catch( err => {
+//         res.status(400).json({
+//             error : true,
+//             message : err.message,
+//             itsc : itsc
+//         })
+//     })
+
+// });
+
 router.post("/delvoter", async (req, res) => {
     const { itsc, campaignId } = req.body;
-    const data = await accModel.findOne({itsc : itsc});
-    
-    if(!data || !data.accountName){
-        res.status(400).json({
-            error : true,
-            message : "Cannot find accountName",
-            itsc : itsc
-        })
-        return;
-    };
-    console.log(data);
 
     const table = await eosDriver.rpc.get_table_rows({
         json: true,               // Get the response as json
@@ -75,49 +137,62 @@ router.post("/delvoter", async (req, res) => {
     });
     console.log(table);
 
-    var index = -1;
+    let delvoterList = []
+    let errorVoter = []
     for (let i = 0; i < table["rows"].length; i++) {
         console.log(table["rows"][i]["id"]);
         if (table["rows"][i]["id"] == campaignId) {
-            for (let j = 0; j < table["rows"][i]["voter_list"].length; j++) {
-                if (table["rows"][i]["voter_list"][j] == data.accountName) {
-                    index = j;
-                    break;
+            
+            itsc.forEach( async itsc => {
+                try{
+
+                    const data = await accModel.findOne({itsc : itsc});
+                    const indexData = table["rows"][i]["voter_list"].indexOf(data.accountName);
+
+                    if(indexData >= 0){
+                        delvoterList.push({
+                            acc : data.accountName,
+                            index : indexData
+                        })
+                    }
+                    else{
+                        console.log("Not in array");
+                        errorVoter.append(itsc);
+                    }            
+
                 }
+                catch(e){
+
+                    console.log(e)
+                    console.log("Voter error");
+                    errorVoter.append(itsc);
+
+                }
+            });
+
+        }
+    }
+
+    console.log("Current voter found");
+    console.log(delvoterList);
+
+
+    delvoterList.forEach(async value => {
+        await eosDriver.transact({
+            actions : [delVoterPlaceholder(campaignId, value.indexData)]},
+            {
+                blocksBehind: 3,
+                expireSeconds: 30,
             }
-        }
-        if (index != -1) {
-            break;
-        }
-    }
-
-    if (index == -1) {
-        res.status(400).json({
-            error : true,
-            message : "Voter not in the voter list",
-            itsc : itsc
+        )
+        .catch( err => {
+            errorVoter.push(value.acc)
         })
-        return;
-    }
-
-    eosDriver.transact({
-        actions : [delVoterPlaceholder(campaignId, index)]},
-        {
-            blocksBehind: 3,
-            expireSeconds: 30,
-        }
-    )
-    .then( result => {
-        res.json({
-            error : false
-        });
     })
-    .catch( err => {
-        res.status(400).json({
-            error : true,
-            message : err.message,
-            itsc : itsc
-        })
+
+    res.json({
+        error : false,
+        data : errorVoter
     })
 
 });
