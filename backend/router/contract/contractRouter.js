@@ -181,20 +181,22 @@ router.post("/delvoter", async (req, res) => {
 
     for(let i = 0; i < delvoterList.length; i++){
         promiseArray.push( new Promise( (resolve, reject) => {
-            await eosDriver.transact({
-                actions : [delVoterPlaceholder(campaignId, delvoterList[i].indexData)]},
+	    console.log(delvoterList[i]);
+            eosDriver.transact({
+                actions : [delVoterPlaceholder(campaignId, delvoterList[i].index)]},
                 {
                     blocksBehind: 3,
                     expireSeconds: 30,
                 }
             )
             .then( result => {
-                console.log(f`User ${delvoterList[i]} has been deleted`);
+                console.log(`User ${delvoterList[i]} has been deleted`);
                 resolve();
             })
             .catch( err => {
+		console.log(err)
                 errorVoter.push(delvoterList[i].acc)
-                console.log(f`User ${delvoterList[i]} has faield`)
+                console.log(`User ${delvoterList[i]} has faield`)
                 resolve();
             })
         }))
