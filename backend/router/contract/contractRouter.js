@@ -144,10 +144,9 @@ router.post("/delvoter", async (req, res) => {
         if (table["rows"][i]["id"] == campaignId) {
             console.log(`Campaign found at id ${campaignId}`)
             console.log(table["rows"][i]["voter_list"])
-            itsc.forEach( async value => {
+            for(let j = 0; j < itsc.length; j++){
                 try{
-
-                    const data = await accModel.findOne({itsc : value});
+                    const data = await accModel.findOne({itsc : itsc[j]});
                     const indexData = table["rows"][i]["voter_list"].indexOf(data.accountName);
                     console.log(`Currently searching for voter ${data.accountName}`)
                     if(indexData >= 0){
@@ -170,7 +169,7 @@ router.post("/delvoter", async (req, res) => {
                     errorVoter.append(itsc);
 
                 }
-            });
+            }
 
         }
     }
@@ -178,8 +177,7 @@ router.post("/delvoter", async (req, res) => {
     console.log("Current voter found");
     console.log(delvoterList);
 
-
-    delvoterList.forEach(async value => {
+    for(let i = 0; i < delvoterList.length; i++){
         await eosDriver.transact({
             actions : [delVoterPlaceholder(campaignId, value.indexData)]},
             {
@@ -191,7 +189,7 @@ router.post("/delvoter", async (req, res) => {
         .catch( err => {
             errorVoter.push(value.acc)
         })
-    })
+    }
 
     res.json({
         error : false,
