@@ -5,7 +5,7 @@ sgMail.setApiKey("SG.4FtIn0lJSliVSFeq-Wyvbg.1B9_12K7pzauu7gKq-4Pxd897gO4ByWpuOq7
 const msgTemplate = (email, subject, content) => {
     return {
         to: `${email}`, // Change to your recipient
-        from: 'stevencung41@gmail.com', // Change to your verified sender
+        from: 'fyp.chainvote@gmail.com', // Change to your verified sender
         subject: `${subject}`,
         // text: `${content}`,
         html: `<p>${content}</p>`,
