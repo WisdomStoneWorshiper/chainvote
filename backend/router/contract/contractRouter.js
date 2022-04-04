@@ -187,7 +187,7 @@ router.post("/delvoter", async (req, res) => {
         )
         .then( result => console.log(result))
         .catch( err => {
-            errorVoter.push(delvoterList[i]..acc)
+            errorVoter.push(delvoterList[i].acc)
         })
     }
 
