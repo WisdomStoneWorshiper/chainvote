@@ -67,7 +67,8 @@ router.post("/delvoter", async (req, res) => {
         json: true,               // Get the response as json
         code: `${process.env.ACC_NAME}`,      // Contract that we target
         scope: `${process.env.ACC_NAME}`,         // Account that owns the data
-        table: 'campaign',        // Table name
+        table: 'campaign',        // Table name,
+        lower_bound : campaignId,
         // limit: 10,                // Maximum number of rows that we want to get
         reverse: false,           // Optional: Get reversed data
         show_payer: false          // Optional: Show ram payer
