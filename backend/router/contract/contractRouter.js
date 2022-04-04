@@ -105,12 +105,18 @@ router.post("/addvoter", async (req, res) => {
 
     await Promise.all(promiseArray)
     .then( () => {
-        res.json({
-            error: false,
-            failed : errorAccount
-        })
+        if(errorAccount.length >= 1){
+            res.status(400).json({
+                error: true,
+                failed : errorAccount
+            })
+        }
+        else{
+            res.json({
+                error : false
+            })
+        }
     })
-    
 
 });
 
@@ -269,10 +275,17 @@ router.post("/delvoter", async (req, res) => {
 
     await Promise.all(promiseArray)
     .then( () => {
-        res.json({
-            error: false,
-            failed : errorVoter
-        })
+        if(errorVoter.length >= 1){
+            res.status(400).json({
+                error: true,
+                failed : errorVoter
+            })
+        }
+        else{
+            res.json({
+                error : false
+            })
+        }
     })
 
 });
