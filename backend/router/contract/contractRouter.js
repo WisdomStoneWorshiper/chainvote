@@ -144,12 +144,12 @@ router.post("/delvoter", async (req, res) => {
         if (table["rows"][i]["id"] == campaignId) {
             console.log(`Campaign found at id ${campaignId}`)
             console.log(table["rows"][i]["voter_list"])
-            itsc.forEach( async itsc => {
+            itsc.forEach( async value => {
                 try{
 
-                    const data = await accModel.findOne({itsc : itsc});
+                    const data = await accModel.findOne({itsc : value});
                     const indexData = table["rows"][i]["voter_list"].indexOf(data.accountName);
-
+                    console.log(`Currently searching for voter ${data.accountName}`)
                     if(indexData >= 0){
                         console.log(`User ${data.accountName} index found at ${indexData}`)
                         delvoterList.push({
