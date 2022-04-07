@@ -6,6 +6,13 @@ import 'package:intl/intl.dart';
 import '../campaign.dart';
 import 'dart:math';
 
+class ListItem {
+  Color color;
+  String choice;
+  int vote;
+  ListItem({required this.color, required this.choice, required this.vote});
+}
+
 class VotablePage extends StatefulWidget {
   const VotablePage({Key? key}) : super(key: key);
 
@@ -41,12 +48,20 @@ class _VotablePageState extends State<VotablePage> {
     print("is voted: " + (campaign.isVoted.toString()));
     final theme = Theme.of(context);
     final oldTextTheme = theme.textTheme.headline3;
-
+    List<ListItem> item = [];
+    for (var i = 0; i < campaign.getChoiceList().length; ++i) {
+      item.add(ListItem(
+          color: defaultColorList[i],
+          choice: campaign.getChoiceList()[i].choiceName,
+          vote: campaign.getChoiceList()[i].result));
+    }
+    item.sort(((a, b) => b.vote.compareTo(a.vote)));
     // TextStyle newHeadline5 = ;
     // newHeadline5.fontWeight = FontWeight.bold;
     // print(oldTextTheme!.fontSize);
     final summaryTextTheme =
         oldTextTheme!.copyWith(fontWeight: FontWeight.bold);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(campaign.getCampaignName()),
@@ -94,9 +109,7 @@ class _VotablePageState extends State<VotablePage> {
                   chartType: ChartType.ring,
                   centerText: "Total Ballot: " + totalBallot.toString(),
                   chartValuesOptions: ChartValuesOptions(
-                    showChartValues: true,
-                    showChartValuesInPercentage: true,
-                    decimalPlaces: 1,
+                    showChartValues: false,
                   ),
                 ),
               ),
@@ -107,23 +120,37 @@ class _VotablePageState extends State<VotablePage> {
                   horizontal: MediaQuery.of(context).size.width * 0.04,
                 ),
                 child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: campaign.getChoiceList().length,
-                  itemBuilder: (_, index) => Container(
-                    child: ListTile(
-                      minLeadingWidth: 10,
-                      leading: Container(
-                        width: MediaQuery.of(context).size.width * 0.04,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: defaultColorList[index]),
-                      ),
-                      title: Text(campaign.getChoiceList()[index].choiceName),
-                      trailing: Text(
-                          campaign.getChoiceList()[index].result.toString()),
-                    ),
-                  ),
-                ),
+                    shrinkWrap: true,
+                    itemCount: campaign.getChoiceList().length + 1,
+                    itemBuilder: (_, index) {
+                      if (index == 0) {
+                        return ListTile(
+                          minLeadingWidth: 10,
+                          leading: Container(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.transparent,
+                            ),
+                          ),
+                          title: Text("Choice"),
+                          trailing: Text("Number of Vote"),
+                        );
+                      }
+                      return Container(
+                        child: ListTile(
+                          minLeadingWidth: 10,
+                          leading: Container(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: item[index - 1].color),
+                          ),
+                          title: Text(item[index - 1].choice),
+                          trailing: Text(item[index - 1].vote.toString()),
+                        ),
+                      );
+                    }),
               ),
             ),
           ],

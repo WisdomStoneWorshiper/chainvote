@@ -20,11 +20,24 @@ abstract class CampaignList extends StatefulWidget {
 }
 
 abstract class CampaignListState extends State<CampaignList>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final String itsc;
   final String eosAccountName;
   late AnimationController _loadingAnimationController;
   final void Function(bool) refreshLock;
+  late TabController _tabController;
+
+  List<Tab> _campaignTab = [
+    Tab(
+      child: Text("Ongoing"),
+    ),
+    Tab(
+      child: Text("Upcoming"),
+    ),
+    Tab(
+      child: Text("Ended"),
+    ),
+  ];
 
   late Voter user;
 
@@ -39,12 +52,14 @@ abstract class CampaignListState extends State<CampaignList>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     )..repeat();
+    _tabController = TabController(vsync: this, length: _campaignTab.length);
     super.initState();
   }
 
   @override
   void dispose() {
     _loadingAnimationController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -97,13 +112,18 @@ abstract class CampaignListState extends State<CampaignList>
     );
   }
 
+  _getListView(List<Widget> w) {
+    return ListView(
+      children: [for (var x in w) x],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
         left: MediaQuery.of(context).size.width * 0.05,
         right: MediaQuery.of(context).size.width * 0.05,
-        top: MediaQuery.of(context).size.height * 0.03,
       ),
       child: RefreshIndicator(
         onRefresh: _onRefresh,
@@ -126,7 +146,26 @@ abstract class CampaignListState extends State<CampaignList>
                 }
               }
               print(ongoing.length);
-              return ListView(
+              return Column(
+                children: [
+                  TabBar(
+                    controller: _tabController,
+                    tabs: _campaignTab,
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _getListView(ongoing),
+                        _getListView(coming),
+                        _getListView(ended),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+
+              ListView(
                 children: [
                   _expandView("Ongoing Campaign", ongoing),
                   _expandView("Upcoming Campaign", coming),
