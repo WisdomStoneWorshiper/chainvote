@@ -75,8 +75,9 @@ class _NavBarViewState extends State<NavBarView> {
         items: _barItem,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor:
-            Theme.of(context).colorScheme.primary, // Colors.amber[800],
+        selectedItemColor: Theme.of(context)
+            .colorScheme
+            .secondary, //Theme.of(context).colorScheme.primary, // Colors.amber[800],
         backgroundColor: Theme.of(context)
             .colorScheme
             .surface, //_barItem[_selectedIndex].backgroundColor,
@@ -89,7 +90,10 @@ class _NavBarViewState extends State<NavBarView> {
               child: Icon(Icons.add,
                   color: Colors.white //Theme.of(context).colorScheme.primary,
                   ),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .secondary
+                  .withOpacity(1), //Theme.of(context).colorScheme.primary,
             )
           : null,
     );

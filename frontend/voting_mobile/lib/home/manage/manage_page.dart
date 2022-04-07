@@ -125,26 +125,27 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
             alignment: Alignment.center,
             child: Center(
               child: Column(
-                //crossAxisAlignment: CrossAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //Text("Owner: " + campaign.getOwner()),
                   // //Text(campaign.getStartTime().toLocal().toString() +
                   //     "  -  " +
                   //     campaign.getEndTime().toLocal().toString()),
-
+                  SizedBox(height: newHeight * 0.05),
                   RichText(
                     text: TextSpan(
                         text:
-                            "\n Start Date: ${startTime.day.toString().padLeft(2, '0')}-${startTime.month.toString().padLeft(2, '0')}-${startTime.year.toString().padLeft(2, '0')}    \n",
+                            "${startTime.day.toString().padLeft(2, '0')}-${startTime.month.toString().padLeft(2, '0')}-${startTime.year.toString().padLeft(2, '0')}  (${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}:${startTime.second.toString().padLeft(2, '0')})\n                       -\n${endTime.day.toString().padLeft(2, '0')}-${endTime.month.toString().padLeft(2, '0')}-${endTime.year.toString().padLeft(2, '0')}  (${endTime.hour.toString().padLeft(2, '0')}:${endTime.minute.toString().padLeft(2, '0')}:${endTime.second.toString().padLeft(2, '0')})",
                         style: TextStyle(
-                            color: Colors
-                                .white, //Theme.of(context).colorScheme.secondary,
+                            // color: Colors
+                            //     .white, //Theme.of(context).colorScheme.secondary,
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold),
                         children: <TextSpan>[
                           TextSpan(
                             text:
-                                "\n End Date: ${endTime.day.toString().padLeft(2, '0')}-${endTime.month.toString().padLeft(2, '0')}-${endTime.year.toString().padLeft(2, '0')}",
+                                "", //"\n End Date: ${endTime.day.toString().padLeft(2, '0')}-${endTime.month.toString().padLeft(2, '0')}-${endTime.year.toString().padLeft(2, '0')}",
                             style: TextStyle(
                                 color: Colors.red,
                                 fontSize: 20.0,
@@ -155,6 +156,102 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                   SizedBox(
                     height: 0.05 * newHeight,
                   ),
+                  SizedBox(
+                    height: 0.5 * newHeight,
+                    child: //Expanded(child:
+                        ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        SizedBox(
+                            height: 50,
+                            child: Container(
+                                //alignment: Alignment.topCenter,
+                                width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                child: Container(
+                                  alignment: Alignment.topCenter,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: AlwaysScrollableScrollPhysics(),
+                                      itemCount:
+                                          campaign.getChoiceList().length + 1,
+                                      itemBuilder: (_, index) {
+                                        if (index == 0) {
+                                          return Container(
+                                            alignment: Alignment.center,
+                                            child: ListTile(
+                                              title: Text(
+                                                "", //"Choices",
+                                                style: TextStyle(
+                                                    fontSize: 18.0,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return Container(
+                                          child: ListTile(
+                                            leading: Text((index).toString()),
+                                            title: Text(
+                                              campaign
+                                                  .getChoiceList()[index - 1]
+                                                  .choiceName,
+                                              style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            tileColor: index % 2 == 0
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                : Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                          ),
+                                        );
+                                      }),
+                                ))),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: campaign.getVoterList().length + 1,
+                              itemBuilder: (_, index) {
+                                if (index == 0) {
+                                  return Container(
+                                    child: ListTile(
+                                      title: Text(
+                                        "", //"Voters",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Container(
+                                  child: ListTile(
+                                    leading: Text((index).toString()),
+                                    title: Text(
+                                      campaign.getVoterList()[index - 1],
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    tileColor: index % 2 == 0
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ), //),
+                  ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -240,78 +337,6 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                       ),
                     ],
                   ),
-                  Expanded(
-                      child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Container(
-                        alignment: Alignment.topCenter,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: campaign.getChoiceList().length + 1,
-                            itemBuilder: (_, index) {
-                              if (index == 0) {
-                                return Container(
-                                  alignment: Alignment.center,
-                                  child: ListTile(
-                                    title: Text(
-                                      "Choices",
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return Container(
-                                child: ListTile(
-                                  leading: Text((index).toString()),
-                                  title: Text(
-                                    campaign
-                                        .getChoiceList()[index - 1]
-                                        .choiceName,
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: campaign.getVoterList().length + 1,
-                            itemBuilder: (_, index) {
-                              if (index == 0) {
-                                return Container(
-                                  child: ListTile(
-                                    title: Text(
-                                      "Voters",
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return Container(
-                                child: ListTile(
-                                  leading: Text((index).toString()),
-                                  title: Text(
-                                    campaign.getVoterList()[index - 1],
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
-                  ))
                 ],
               ),
             ),
