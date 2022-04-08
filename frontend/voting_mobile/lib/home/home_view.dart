@@ -113,8 +113,11 @@ abstract class CampaignListState extends State<CampaignList>
   }
 
   _getListView(List<Widget> w) {
-    return ListView(
-      children: [for (var x in w) x],
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: ListView(
+        children: [for (var x in w) x],
+      ),
     );
   }
 
@@ -125,89 +128,85 @@ abstract class CampaignListState extends State<CampaignList>
         left: MediaQuery.of(context).size.width * 0.05,
         right: MediaQuery.of(context).size.width * 0.05,
       ),
-      child: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: FutureBuilder(
-          future: init(eosAccountName),
-          builder: (context, snapshot) {
-            List<Widget> ongoing = [];
-            List<Widget> coming = [];
-            List<Widget> ended = [];
+      child: FutureBuilder(
+        future: init(eosAccountName),
+        builder: (context, snapshot) {
+          List<Widget> ongoing = [];
+          List<Widget> coming = [];
+          List<Widget> ended = [];
 
-            if (snapshot.hasData) {
-              List<Campaign> tempList = snapshot.data as List<Campaign>;
-              for (Campaign c in tempList) {
-                if (c.getCampaignStat() == CampaignStat.Coming) {
-                  coming.add(c);
-                } else if (c.getCampaignStat() == CampaignStat.Ended) {
-                  ended.add(c);
-                } else {
-                  ongoing.add(c);
-                }
+          if (snapshot.hasData) {
+            List<Campaign> tempList = snapshot.data as List<Campaign>;
+            for (Campaign c in tempList) {
+              if (c.getCampaignStat() == CampaignStat.Coming) {
+                coming.add(c);
+              } else if (c.getCampaignStat() == CampaignStat.Ended) {
+                ended.add(c);
+              } else {
+                ongoing.add(c);
               }
-              print(ongoing.length);
-              return Column(
-                children: [
-                  TabBar(
+            }
+            print(ongoing.length);
+            return Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  tabs: _campaignTab,
+                ),
+                Expanded(
+                  child: TabBarView(
                     controller: _tabController,
-                    tabs: _campaignTab,
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _getListView(ongoing),
-                        _getListView(coming),
-                        _getListView(ended),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-
-              ListView(
-                children: [
-                  _expandView("Ongoing Campaign", ongoing),
-                  _expandView("Upcoming Campaign", coming),
-                  _expandView("Ended Campaign", ended),
-                ],
-              );
-            } else {
-              // Widget loading = SizedBox(
-              //   width: 200,
-              //   height: 200,
-              //   child: CircularProgressIndicator(),
-              // );
-              // ongoing = [loading];
-              // ended = [loading];
-              // coming = [loading];
-              return Container(
-                alignment: Alignment.center,
-                child: Center(
-                  child: Column(
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.2,
-                            bottom: MediaQuery.of(context).size.height * 0.1),
-                        child: RotationTransition(
-                          turns: Tween(begin: 0.0, end: 1.0)
-                              .animate(_loadingAnimationController),
-                          child: Image(
-                            height: MediaQuery.of(context).size.height * 0.3,
-                            image:
-                                AssetImage('assets/app_logo_transparent.png'),
-                          ),
-                        ),
-                      ),
-                      Text("Loading ... "),
+                      _getListView(ongoing),
+                      _getListView(coming),
+                      _getListView(ended),
                     ],
                   ),
                 ),
-              );
-            }
-          },
-        ),
+              ],
+            );
+
+            ListView(
+              children: [
+                _expandView("Ongoing Campaign", ongoing),
+                _expandView("Upcoming Campaign", coming),
+                _expandView("Ended Campaign", ended),
+              ],
+            );
+          } else {
+            // Widget loading = SizedBox(
+            //   width: 200,
+            //   height: 200,
+            //   child: CircularProgressIndicator(),
+            // );
+            // ongoing = [loading];
+            // ended = [loading];
+            // coming = [loading];
+            return Container(
+              alignment: Alignment.center,
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.2,
+                          bottom: MediaQuery.of(context).size.height * 0.1),
+                      child: RotationTransition(
+                        turns: Tween(begin: 0.0, end: 1.0)
+                            .animate(_loadingAnimationController),
+                        child: Image(
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          image: AssetImage('assets/app_logo_transparent.png'),
+                        ),
+                      ),
+                    ),
+                    Text("Loading ... "),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
