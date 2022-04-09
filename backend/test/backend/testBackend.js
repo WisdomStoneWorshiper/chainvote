@@ -1,8 +1,8 @@
-let app = require("../index")
-let Account = require("../Helper functions/mongoose/accModel")
-let eosDriver = require("../Helper functions/eosDriver")
-let {accountPlaceholder} = require("../Helper functions/eosPlaceholder")
-let axios = require("axios")
+let app = require("../../index")
+let Account = require("../../Helper functions/mongoose/accModel")
+let eosDriver = require("../../Helper functions/eosDriver")
+let {accountPlaceholder} = require("../../Helper functions/eosPlaceholder")
+let getRandomString = require("../../Helper functions/randomStringGeneration")
 
 let chai = require("chai")
 let chaiHttp = require('chai-http')
@@ -11,15 +11,6 @@ let should = chai.should()
 require('dotenv').config()
 
 chai.use(chaiHttp)
-
-function getRandomString(length) {
-    var randomChars = 'abcdefghijklmnopqrstuvwxyz';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    }
-    return result;
-}
 
 describe("Full testing", function (){
 
@@ -335,24 +326,6 @@ describe("Full testing", function (){
                 done()
             })
         })
-
-        // it("should reject due to invalid pkey", (done) => {
-        //     chai.request(app)
-        //     .post("/account/confirm")
-        //     .send({
-        //         itsc : process.env.REAL_NAME,
-        //         key : process.env.CONF_KEY,
-        //         accname: fixedName,
-        //         pkey : "Gibberish"
-        //     })
-        //     .end((err, res) => {
-        //         res.should.have.status(500);
-        //         res.body.should.have.property("error").eql(true);
-        //         res.body.should.have.property("message").eql("unrecognized public key format");
-        //         done()
-        //     })
-        // })
-
 
         it("link successfully", (done) => {
             chai.request(app)

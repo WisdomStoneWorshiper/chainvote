@@ -3,7 +3,7 @@ const eosDriver = require("../../Helper functions/eosDriver")
 const {
     createVoterPlaceholder,
 } = require("../../Helper functions/eosPlaceholder")
-
+const getRandomString = require("../../Helper functions/randomStringGeneration")
 const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch'); //node only
@@ -11,14 +11,6 @@ const { TextDecoder, TextEncoder } = require('util'); //node only
 
 require('dotenv').config()
 
-const getRandomString = (length) => {
-    var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    }
-    return result;
-}
 
 function sleep(ms) {
     return new Promise((resolve) => {

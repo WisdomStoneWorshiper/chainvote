@@ -1,36 +1,25 @@
 const express = require('express');
 const eosDriver = require('../../Helper functions/eosDriver')
-const {ecc} = require("eosjs/dist/eosjs-ecc-migration")
+const generateKeyPair = require("../../Helper functions/keyPairGeneration")
 const {
     createVoterPlaceholder, 
     accountPlaceholder, 
     eosNameValidation,
-    // eosPublicKeyValidation
 } = require("../../Helper functions/eosPlaceholder")
 const Account = require("../../Helper functions/mongoose/accModel")
 require('dotenv').config();
 
 const router = express.Router();
 
-const generateKeyPair = async () => {
-    const tempPrivate = await ecc.randomKey(undefined,{secureEnv : true});
-    return {
-        private : `${tempPrivate}`,
-        public : `${ecc.privateToPublic(tempPrivate)}`
-    };
-}
-
-
-router.get('/pair', async (req, res) => {
-    const temp = await generateKeyPair();
-    res.json(temp);
-})
+// router.get('/pair', async (req, res) => {
+//     const temp = await generateKeyPair();
+//     res.json(temp);
+// })
 
 router.post("/create", async (req, res) => {
     const {itsc, key, accname, pkey} = req.body
     Account.findOne({itsc : itsc}, async (err, result) => {
         if(err || result === null){
-            // console.log("dead1")
             res.status(500).json({
                 error : true,
                 message : "Invalid itsc"
@@ -39,7 +28,6 @@ router.post("/create", async (req, res) => {
         }
         else{
             if(result.created){
-                // console.log("dead2")
                 res.status(500).json({
                     error: true,
                     message : "Account has already been created"
@@ -47,7 +35,6 @@ router.post("/create", async (req, res) => {
                 return;
             }
             if(result.key !== key){
-                // console.log("dead3")
                 res.status(500).json({
                     error: true,
                     message : "Invalid confirmation key"
@@ -82,7 +69,6 @@ router.post("/create", async (req, res) => {
                 })
             })
             .catch(err => {
-                // console.log(err)
                 res.status(500).json({
                     error: true,
                     message: err.message
@@ -93,8 +79,6 @@ router.post("/create", async (req, res) => {
 })
 
 router.post("/confirm", async (req, res) => {
-    // console.log("Entering confirmation")
-    // console.log(req.body)
 
     const {itsc, key, accname} = req.body;
     Account.findOne({ itsc : itsc}, async (err, result) => {
@@ -107,7 +91,6 @@ router.post("/confirm", async (req, res) => {
         }
         else{
             if(result.key !== key){
-                // console.log("dead3")
                 res.status(500).json({
                     error: true,
                     message : "Invalid confirmation key"
@@ -132,8 +115,6 @@ router.post("/confirm", async (req, res) => {
             .then(result => {
                 Account.findOneAndUpdate({itsc: itsc}, {accountName : accname})
                 .then(result => {
-                    // console.log("entering to save")
-                //   console.log(result);
                     res.json({
                     error : false
                     });
@@ -147,8 +128,6 @@ router.post("/confirm", async (req, res) => {
                 })
             })
             .catch(err => {
-            //  console.log("Detected error")
-            //  console.log(err.message)
                 res.status(500).json({
                 error : true,
                 message : err.message

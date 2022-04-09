@@ -1,16 +1,19 @@
 const express = require('express');
 const Account = require("../Helper functions/mongoose/accModel")
-
+const generateKeyPair = require("../Helper functions/keyPairGeneration")
+const getRandomString = require("../Helper functions/randomStringGeneration")
 const router = express.Router();
+const check = false;
 
-function getRandomString(length) {
-    var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+router.use((req, res, next) => {
+    if(req.body.auth != process.env.TEST_AUTH && check){
+        res.status(400).json({
+            error : true,
+            message : "Auth key to access test router is required"
+        })
     }
-    return result;
-}
+    next();
+})
 
 
 router.post('/', async (req, res) => {
@@ -42,6 +45,11 @@ router.delete('/', async(req, res) => {
             })
         }
     })
+})
+
+router.get('/pair', async (req, res) => {
+    const temp = await generateKeyPair();
+    res.json(temp);
 })
 
 module.exports = router

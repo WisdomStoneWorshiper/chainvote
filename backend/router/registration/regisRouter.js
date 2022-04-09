@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const sgMail = require('../../Helper functions/emailDriver')
-
+const getRandomString = require("../../Helper functions/randomStringGeneration")
 const Account = require("../../Helper functions/mongoose/accModel")
 
 //waypoints to add
@@ -9,22 +9,6 @@ const Account = require("../../Helper functions/mongoose/accModel")
     1. Check if the registration name is created
     2. Register the name and create a randomized code key
 */
-
-// router.get("/check/:userId", async (req, res) => {
-//     //Insert username checking function
-//     //Return the result if it is valid
-//     console.log(`Current ID check ${req.params.userId}`)
-//     res.send("check userID route")
-// });
-
-function getRandomString(length) {
-    var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    }
-    return result;
-}
 
 router.post("/", async (req, res) => {
     const {itsc} = req.body;

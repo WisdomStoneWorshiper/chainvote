@@ -13,18 +13,6 @@ router.use((req,res,next) => {
     next();
 });
 
-const actionPlaceholder = (action, data) => {
-    return         {
-        account: 'main',
-        name: action, // new account name
-        authorization: [{
-          actor: 'main', // which account generates it
-          permission: 'active',
-        }],
-        data: data
-      }
-}
-
 router.post("/edit", async (req, res) => {
 //format is name and is_active
     const {name, is_active} = req.body;

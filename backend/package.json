@@ -14,14 +14,14 @@
     "eosjs": "^22.1.0",
     "eosjs-ecc": "^4.0.7",
     "express": "^4.17.2",
-    "mocha": "^9.2.0",
+    "mocha": "^9.2.2",
     "mongoose": "^6.1.4",
     "node-fetch": "^2.6.6",
     "nodemon": "^2.0.15",
     "util": "^0.12.4"
   },
   "scripts": {
-    "test": "mocha --exit",
+    "test": "mocha ./test/backend/testBackend.js --exit",
     "start": "nodemon index.js"
   },
   "author": "",
