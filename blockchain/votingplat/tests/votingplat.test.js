@@ -128,8 +128,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -141,8 +141,9 @@ describe("votingplat", () => {
           campaign_name : "testcamp",
           owner : userAccount1.accountName,
           choice_list : [],
-          start_time : startTime.toISOString().split(".")[0] + ".000",
-          end_time : endTime.toISOString().split(".")[0] + ".000"
+          start_time: startTime.toISOString().split(".")[0] + ".000",
+          end_time : endTime.toISOString().split(".")[0] + ".000",
+          voter_list : []
         }])
       })
     });
@@ -152,8 +153,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount2.accountName,
         permission : "active"
@@ -179,8 +180,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -189,8 +190,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -213,7 +214,8 @@ describe("votingplat", () => {
           owner : userAccount1.accountName,
           choice_list : [],
           start_time : startTime.toISOString().split(".")[0] + ".000",
-          end_time : endTime.toISOString().split(".")[0] + ".000"
+          end_time : endTime.toISOString().split(".")[0] + ".000",
+          voter_list : []
         }]); //since the table isnt generated yet
       });
     });
@@ -223,8 +225,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        end_time : startTime.toISOString().split(".")[0],
-        start_time : endTime.toISOString().split(".")[0]
+        end_time_string : startTime.toISOString().split(".")[0],
+        start_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -251,8 +253,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : prevTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : prevTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -278,8 +280,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount2.accountName,
         campaign_name : "testcamp",
-        start_time : prevTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : prevTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount2.accountName,
         permission : "active"
@@ -318,8 +320,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -348,7 +350,8 @@ describe("votingplat", () => {
           end_time: endTime.toISOString().split(".")[0] + ".000", 
           id: "0", 
           owner: userAccount1.accountName, 
-          start_time: startTime.toISOString().split(".")[0] + ".000"})
+          start_time: startTime.toISOString().split(".")[0] + ".000",
+          voter_list : []})
       })
     });
 
@@ -380,7 +383,9 @@ describe("votingplat", () => {
           end_time: endTime.toISOString().split(".")[0] + ".000", 
           id: "0", 
           owner: userAccount1.accountName, 
-          start_time: startTime.toISOString().split(".")[0] + ".000"})
+          start_time: startTime.toISOString().split(".")[0] + ".000",
+          voter_list : []
+        })
       })
     });
 
@@ -412,7 +417,9 @@ describe("votingplat", () => {
           end_time: endTime.toISOString().split(".")[0] + ".000", 
           id: "0", 
           owner: userAccount1.accountName, 
-          start_time: startTime.toISOString().split(".")[0] + ".000"})
+          start_time: startTime.toISOString().split(".")[0] + ".000",
+          voter_list : []
+        })
       })
     });
 
@@ -459,7 +466,8 @@ describe("votingplat", () => {
           end_time: endTime.toISOString().split(".")[0] + ".000", 
           id: "0", 
           owner: userAccount1.accountName, 
-          start_time: startTime.toISOString().split(".")[0] + ".000"})
+          start_time: startTime.toISOString().split(".")[0] + ".000",
+          voter_list : []})
       })
     });
 
@@ -491,7 +499,8 @@ describe("votingplat", () => {
             end_time: endTime.toISOString().split(".")[0] + ".000", 
             id: "0", 
             owner: userAccount1.accountName, 
-            start_time: startTime.toISOString().split(".")[0] + ".000"})
+            start_time: startTime.toISOString().split(".")[0] + ".000",
+            voter_list : []})
         }
         )
     });
@@ -510,8 +519,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -670,8 +679,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -724,7 +733,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]})
         })
       });
 
@@ -758,7 +768,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]})
         })
       });
 
@@ -792,7 +803,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]})
         })
       });
 
@@ -826,7 +838,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]})
         })
       });
 
@@ -857,10 +870,10 @@ describe("votingplat", () => {
                 "choice" : "choice1",
                 "result" : "1"
               }], 
-              end_time: endTime.toISOString().split(".")[0] + ".000", 
+              end_time_string: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"})
+              start_time_string: startTime.toISOString().split(".")[0] + ".000"})
           }
         )
         .catch(err => {
@@ -908,7 +921,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]
             })
 
           expect(contractAcc.getTableRowsScoped("voter")["votingplat"])
@@ -960,7 +974,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]
             })
         })
       })
@@ -1004,7 +1019,8 @@ describe("votingplat", () => {
               end_time: endTime.toISOString().split(".")[0] + ".000", 
               id: "0", 
               owner: userAccount1.accountName, 
-              start_time: startTime.toISOString().split(".")[0] + ".000"
+              start_time: startTime.toISOString().split(".")[0] + ".000",
+              voter_list : ["useracc2"]
             })
         })
       })
@@ -1032,8 +1048,8 @@ describe("votingplat", () => {
       await contractAcc.contract.createcamp({
         owner : userAccount1.accountName,
         campaign_name : "testcamp",
-        start_time : startTime.toISOString().split(".")[0],
-        end_time : endTime.toISOString().split(".")[0]
+        start_time_string : startTime.toISOString().split(".")[0],
+        end_time_string : endTime.toISOString().split(".")[0]
       }, [{
         actor : userAccount1.accountName,
         permission : "active"
@@ -1086,7 +1102,8 @@ describe("votingplat", () => {
             end_time: endTime.toISOString().split(".")[0] + ".000", 
             id: "0", 
             owner: userAccount1.accountName, 
-            start_time: startTime.toISOString().split(".")[0] + ".000"})
+            start_time: startTime.toISOString().split(".")[0] + ".000",
+            voter_list : ["useracc2"]})
         })
       })
 
@@ -1120,7 +1137,8 @@ describe("votingplat", () => {
             end_time: endTime.toISOString().split(".")[0] + ".000", 
             id: "0", 
             owner: userAccount1.accountName, 
-            start_time: startTime.toISOString().split(".")[0] + ".000"})
+            start_time: startTime.toISOString().split(".")[0] + ".000",
+            voter_list : ["useracc2"]})
         })
       })
 
@@ -1155,7 +1173,8 @@ describe("votingplat", () => {
             end_time: endTime.toISOString().split(".")[0] + ".000", 
             id: "0", 
             owner: userAccount1.accountName, 
-            start_time: startTime.toISOString().split(".")[0] + ".000"})
+            start_time: startTime.toISOString().split(".")[0] + ".000",
+            voter_list : ["useracc2"]})
         })
       })
 
@@ -1189,7 +1208,8 @@ describe("votingplat", () => {
             end_time: endTime.toISOString().split(".")[0] + ".000", 
             id: "0", 
             owner: userAccount1.accountName, 
-            start_time: startTime.toISOString().split(".")[0] + ".000"})
+            start_time: startTime.toISOString().split(".")[0] + ".000",
+            voter_list : ["useracc2"]})
         })
       })
 
