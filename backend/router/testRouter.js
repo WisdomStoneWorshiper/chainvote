@@ -6,7 +6,7 @@ const router = express.Router();
 const check = false;
 
 router.use((req, res, next) => {
-    if(req.body.auth != process.env.TEST_AUTH && check){
+    if(req.params.auth != process.env.TEST_AUTH && check){
         res.status(400).json({
             error : true,
             message : "Auth key to access test router is required"
@@ -47,7 +47,7 @@ router.delete('/', async(req, res) => {
     })
 })
 
-router.get('/pair', async (req, res) => {
+router.post('/pair', async (req, res) => {
     const temp = await generateKeyPair();
     res.json(temp);
 })

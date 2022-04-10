@@ -14,34 +14,43 @@ chai.use(chaiHttp)
 
 describe("Full testing", function (){
 
+    const accountName = getRandomString(7);
+    const keyConf = getRandomString(5);
+    const fixedName = getRandomString(12);
+    let keypair = {};
+
     before(function(done){
         this.timeout(10000);
         app.on("serverStart", () => {
             done();
         })
-    });
+
+        chai.request(app)
+        .post("/test/pair")
+        .then( result => {
+            keypair = result.body
+        })
+    }); 
     
     describe('/registration', function () {
     
         beforeEach( async function  () {
-            this.timeout(2000);
-            await Account.deleteOne({itsc : process.env.REAL_NAME});
             let temp = new Account({
-                itsc: process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accountName : null,
-                // publicKey : null,
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
                 created : false
             });
             return temp.save()
         })
 
         it("Should register properly", (done) => {
-            let itsc = {itsc : process.env.REAL_NAME};
 
             chai.request(app)
             .post("/registration")
-            .send(itsc)
+            .send({
+                itsc : accountName
+            })
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.have.property("error").eql(false);
@@ -50,11 +59,12 @@ describe("Full testing", function (){
         })
 
         it("Should reject registration", (done) => {
-            let itsc = {itsc: process.env.FAKE_NAME};
 
             chai.request(app)
             .post("/registration")
-            .send(itsc)
+            .send({
+                itsc : getRandomString(7)
+            })
             .end((err, res) => {
                 res.should.have.status(500);
                 res.body.should.have.property("error").eql(true);
@@ -64,45 +74,33 @@ describe("Full testing", function (){
         })
 
         afterEach(function () {
-            return Account.deleteOne({itsc : process.env.REAL_NAME});
+            return Account.deleteOne({itsc : accountName, accountName : accountName});
         })
     })
 
     describe("/account/create", function () {
 
-        let keypair = null;
-
-        let fixedName = null;
-
         beforeEach(async function() {
-            this.timeout(3000); //account generation
             let temp = new Account({
-                itsc: process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accountName : null,
-                // publicKey : null,
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
                 created : false
             });
             await temp.save();
 
-            fixedName = getRandomString(12);
-
-            let result = await chai.request(app)
-            .get("/account/pair")
-            keypair = result.body;
         })
 
-        this.timeout(100000)
 
 
         it("should reject due to invalid itsc", (done) => {
             chai.request(app)
             .post("/account/create")
             .send({
-                itsc : process.env.FAKE_NAME,
-                key : process.env.CONF_KEY,
+                itsc : getRandomString(7),
+                key : keyConf,
                 accname: fixedName,
-                // pkey : keypair.public
+                pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -116,10 +114,10 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/create")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.FAKE_KEY,
+                itsc : accountName,
+                key : getRandomString(5),
                 accname: fixedName,
-                // pkey : keypair.public
+                pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -133,8 +131,8 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/create")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
+                itsc : accountName,
+                key : keyConf,
                 accname: (fixedName + "a"),
                 // pkey : keypair.public
             })
@@ -150,8 +148,8 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/create")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
+                itsc : accountName,
+                key : keyConf,
                 accname: "." + getRandomString(11),
                 // pkey : keypair.public
             })
@@ -167,96 +165,85 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/create")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
+                itsc : accountName,
+                key : keyConf,
                 accname: fixedName,
                 pkey : "Gibberish"
             })
             .end((err, res) => {
                 res.should.have.status(500);
                 res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("unrecognized public key format");
+                res.body.should.have.property("message").eql("Name should be less than 13 characters, or less than 14 if last character is between 1-5 or a-j, and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz");
                 done()
             })
         })
 
-        it("should create account", (done) => {
-            chai.request(app)
-            .post("/account/create")
-            .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accname: fixedName,
-                // pkey : keypair.public
-            })
-            .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.have.property("error").eql(false);
-                done()
-            })
-        })
+        // it("should create account", (done) => {
+        //     chai.request(app)
+        //     .post("/account/create")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .end((err, res) => {
+        //         res.should.have.status(200);
+        //         res.body.should.have.property("error").eql(false);
+        //         done()
+        //     })
+        // })
 
-        it("should reject due to account has been created before", async () => {
-            await chai.request(app)
-            .post("/account/create")
-            .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accname: fixedName,
-                // pkey : keypair.public
-            })
-            .then(res => {
-                return chai.request(app)
-                .post("/account/create")
-                .send({
-                    itsc : process.env.REAL_NAME,
-                    key : process.env.CONF_KEY,
-                    accname: fixedName,
-                    // pkey : keypair.public
-                })
-                .then((res) => {
-                    res.should.have.status(500);
-                    res.body.should.have.property("error").eql(true);
-                    res.body.should.have.property("message").eql("Account has already been created");
-                })
-            })
-        })
+        // it("should reject due to account has been created before", async () => {
+        //     await chai.request(app)
+        //     .post("/account/create")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .then(res => {
+        //         return chai.request(app)
+        //         .post("/account/create")
+        //         .send({
+        //             itsc : process.env.REAL_NAME,
+        //             key : process.env.CONF_KEY,
+        //             accname: fixedName,
+        //             // pkey : keypair.public
+        //         })
+        //         .then((res) => {
+        //             res.should.have.status(500);
+        //             res.body.should.have.property("error").eql(true);
+        //             res.body.should.have.property("message").eql("Account has already been created");
+        //         })
+        //     })
+        // })
 
         afterEach(function () {
-            return Account.deleteMany({itsc : process.env.REAL_NAME});
+            return Account.deleteMany({itsc : accountName});
         })
 
     })
 
     describe("/account/confirm", function(){
-        let keypair, fixedName;
-
-        console.log(fixedName)
         beforeEach( async function() {
-            this.timeout(3000); //account generation
             let temp = new Account({
-                itsc: process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accountName : null,
-                // publicKey : null,
-                created : true
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
             });
             await temp.save();
 
-            let result = await chai.request(app)
-            .get("/account/pair")
-            
-            keypair = result.body;
-            fixedName = getRandomString(12);
-
-            await eosDriver.transact({
-                actions: [
-                    accountPlaceholder(fixedName, keypair.public)
-                ]
-               }, {
-                blocksBehind: 3,
-                expireSeconds: 30,
-               }) //to save the account
+            // await eosDriver.transact({
+            //     actions: [
+            //         accountPlaceholder(fixedName, keypair.public)
+            //     ]
+            //    }, {
+            //     blocksBehind: 3,
+            //     expireSeconds: 30,
+            //    }) //to save the account
 
         })
 
@@ -264,10 +251,9 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/confirm")
             .send({
-                itsc : process.env.FAKE_NAME,
-                key : process.env.CONF_KEY,
+                itsc : getRandomString(7),
+                key : keyConf,
                 accname: fixedName,
-                // pkey : keypair.public
             })
             .end((err,res) => {
                 res.should.have.status(500);
@@ -281,8 +267,8 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/confirm")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.FAKE_KEY,
+                itsc : accountName,
+                key : getRandomString(5),
                 accname: fixedName,
                 // pkey : keypair.public
             })
@@ -297,8 +283,8 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/confirm")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
+                itsc : accountName,
+                key : keyConf,
                 accname: (fixedName + "a"),
                 // pkey : keypair.public
             })
@@ -314,10 +300,9 @@ describe("Full testing", function (){
             chai.request(app)
             .post("/account/confirm")
             .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
+                itsc : accountName,
+                key : keyConf,
                 accname: "." + getRandomString(11),
-                // pkey : keypair.public
             })
             .end((err, res) => {
                 res.should.have.status(500);
@@ -327,51 +312,51 @@ describe("Full testing", function (){
             })
         })
 
-        it("link successfully", (done) => {
-            chai.request(app)
-            .post("/account/confirm")
-            .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accname: fixedName,
-                // pkey : keypair.public
-            })
-            .end((err,res) => {
-                res.should.have.status(200);
-                res.body.should.have.property("error").eql(false);
-                res.body.should.not.have.property("message");
-                done()
-            })
-        });
+        // it("link successfully", (done) => {
+        //     chai.request(app)
+        //     .post("/account/confirm")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .end((err,res) => {
+        //         res.should.have.status(200);
+        //         res.body.should.have.property("error").eql(false);
+        //         res.body.should.not.have.property("message");
+        //         done()
+        //     })
+        // });
 
-        it("should fail link via public", async () => {
-            await chai.request(app)
-            .post("/account/confirm")
-            .send({
-                itsc : process.env.REAL_NAME,
-                key : process.env.CONF_KEY,
-                accname: fixedName,
-                // pkey : keypair.public
-            })
-            .then(res => {
-                return chai.request(app)
-                .post("/account/confirm")
-                .send({
-                    itsc : process.env.REAL_NAME,
-                    key : process.env.CONF_KEY,
-                    accname: fixedName,
-                    // pkey : keypair.public
-                })
-                .then(res => {
-                    res.should.have.status(500);
-                    res.body.should.have.property("error").eql(true);
-                    res.body.should.have.property("message").eql("Account has been linked");
-                })
-            })
-        });
+        // it("should fail link via public", async () => {
+        //     await chai.request(app)
+        //     .post("/account/confirm")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .then(res => {
+        //         return chai.request(app)
+        //         .post("/account/confirm")
+        //         .send({
+        //             itsc : process.env.REAL_NAME,
+        //             key : process.env.CONF_KEY,
+        //             accname: fixedName,
+        //             // pkey : keypair.public
+        //         })
+        //         .then(res => {
+        //             res.should.have.status(500);
+        //             res.body.should.have.property("error").eql(true);
+        //             res.body.should.have.property("message").eql("Account has been linked");
+        //         })
+        //     })
+        // });
 
         afterEach(function () {
-            return Account.deleteOne({itsc : process.env.REAL_NAME});
+            return Account.deleteOne({itsc : accountName});
         })
     });
 
