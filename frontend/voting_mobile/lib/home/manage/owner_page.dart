@@ -267,25 +267,37 @@ class _OwnerPageState extends State<OwnerPage> {
           var padding = MediaQuery.of(context).padding;
           double newHeight = height - padding.top - padding.bottom;
           if (ongoing.length == 0 && coming.length == 0 && ended.length == 0) {
-            return Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                  Image.asset(
-                    'assets/app_logo_largest_without_bg.png',
-                    height: newHeight * 0.2,
-                  ),
-                  SizedBox(height: 20),
-                  RichText(
-                    text: const TextSpan(
-                      text: 'No Campaign to Show',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.normal),
+            if (_isReload) {
+              return Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    Image.asset(
+                      'assets/app_logo_largest_without_bg.png',
+                      height: newHeight * 0.2,
                     ),
-                  ),
-                ]));
+                    SizedBox(height: 20),
+                    RichText(
+                      text: TextSpan(
+                        text: 'No Campaign to Show',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                  ]));
+            } else {
+              return Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    Image.asset(
+                      'assets/app_logo_largest_without_bg.png',
+                      height: newHeight * 0.2,
+                    ),
+                  ]));
+            }
           } else {
             int maxLimitForCampaignName = 18;
             return Center(
