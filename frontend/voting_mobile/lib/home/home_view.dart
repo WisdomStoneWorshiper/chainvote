@@ -114,11 +114,26 @@ abstract class CampaignListState extends State<CampaignList>
 
   _getListView(List<Widget> w) {
     return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: ListView(
-        children: [for (var x in w) x],
-      ),
-    );
+        onRefresh: _onRefresh,
+        child: ListView(
+          children: [for (var x in w) x],
+        ));
+  }
+
+  _noCampaignsToShow() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image(
+            height: MediaQuery.of(context).size.height * 0.25,
+            image: AssetImage('assets/app_logo_transparent.png'),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text("No campaigns to show"),
+        ]);
   }
 
   @override
@@ -157,9 +172,15 @@ abstract class CampaignListState extends State<CampaignList>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      _getListView(ongoing),
-                      _getListView(coming),
-                      _getListView(ended),
+                      ongoing.isNotEmpty
+                          ? _getListView(ongoing)
+                          : _noCampaignsToShow(),
+                      coming.isNotEmpty
+                          ? _getListView(coming)
+                          : _noCampaignsToShow(),
+                      ended.isNotEmpty
+                          ? _getListView(ended)
+                          : _noCampaignsToShow(),
                     ],
                   ),
                 ),
@@ -189,7 +210,7 @@ abstract class CampaignListState extends State<CampaignList>
                   children: [
                     Container(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.2,
+                          top: MediaQuery.of(context).size.height * 0.15,
                           bottom: MediaQuery.of(context).size.height * 0.1),
                       child: RotationTransition(
                         turns: Tween(begin: 0.0, end: 1.0)
@@ -200,7 +221,11 @@ abstract class CampaignListState extends State<CampaignList>
                         ),
                       ),
                     ),
-                    Text("Loading ... "),
+                    Text("Loading ... ",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        )),
                   ],
                 ),
               ),

@@ -30,29 +30,29 @@ class VotingApp extends StatelessWidget {
         brightness: Brightness.dark,
         colorScheme: ColorScheme(
           brightness: Brightness.dark,
-          primary: Color.fromARGB(255, 36, 48, 65),
+          primary: Color.fromARGB(255, 83, 198, 211),
           onPrimary: Colors.white,
           secondary: Color(0xAA5FD423),
           onSecondary: Colors.yellow,
           surface: Color.fromARGB(255, 27, 79, 97),
           onSurface: Colors.white, //Color.fromARGB(255, 83, 198, 211),
-          background: Color(0xFF133642),
+          background: Color(
+              0xFF133642), //Color.fromARGB(255, 12, 27, 53), //Color(0xFF133642),
           onBackground: Colors.purple,
           error: Colors.red,
           onError: Colors.orange,
         ),
-        textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(primary: Colors.amber)),
-        // primaryColor: Color(0xFF133642),
-        // backgroundColor: Color(0xFF133642),
-        scaffoldBackgroundColor: Color.fromARGB(255, 2, 21, 27),
-        // elevatedButtonTheme: ElevatedButtonThemeData(
-        //   style: ElevatedButton.styleFrom(
-        //     primary: Color(0xAA5FD423),
-        //     onSurface: Color(0xFF47C1CF),
-        //   ),
-        // ),
+        primaryColor: Color.fromARGB(255, 14, 43, 52),
+        backgroundColor: Color(0xFF133642),
+        scaffoldBackgroundColor: Color(0xFF133642),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xAA5FD423),
+            onSurface: Color(0xFF47C1CF),
+          ),
+        ),
       ),
+
       initialRoute: 'sp',
       routes: {
         'l': (context) => Login(),

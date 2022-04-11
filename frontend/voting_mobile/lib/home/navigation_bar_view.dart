@@ -40,17 +40,17 @@ class _NavBarViewState extends State<NavBarView> {
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
       label: _tabName[0],
-      backgroundColor: Color.fromARGB(255, 36, 48, 65),
+      //backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe04e, fontFamily: 'MaterialIcons')),
       label: _tabName[1],
-      backgroundColor: Color.fromARGB(255, 36, 48, 65),
+      //backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.settings),
       label: _tabName[2],
-      backgroundColor: Color.fromARGB(255, 36, 48, 65),
+      //backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
   ];
 
@@ -104,8 +104,10 @@ class _NavBarViewState extends State<NavBarView> {
         items: _barItem,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.amber[800],
-        backgroundColor: _barItem[_selectedIndex].backgroundColor,
+        selectedItemColor:
+            Theme.of(context).colorScheme.secondary, //Colors.amber[800],
+        backgroundColor: Theme.of(context)
+            .primaryColor, //_barItem[_selectedIndex].backgroundColor,
       ),
       floatingActionButton: _selectedIndex == 1
           ? FloatingActionButton(

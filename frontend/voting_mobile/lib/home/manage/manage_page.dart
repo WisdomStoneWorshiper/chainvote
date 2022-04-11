@@ -130,19 +130,21 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
     final theme = Theme.of(context);
     final oldTextTheme = theme.textTheme.headline4;
 
-    final campaignTextTheme =
-        oldTextTheme!.copyWith(fontWeight: FontWeight.bold);
-
+    final campaignTextTheme = oldTextTheme!.copyWith(
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    );
+    final dataTextTheme = TextStyle(fontSize: 17);
     final listTitleTheme = oldTextTheme!.copyWith(
         fontSize: oldTextTheme.fontSize! * 0.75, fontWeight: FontWeight.bold);
-
-    List<Widget> bigList = [
-      _getList(
-          "Choices",
-          [for (Choice c in campaign.getChoiceList()) c.choiceName],
-          listTitleTheme),
-      _getList("Voters", campaign.getVoterList(), listTitleTheme),
-    ];
+    final horizontalScrollController = new ScrollController();
+    // List<Widget> bigList = [
+    //   _getList(
+    //       "Choices",
+    //       [for (Choice c in campaign.getChoiceList()) c.choiceName],
+    //       listTitleTheme),
+    //   _getList("Voters", campaign.getVoterList(), listTitleTheme),
+    // ];
     // campaign.setview(CampaignView.Owner);
     return Scaffold(
       appBar: AppBar(
@@ -210,13 +212,14 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
         child: Align(
           alignment: Alignment.topLeft,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 padding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width * 0.05),
                 child: Card(
-                  color: Color.fromARGB(255, 2, 21, 27),
+                  //color: Color.fromARGB(255, 2, 21, 27),
+                  color: Theme.of(context).backgroundColor,
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width * 0.01,
@@ -226,12 +229,14 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
                           padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).size.height * 0.02,
                           ),
                           child: Text(
                             campaign.getCampaignName(),
                             style: campaignTextTheme,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Container(
@@ -247,7 +252,14 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                                 ),
                                 child: Icon(Icons.person),
                               ),
-                              Text(campaign.getOwner()),
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.65,
+                                  child: Text(
+                                    campaign.getOwner(),
+                                    style: dataTextTheme,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
                             ],
                           ),
                         ),
@@ -264,8 +276,8 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                                 ),
                                 child: Icon(Icons.timer_outlined),
                               ),
-                              Text(
-                                  campaign.getStartTime().toLocal().toString()),
+                              Text(campaign.getStartTime().toLocal().toString(),
+                                  style: dataTextTheme),
                             ],
                           ),
                         ),
@@ -277,7 +289,8 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                               ),
                               child: Icon(Icons.timer_off_outlined),
                             ),
-                            Text(campaign.getEndTime().toLocal().toString()),
+                            Text(campaign.getEndTime().toLocal().toString(),
+                                style: dataTextTheme),
                           ],
                         ),
                       ],
@@ -285,16 +298,287 @@ class _ManagePageState extends State<ManagePage> with SharedDialog {
                   ),
                 ),
               ),
-              Expanded(
-                child: Swiper(
-                  itemCount: 2,
-                  pagination: SwiperPagination(),
-                  control: SwiperControl(),
-                  loop: false,
-                  itemBuilder: (context, index) {
-                    return bigList[index];
-                  },
-                ),
+              // Expanded(
+              //   child: Swiper(
+              //     itemCount: 2,
+              //     pagination: SwiperPagination(),
+              //     control: SwiperControl(),
+              //     loop: false,
+              //     itemBuilder: (context, index) {
+              //       return bigList[index];
+              //     },
+              //   ),
+              // ),
+              SizedBox(height: 7.5),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.57,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ListView(
+                    controller: horizontalScrollController,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    physics: ClampingScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Stack(children: [
+                                Align(
+                                  child: Text(
+                                    "Choices",
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Positioned(
+                                    right: 0,
+                                    height: 30,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          horizontalScrollController.jumpTo(
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Theme.of(context)
+                                              .colorScheme
+                                              .background,
+                                          shadowColor: Theme.of(context)
+                                              .colorScheme
+                                              .background,
+                                          elevation: 0,
+                                        ),
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 30,
+                                        )))
+                              ]),
+                              SizedBox(height: 10),
+                              Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.42,
+                                  child: Container(
+                                      child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics(),
+                                    itemCount: campaign.getChoiceList().length,
+                                    itemBuilder: (_, index) {
+                                      return Container(
+                                          color: index % 2 == 0
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                          child: ListTile(
+                                              leading: Text(
+                                                "   " + (index + 1).toString(),
+                                                style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              title: Text(
+                                                campaign
+                                                    .getChoiceList()[index]
+                                                    .choiceName,
+                                                style: TextStyle(
+                                                  fontSize: 22.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              )));
+                                    },
+                                  ))),
+                              SizedBox(
+                                height: 15,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                              ),
+                              ElevatedButton(
+                                style: campaign.getCampaignStat() ==
+                                        CampaignStat.Coming
+                                    ? null
+                                    : ElevatedButton.styleFrom(
+                                        primary: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                      ),
+                                onPressed: () {
+                                  if (campaign.getCampaignStat() ==
+                                      CampaignStat.Coming) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return EditPage(
+                                              campaignId: campaign.campaignId,
+                                              editType: EditType.Choice,
+                                              editingList: campaign
+                                                  .getChoiceList()
+                                                  .map((c) => c.choiceName)
+                                                  .toList());
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    final wrongSnackbar = SnackBar(
+                                        content: Text(campaign
+                                                    .getCampaignStat() ==
+                                                CampaignStat.Ended
+                                            ? "Campaign has already ended"
+                                            : "Cannot make changes to ongoing campaign"),
+                                        action: SnackBarAction(
+                                          label: 'OK',
+                                          onPressed: () {},
+                                        ));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(wrongSnackbar);
+                                  }
+                                },
+                                child: Text(
+                                  "Edit Choices",
+                                  style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Stack(children: [
+                                  Align(
+                                    child: Text(
+                                      "Voters",
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Positioned(
+                                      left: 0,
+                                      height: 30,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            horizontalScrollController
+                                                .jumpTo(0);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Theme.of(context)
+                                                .colorScheme
+                                                .background,
+                                            shadowColor: Theme.of(context)
+                                                .colorScheme
+                                                .background,
+                                            elevation: 0,
+                                          ),
+                                          child: Icon(
+                                            Icons.arrow_back_ios,
+                                            size: 30,
+                                          ))),
+                                ]),
+                                SizedBox(height: 10),
+                                Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.42,
+                                    child: Container(
+                                        child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: ClampingScrollPhysics(),
+                                      itemCount: campaign.getVoterList().length,
+                                      itemBuilder: (_, index) {
+                                        return Container(
+                                            color: index % 2 == 0
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary
+                                                : Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                            child: ListTile(
+                                                leading: Text(
+                                                  "   " +
+                                                      (index + 1).toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                title: Text(
+                                                  campaign
+                                                      .getVoterList()[index],
+                                                  style: TextStyle(
+                                                    fontSize: 22.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                )));
+                                      },
+                                    ))),
+                                SizedBox(
+                                  height: 15,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                ),
+                                ElevatedButton(
+                                  style: campaign.getCampaignStat() ==
+                                          CampaignStat.Coming
+                                      ? null
+                                      : ElevatedButton.styleFrom(
+                                          primary: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                        ),
+                                  onPressed: () {
+                                    if (campaign.getCampaignStat() ==
+                                        CampaignStat.Coming) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return EditPage(
+                                                campaignId: campaign.campaignId,
+                                                editType: EditType.Voter,
+                                                editingList:
+                                                    campaign.getVoterList());
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      final wrongSnackbar = SnackBar(
+                                          content: Text(campaign
+                                                      .getCampaignStat() ==
+                                                  CampaignStat.Ended
+                                              ? "Campaign has already ended"
+                                              : "Cannot make changes to ongoing campaign"),
+                                          action: SnackBarAction(
+                                            label: 'OK',
+                                            onPressed: () {},
+                                          ));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(wrongSnackbar);
+                                    }
+                                  },
+                                  child: Text(
+                                    "Edit Voters",
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ])),
+                    ]),
               ),
             ],
           ),

@@ -61,41 +61,80 @@ class CampaignListView extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.only(
                             top: 7.36,
-                            bottom: 14.72,
+                            bottom: 10.72,
                             left: 20,
                             right: 4.14,
                           ),
                           child: Column(
-                            // mainAxisAlignment: MainAxisAlignment.start,
+                            //mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Icon(Icons.now_widgets),
-                              Text(
-                                campaignName,
-                                style: compaignTextTheme,
-                              ),
-
                               Container(
-                                padding: EdgeInsets.only(
-                                  top: 22.08,
-                                  bottom: 7.36,
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: Text(
+                                  campaignName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: compaignTextTheme,
                                 ),
-                                child: Row(
+                              ),
+                              //fix the total voted look
+                              Container(
+                                padding: campaign.getCampaignStat() ==
+                                        CampaignStat.Ongoing
+                                    ? EdgeInsets.only(
+                                        top: 10.08,
+                                      )
+                                    : EdgeInsets.only(
+                                        top: 22.08,
+                                        bottom: 7.36,
+                                      ),
+                                child: Column(
+                                  //mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.only(right: 22.08),
+                                      padding: EdgeInsets.only(
+                                          right: 22.08, bottom: 4),
                                       child: campaign.getCampaignStat() ==
                                               CampaignStat.Coming
-                                          ? Text("Start: " +
-                                              DateFormat("yyyy-MM-dd kk:mm:ss")
-                                                  .format(campaign
-                                                      .getStartTime()
-                                                      .toLocal()))
-                                          : Text("End: " +
-                                              DateFormat("yyyy-MM-dd kk:mm:ss")
-                                                  .format(campaign
-                                                      .getEndTime()
-                                                      .toLocal())),
+                                          ? Text(
+                                              "Starts On: " +
+                                                  DateFormat(
+                                                          "yyyy-MM-dd kk:mm:ss")
+                                                      .format(campaign
+                                                          .getStartTime()
+                                                          .toLocal()),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : campaign.getCampaignStat() ==
+                                                  CampaignStat.Ended
+                                              ? Text(
+                                                  "Ended On: " +
+                                                      DateFormat(
+                                                              "yyyy-MM-dd kk:mm:ss")
+                                                          .format(campaign
+                                                              .getEndTime()
+                                                              .toLocal()),
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              : Text(
+                                                  "Ends On: " +
+                                                      DateFormat(
+                                                              "yyyy-MM-dd kk:mm:ss")
+                                                          .format(campaign
+                                                              .getEndTime()
+                                                              .toLocal()),
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                     ),
                                     campaign.getCampaignStat() ==
                                             CampaignStat.Ongoing

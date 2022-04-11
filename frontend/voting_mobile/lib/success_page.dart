@@ -17,21 +17,30 @@ class SuccessPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        title: Text("SUCCESSFUL"),
       ),
       body: Align(
         alignment: Alignment.center,
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(
                 Icons.check_circle_outline,
                 color: Colors.green,
-                size: 60,
+                size: 180,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16),
-                child: Text(args.message),
+                child: Text(
+                  args.message,
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
               ),
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
@@ -39,6 +48,9 @@ class SuccessPage extends StatelessWidget {
                       arguments: args.arg);
                 },
                 child: Text("OK"),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(100, 40),
+                ),
               )
             ],
           ),
