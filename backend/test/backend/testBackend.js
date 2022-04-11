@@ -393,6 +393,51 @@ describe("Full testing", function (){
         })
     })
 
+    describe("/contract/getITSC", function(){
+        
+        beforeEach( async function() {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            return temp.save();
+        })
+
+        it("should provide ITSC", async function () {
+            await Account.updateOne({itsc : accountName}, {accountName: "Correct"});
+
+            let res = await chai.request(app)
+            .post("/contract/getITSC")
+            .send({
+                accountName : "Correct",
+            })
+
+            res.should.have.status(200);
+            res.body.should.have.property("error").eql(false);
+            res.body.should.have.property("itsc").eql(accountName);
+        })
+
+        it("should not provide ITSC", async function () {
+
+            let res = await chai.request(app)
+            .post("/contract/getITSC")
+            .send({
+                accountName : accountName,
+            })
+
+            res.should.have.status(500);
+            res.body.should.have.property("error").eql(true);
+            res.body.should.have.property("message").eql("Account has not been created! (ITSC = AccountName)");
+        })
+
+        this.afterEach( async function () {
+            await Account.deleteOne({itsc : accountName});
+        })
+
+    })
+
 });
 
 

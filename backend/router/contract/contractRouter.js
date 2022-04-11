@@ -198,10 +198,19 @@ router.post("/getITSC", async (req, res) => {
         accountName : accountName
     })
     .then( result => {
-        res.json({
-            error : false,
-            itsc : result.itsc
-        });
+        if(accountName == result.itsc){
+            res.status(500).json({
+                error : true,
+                message : "Account has not been created! (ITSC = AccountName)"
+            })
+        }
+        else{
+            res.json({
+                error : false,
+                itsc : result.itsc
+            });
+        }
+        
     })
     .catch( err => {
         res.status(500).json({
