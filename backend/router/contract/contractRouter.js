@@ -10,7 +10,7 @@ router.post("/addvoter", async (req, res) => {
     const { itsc, campaignId } = req.body;
 
     let accountList = [];
-    let errorVoter = [];
+    let errorAccount = [];
 
     for(let i = 0; i < itsc.length; i++){
         try{
@@ -29,7 +29,7 @@ router.post("/addvoter", async (req, res) => {
         catch(e){
             console.log("Unexpected error idk")
             console.log(e)
-            errorVoter.push(itsc[i]);
+            errorAccount.push(itsc[i]);
         }
     }
 
@@ -52,7 +52,7 @@ router.post("/addvoter", async (req, res) => {
                 resolve()
             })
             .catch( err => {
-                errorVoter.push(delvoterList[i].itsc)
+                errorAccount.push(delvoterList[i].itsc)
                 console.log(`User ${delvoterList[i].itsc} has faield`)
                 resolve();
             })
