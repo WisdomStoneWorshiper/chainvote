@@ -161,22 +161,22 @@ describe("Full testing", function (){
             })
         })
 
-        it("should reject due to invalid pkey", (done) => {
-            chai.request(app)
-            .post("/account/create")
-            .send({
-                itsc : accountName,
-                key : keyConf,
-                accname: fixedName,
-                pkey : "Gibberish"
-            })
-            .end((err, res) => {
-                res.should.have.status(500);
-                res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Name should be less than 13 characters, or less than 14 if last character is between 1-5 or a-j, and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz");
-                done()
-            })
-        })
+        // it("should reject due to invalid pkey", (done) => {
+        //     chai.request(app)
+        //     .post("/account/create")
+        //     .send({
+        //         itsc : accountName,
+        //         key : keyConf,
+        //         accname: fixedName,
+        //         pkey : "Gibberish"
+        //     })
+        //     .end((err, res) => {
+        //         res.should.have.status(500);
+        //         res.body.should.have.property("error").eql(true);
+        //         res.body.should.have.property("message").eql("Name should be less than 13 characters, or less than 14 if last character is between 1-5 or a-j, and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz");
+        //         done()
+        //     })
+        // })
 
         // it("should create account", (done) => {
         //     chai.request(app)
@@ -235,16 +235,6 @@ describe("Full testing", function (){
                 created : false
             });
             await temp.save();
-
-            // await eosDriver.transact({
-            //     actions: [
-            //         accountPlaceholder(fixedName, keypair.public)
-            //     ]
-            //    }, {
-            //     blocksBehind: 3,
-            //     expireSeconds: 30,
-            //    }) //to save the account
-
         })
 
         it("should fail link via itsc", (done) => {
@@ -359,6 +349,49 @@ describe("Full testing", function (){
             return Account.deleteOne({itsc : accountName});
         })
     });
+
+    describe("/contract/login", function(){
+        beforeEach( async function() {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            return temp.save();
+        })
+
+        it("Should provide login", async function (){
+            await Account.updateOne({itsc : accountName}, {accountName: "Correct"});
+
+            let res = await chai.request(app)
+            .post("/contract/login")
+            .send({
+                itsc : accountName,
+            })
+
+            res.should.have.status(200);
+            res.body.should.have.property("error").eql(false);
+            res.body.should.have.property("accountName").eql("Correct");
+            
+        });
+
+        it("Should not provide login", async function (){
+            let res = await chai.request(app)
+            .post("/contract/login")
+            .send({
+                itsc : accountName,
+            })
+
+            res.should.have.status(200);
+            res.body.should.have.property("error").eql(false);
+            res.body.should.have.property("accountName").eql(null);
+        });
+
+        this.afterEach( async function () {
+            await Account.deleteOne({itsc : accountName});
+        })
+    })
 
 });
 

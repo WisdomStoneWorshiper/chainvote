@@ -174,14 +174,14 @@ router.post("/delvoter", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-    const { itsc, publicKey } = req.body;
+    const { itsc } = req.body;
     accModel.findOne({
         itsc : itsc,
     })
     .then( result => {
         res.json({
             error : false,
-            accountName : result != null ? result.accountName : null
+            accountName : (result.accountName != itsc) ? result.accountName : null
         });
     })
     .catch( err => {
