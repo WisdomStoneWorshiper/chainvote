@@ -10,7 +10,7 @@ router.post("/addvoter", async (req, res) => {
     const { itsc, campaignId } = req.body;
 
     let accountList = [];
-    let errorAccount = [];
+    let errorVoter = [];
 
     for(let i = 0; i < itsc.length; i++){
         try{
