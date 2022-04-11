@@ -29,7 +29,7 @@ router.post("/addvoter", async (req, res) => {
         catch(e){
             console.log("Unexpected error idk")
             console.log(e)
-            errorAccount.push(itsc[i]);
+            errorVoter.push(itsc[i]);
         }
     }
 
