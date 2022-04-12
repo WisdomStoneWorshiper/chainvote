@@ -22,6 +22,7 @@
   },
   "scripts": {
     "test": "mocha ./test/backend/testBackend.js --exit",
+    "performance" : "node ./test/performance/testPerformance.js",
     "start": "nodemon index.js"
   },
   "author": "",

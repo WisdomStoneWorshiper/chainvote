@@ -70,7 +70,7 @@ const main = async () => {
 
     // Generate Campaign
     const campaignName = getRandomString(10);
-    const HALF_MINUTE = new Date(1000*15)
+    const HALF_MINUTE = new Date(1000*30)
     const MINUTE_5 = new Date(1000*60*5)
     let currentDate = new Date();
     let startTime = new Date( currentDate.getTime() + HALF_MINUTE.getTime());

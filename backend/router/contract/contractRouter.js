@@ -7,10 +7,36 @@ const { addVoterPlaceholder, delVoterPlaceholder } = require("../../Helper funct
 require("dotenv").config();
 
 router.post("/addvoter", async (req, res) => {
-    const { itsc, campaignId } = req.body;
+    const { itsc, campaignId, owner } = req.body;
 
     let accountList = [];
     let errorAccount = [];
+
+    //find the campaign first
+    const table = await eosDriver.rpc.get_table_rows({
+        json: true,               // Get the response as json
+        code: `${process.env.ACC_NAME}`,      // Contract that we target
+        scope: `${process.env.ACC_NAME}`,         // Account that owns the data
+        table: 'campaign',        // Table name,
+        lower_bound : campaignId,
+        limit: 1,                // Maximum number of rows that we want to get
+        reverse: false,           // Optional: Get reversed data
+        show_payer: false          // Optional: Show ram payer
+    });
+    console.log(table)
+
+    if(
+        table["rows"].length == 0 || 
+        table["rows"][0]["id"] != campaignId ||
+        table["rows"][0]["owner"] != owner){
+        res.status(400).json({
+            error : true,
+            message : "Cannot find specified campaignId"
+        })
+        return
+    }
+
+
 
     for(let i = 0; i < itsc.length; i++){
         try{
@@ -49,18 +75,24 @@ router.post("/addvoter", async (req, res) => {
                 }
             )
             .then( result => {
+                console.log("yay")
                 resolve()
             })
             .catch( err => {
-                errorAccount.push(delvoterList[i].itsc)
-                console.log(`User ${delvoterList[i].itsc} has faield`)
+                console.log("err")
+                console.log(err)
+                errorAccount.push(accountList[i].itsc)
+                console.log(`User ${accountList[i].itsc} has faield`)
                 resolve();
             })
         }))
     }
 
+    console.log("added all account")
+
     await Promise.all(promiseArray)
     .then( () => {
+        console.log("processing all account")
         if(errorAccount.length >= 1){
             res.status(400).json({
                 error: true,
@@ -77,7 +109,7 @@ router.post("/addvoter", async (req, res) => {
 });
 
 router.post("/delvoter", async (req, res) => {
-    const { itsc, campaignId } = req.body;
+    const { itsc, campaignId, owner } = req.body;
 
     const table = await eosDriver.rpc.get_table_rows({
         json: true,               // Get the response as json
@@ -85,7 +117,7 @@ router.post("/delvoter", async (req, res) => {
         scope: `${process.env.ACC_NAME}`,         // Account that owns the data
         table: 'campaign',        // Table name,
         lower_bound : campaignId,
-        limit: 3,                // Maximum number of rows that we want to get
+        limit: 1,                // Maximum number of rows that we want to get
         reverse: false,           // Optional: Get reversed data
         show_payer: false          // Optional: Show ram payer
     });
@@ -94,10 +126,7 @@ router.post("/delvoter", async (req, res) => {
     let delvoterList = []
     let errorVoter = []
     for (let i = 0; i < table["rows"].length; i++) {
-        console.log(table["rows"][i]["id"]);
-        if (table["rows"][i]["id"] == campaignId) {
-            console.log(`Campaign found at id ${campaignId}`)
-            console.log(table["rows"][i]["voter_list"])
+        if (table["rows"][i]["id"] == campaignId || table["rows"][i]["owner"] == owner) {
             for(let j = 0; j < itsc.length; j++){
                 try{
                     const data = await accModel.findOne({itsc : itsc[j]});
@@ -126,6 +155,14 @@ router.post("/delvoter", async (req, res) => {
             }
 
         }
+    }
+
+    if(delvoterList.length <= 0){
+        res.status(400).json({
+            error : true,
+            message : "Cannot find specified campaignId"
+        });
+        return;
     }
 
     console.log("Current voter found");
