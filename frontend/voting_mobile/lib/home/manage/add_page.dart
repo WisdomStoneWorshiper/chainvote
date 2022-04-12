@@ -119,7 +119,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
     try {
       print(_addList);
       Response response = await dio.post("/contract/addvoter",
-          data: {'itsc': _addList, 'campaignId': campaignId});
+          data: {'itsc': _addList, 'campaignId': campaignId, 'owner': itsc});
       // print(response.statusCode);
       // print(response.data);
       if (response.statusCode != 200) {

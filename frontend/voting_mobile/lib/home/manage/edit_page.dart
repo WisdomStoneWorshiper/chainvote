@@ -190,7 +190,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
     try {
       print("request");
       Response response = await dio.post("/contract/delvoter",
-          data: {'itsc': deleteList, 'campaignId': campaignId});
+          data: {'itsc': deleteList, 'campaignId': campaignId, 'owner': itsc});
 
       if (response.statusCode != 200) {
         print("fail");
