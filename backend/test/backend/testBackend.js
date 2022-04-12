@@ -1,7 +1,7 @@
 let app = require("../../index")
 let Account = require("../../Helper functions/mongoose/accModel")
 let eosDriver = require("../../Helper functions/eosDriver")
-let {accountPlaceholder} = require("../../Helper functions/eosPlaceholder")
+let {addVoterPlaceholder} = require("../../Helper functions/eosPlaceholder")
 let getRandomString = require("../../Helper functions/randomStringGeneration")
 
 let chai = require("chai")
@@ -621,7 +621,178 @@ describe("Full testing", function (){
             .catch(err => { assert.fail(err)})
         })
 
+    })
+
+    describe("/contract/delvoter", function() {
+        let campaignId = -1;
+        const campaignName = getRandomString(8);
+        this.timeout(1000000);
+
+        before(async function () {
+            console.log(accountName.toLowerCase())
+            await eosDriver.transact({
+                actions : [
+                    {
+                        account: process.env.ACC_NAME,
+                        name: 'createcamp',
+                        authorization: [{
+                          actor: process.env.ACC_NAME,
+                          permission: 'active',
+                        }],
+                        data: {
+                            owner : process.env.ACC_NAME,
+                            campaign_name : campaignName,
+                            start_time_string : startTime.toISOString(),
+                            end_time_string : endTime.toISOString()
+                        },
+                      },
+                      {
+                        account: process.env.ACC_NAME,
+                        name: 'createvoter',
+                        authorization: [{
+                          actor: process.env.ACC_NAME,
+                          permission: 'active',
+                        }],
+                        data: {
+                           new_voter : accountName.toLowerCase()
+                        },
+                      }
+                ]
+                },
+                {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                }
+            )
+            .catch(err => { assert.fail(err)})
+            
+            let currentBound = "";
+            do {
+                const table = await eosDriver.rpc.get_table_rows({
+                    json: true,               // Get the response as json
+                    code: `${process.env.ACC_NAME}`,      // Contract that we target
+                    scope: `${process.env.ACC_NAME}`,         // Account that owns the data
+                    table: 'campaign',        // Table name,
+                    lower_bound : currentBound,
+                    reverse: false,           // Optional: Get reversed data
+                    show_payer: false          // Optional: Show ram payer
+                });
         
+                for (let i = 0; i < table["rows"].length; i++) {
+                    if (table["rows"][i]["campaign_name"] == campaignName) {
+                        console.log(`Found campaign id at ${table["rows"][i]["id"]}`)
+                        campaignId = table["rows"][i]["id"]
+                    }
+                }
+        
+                if(table["more"]){
+                    currentBound = table["next_key"]
+                }
+                else break;
+        
+            } while(campaignId == -1)
+        
+            if(campaignId == -1) {assert.fail("Cannot Find Campaign")}
+
+            //Add user to the campaign
+
+            eosDriver.transact({
+                actions : [ 
+                    addVoterPlaceholder(accountName.toLowerCase(), campaignId)
+                ]
+                },
+                {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                }
+            )
+
+            //ITSC Setup
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName.toLowerCase(),
+                created : false
+            });
+            return temp.save()
+        });
+
+        it("Should reject invalid campaignId", (done) => {
+
+            chai.request(app)
+            .post("/contract/delvoter")
+            .send({
+                itsc : [accountName],
+                campaignId : 12345,
+                owner : process.env.ACC_NAME
+            })
+            .end((err, res) => {
+                // console.log(res.body);
+                res.should.have.status(400);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
+                done();
+            })
+        })
+
+        it("Should reject invalid itsc", (done) => {
+            let temp = getRandomString(8);
+
+            chai.request(app)
+            .post("/contract/delvoter")
+            .send({
+                itsc : [temp],
+                campaignId : campaignId,
+                owner : process.env.ACC_NAME
+            })
+            .end((err, res) => {
+                // console.log(res.body)
+                res.should.have.status(400);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
+                done();
+            })
+        })
+
+        it("Should reject invalid owner account", (done) => {
+
+            chai.request(app)
+            .post("/contract/delvoter")
+            .send({
+                itsc : [accountName],
+                campaignId : campaignId,
+                owner : "__"
+            })
+            .end((err, res) => {
+                // console.log(res.body);
+                res.should.have.status(400);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
+                done();
+            })
+        })
+
+        it("Should delete account", (done) => {
+
+            chai.request(app)
+            .post("/contract/delvoter")
+            .send({
+                itsc : [accountName],
+                campaignId : campaignId,
+                owner : process.env.ACC_NAME
+            })
+            .end((err, res) => {
+                // console.log(res.body);
+                res.should.have.status(200);
+                res.body.should.have.property("error").eql(false);
+                done();
+            })
+        })
+
+        after(async function(){
+            await Account.deleteOne({itsc : accountName});
+        })
+
     })
 
 });

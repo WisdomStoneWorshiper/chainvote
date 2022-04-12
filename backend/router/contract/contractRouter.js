@@ -121,17 +121,17 @@ router.post("/delvoter", async (req, res) => {
         reverse: false,           // Optional: Get reversed data
         show_payer: false          // Optional: Show ram payer
     });
-    console.log(table);
 
     let delvoterList = []
     let errorVoter = []
+
     for (let i = 0; i < table["rows"].length; i++) {
-        if (table["rows"][i]["id"] == campaignId || table["rows"][i]["owner"] == owner) {
+        if (table["rows"][i]["id"] == campaignId && table["rows"][i]["owner"] == owner) {
             for(let j = 0; j < itsc.length; j++){
                 try{
                     const data = await accModel.findOne({itsc : itsc[j]});
                     const indexData = table["rows"][i]["voter_list"].indexOf(data.accountName);
-                    console.log(`Currently searching for voter ${data.accountName}`)
+                    // console.log(`Currently searching for voter ${data.accountName}`)
                     if(indexData >= 0){
                         console.log(`User ${data.accountName} index found at ${indexData}`)
                         delvoterList.push({
@@ -141,16 +141,12 @@ router.post("/delvoter", async (req, res) => {
                     }
                     else{
                         console.log("Not in array");
-                        errorVoter.append(itsc);
+                        errorVoter.push(itsc[j]);
                     }            
 
                 }
                 catch(e){
-
-                    console.log(e)
-                    console.log("Voter error");
-                    errorVoter.append(itsc);
-
+                    errorVoter.push(itsc[j]);
                 }
             }
 
@@ -160,7 +156,7 @@ router.post("/delvoter", async (req, res) => {
     if(delvoterList.length <= 0){
         res.status(400).json({
             error : true,
-            message : "Cannot find specified campaignId"
+            message : "Cannot find specified campaignId/ ITSC"
         });
         return;
     }
@@ -181,13 +177,13 @@ router.post("/delvoter", async (req, res) => {
                 }
             )
             .then( result => {
-                console.log(`User ${delvoterList[i]} has been deleted`);
+                // console.log(`User ${delvoterList[i]} has been deleted`);
                 resolve();
             })
             .catch( err => {
 		console.log(err)
                 errorVoter.push(delvoterList[i].acc)
-                console.log(`User ${delvoterList[i]} has faield`)
+                // console.log(`User ${delvoterList[i]} has faield`)
                 resolve();
             })
         }))
