@@ -75,24 +75,18 @@ router.post("/addvoter", async (req, res) => {
                 }
             )
             .then( result => {
-                console.log("yay")
                 resolve()
             })
             .catch( err => {
-                console.log("err")
                 console.log(err)
                 errorAccount.push(accountList[i].itsc)
-                console.log(`User ${accountList[i].itsc} has faield`)
                 resolve();
             })
         }))
     }
 
-    console.log("added all account")
-
     await Promise.all(promiseArray)
     .then( () => {
-        console.log("processing all account")
         if(errorAccount.length >= 1){
             res.status(400).json({
                 error: true,
@@ -161,14 +155,10 @@ router.post("/delvoter", async (req, res) => {
         return;
     }
 
-    console.log("Current voter found");
-    console.log(delvoterList);
-
     let promiseArray = [] //this is quite stupid no?
 
     for(let i = 0; i < delvoterList.length; i++){
         promiseArray.push( new Promise( (resolve, reject) => {
-	    console.log(delvoterList[i]);
             eosDriver.transact({
                 actions : [delVoterPlaceholder(campaignId, delvoterList[i].index)]},
                 {
@@ -181,7 +171,6 @@ router.post("/delvoter", async (req, res) => {
                 resolve();
             })
             .catch( err => {
-		console.log(err)
                 errorVoter.push(delvoterList[i].acc)
                 // console.log(`User ${delvoterList[i]} has faield`)
                 resolve();

@@ -11,10 +11,10 @@ const Account = require("../../Helper functions/mongoose/accModel")
 */
 
 router.post("/", async (req, res) => {
+    console.log("enter")
     const {itsc} = req.body;
     const result = await Account.find({itsc : itsc})
     .catch(err => {
-        console.log(err);
         res.json({
             error : true,
             message : "Unexpected error searching itsc" 

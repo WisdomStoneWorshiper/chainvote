@@ -24,6 +24,8 @@ describe("Full testing", function (){
     let currentDate = new Date();
     let startTime = new Date( currentDate.getTime() + DAY_OFFSET.getTime());
     let endTime = new Date( currentDate.getTime() + 2 * DAY_OFFSET.getTime());
+    this.timeout(100000);
+
 
     before(function(done){
         this.timeout(10000);
@@ -39,411 +41,412 @@ describe("Full testing", function (){
 
     }); 
     
-    // describe('/registration', function () {
-    
-    //     beforeEach( async function  () {
-    //         let temp = new Account({
-    //             itsc: accountName,
-    //             key : keyConf,
-    //             accountName : accountName,
-    //             created : false
-    //         });
-    //         return temp.save()
-    //     })
+    describe('/registration', function () {
+        this.timeout(10000);
 
-    //     it("Should register properly", (done) => {
+        beforeEach( async function  () {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            return temp.save()
+        })
 
-    //         chai.request(app)
-    //         .post("/registration")
-    //         .send({
-    //             itsc : accountName
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(200);
-    //             res.body.should.have.property("error").eql(false);
-    //             done();
-    //         })
-    //     })
+        it("Should register properly", (done) => {
+            console.log("asfjih")
+            chai.request(app)
+            .post("/registration")
+            .send({
+                itsc : accountName
+            })
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.have.property("error").eql(false);
+                done();
+            })
+        })
 
-    //     it("Should reject registration", (done) => {
+        it("Should reject registration", (done) => {
 
-    //         chai.request(app)
-    //         .post("/registration")
-    //         .send({
-    //             itsc : getRandomString(7)
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid itsc")
-    //             done();
-    //         })
-    //     })
+            chai.request(app)
+            .post("/registration")
+            .send({
+                itsc : getRandomString(7)
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid itsc")
+                done();
+            })
+        })
 
-    //     afterEach(function () {
-    //         return Account.deleteOne({itsc : accountName, accountName : accountName});
-    //     })
-    // })
+        afterEach(function () {
+            return Account.deleteOne({itsc : accountName, accountName : accountName});
+        })
+    });
 
-    // describe("/account/create", function () {
+    describe("/account/create", function () {
 
-    //     beforeEach(async function() {
-    //         let temp = new Account({
-    //             itsc: accountName,
-    //             key : keyConf,
-    //             accountName : accountName,
-    //             created : false
-    //         });
-    //         await temp.save();
+        beforeEach(async function() {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            await temp.save();
 
-    //     })
+        })
 
 
 
-    //     it("should reject due to invalid itsc", (done) => {
-    //         chai.request(app)
-    //         .post("/account/create")
-    //         .send({
-    //             itsc : getRandomString(7),
-    //             key : keyConf,
-    //             accname: fixedName,
-    //             pkey : keypair.public
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid itsc");
-    //             done()
-    //         })
-    //     })
+        it("should reject due to invalid itsc", (done) => {
+            chai.request(app)
+            .post("/account/create")
+            .send({
+                itsc : getRandomString(7),
+                key : keyConf,
+                accname: fixedName,
+                pkey : keypair.public
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid itsc");
+                done()
+            })
+        })
         
-    //     it("should reject due to invalid key", (done) => {
-    //         chai.request(app)
-    //         .post("/account/create")
-    //         .send({
-    //             itsc : accountName,
-    //             key : getRandomString(5),
-    //             accname: fixedName,
-    //             pkey : keypair.public
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid confirmation key");
-    //             done()
-    //         })
-    //     })
+        it("should reject due to invalid key", (done) => {
+            chai.request(app)
+            .post("/account/create")
+            .send({
+                itsc : accountName,
+                key : getRandomString(5),
+                accname: fixedName,
+                pkey : keypair.public
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid confirmation key");
+                done()
+            })
+        })
 
-    //     it("should reject due to invalid accname (extra char)", (done) => { //bad acc name
-    //         chai.request(app)
-    //         .post("/account/create")
-    //         .send({
-    //             itsc : accountName,
-    //             key : keyConf,
-    //             accname: (fixedName + "a"),
-    //             // pkey : keypair.public
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid account name");
-    //             done()
-    //         })
-    //     })
+        it("should reject due to invalid accname (extra char)", (done) => { //bad acc name
+            chai.request(app)
+            .post("/account/create")
+            .send({
+                itsc : accountName,
+                key : keyConf,
+                accname: (fixedName + "a"),
+                // pkey : keypair.public
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid account name");
+                done()
+            })
+        })
 
-    //     it("should reject due to invalid accname (invalid initial char)", (done) => { //bad acc name
-    //         chai.request(app)
-    //         .post("/account/create")
-    //         .send({
-    //             itsc : accountName,
-    //             key : keyConf,
-    //             accname: "." + getRandomString(11),
-    //             // pkey : keypair.public
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid account name");
-    //             done()
-    //         })
-    //     })
+        it("should reject due to invalid accname (invalid initial char)", (done) => { //bad acc name
+            chai.request(app)
+            .post("/account/create")
+            .send({
+                itsc : accountName,
+                key : keyConf,
+                accname: "." + getRandomString(11),
+                // pkey : keypair.public
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid account name");
+                done()
+            })
+        })
 
-    //     // it("should reject due to invalid pkey", (done) => {
-    //     //     chai.request(app)
-    //     //     .post("/account/create")
-    //     //     .send({
-    //     //         itsc : accountName,
-    //     //         key : keyConf,
-    //     //         accname: fixedName,
-    //     //         pkey : "Gibberish"
-    //     //     })
-    //     //     .end((err, res) => {
-    //     //         res.should.have.status(500);
-    //     //         res.body.should.have.property("error").eql(true);
-    //     //         res.body.should.have.property("message").eql("Name should be less than 13 characters, or less than 14 if last character is between 1-5 or a-j, and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz");
-    //     //         done()
-    //     //     })
-    //     // })
+        // it("should reject due to invalid pkey", (done) => {
+        //     chai.request(app)
+        //     .post("/account/create")
+        //     .send({
+        //         itsc : accountName,
+        //         key : keyConf,
+        //         accname: fixedName,
+        //         pkey : "Gibberish"
+        //     })
+        //     .end((err, res) => {
+        //         res.should.have.status(500);
+        //         res.body.should.have.property("error").eql(true);
+        //         res.body.should.have.property("message").eql("Name should be less than 13 characters, or less than 14 if last character is between 1-5 or a-j, and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz");
+        //         done()
+        //     })
+        // })
 
-    //     // it("should create account", (done) => {
-    //     //     chai.request(app)
-    //     //     .post("/account/create")
-    //     //     .send({
-    //     //         itsc : process.env.REAL_NAME,
-    //     //         key : process.env.CONF_KEY,
-    //     //         accname: fixedName,
-    //     //         // pkey : keypair.public
-    //     //     })
-    //     //     .end((err, res) => {
-    //     //         res.should.have.status(200);
-    //     //         res.body.should.have.property("error").eql(false);
-    //     //         done()
-    //     //     })
-    //     // })
+        // it("should create account", (done) => {
+        //     chai.request(app)
+        //     .post("/account/create")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .end((err, res) => {
+        //         res.should.have.status(200);
+        //         res.body.should.have.property("error").eql(false);
+        //         done()
+        //     })
+        // })
 
-    //     // it("should reject due to account has been created before", async () => {
-    //     //     await chai.request(app)
-    //     //     .post("/account/create")
-    //     //     .send({
-    //     //         itsc : process.env.REAL_NAME,
-    //     //         key : process.env.CONF_KEY,
-    //     //         accname: fixedName,
-    //     //         // pkey : keypair.public
-    //     //     })
-    //     //     .then(res => {
-    //     //         return chai.request(app)
-    //     //         .post("/account/create")
-    //     //         .send({
-    //     //             itsc : process.env.REAL_NAME,
-    //     //             key : process.env.CONF_KEY,
-    //     //             accname: fixedName,
-    //     //             // pkey : keypair.public
-    //     //         })
-    //     //         .then((res) => {
-    //     //             res.should.have.status(500);
-    //     //             res.body.should.have.property("error").eql(true);
-    //     //             res.body.should.have.property("message").eql("Account has already been created");
-    //     //         })
-    //     //     })
-    //     // })
+        // it("should reject due to account has been created before", async () => {
+        //     await chai.request(app)
+        //     .post("/account/create")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .then(res => {
+        //         return chai.request(app)
+        //         .post("/account/create")
+        //         .send({
+        //             itsc : process.env.REAL_NAME,
+        //             key : process.env.CONF_KEY,
+        //             accname: fixedName,
+        //             // pkey : keypair.public
+        //         })
+        //         .then((res) => {
+        //             res.should.have.status(500);
+        //             res.body.should.have.property("error").eql(true);
+        //             res.body.should.have.property("message").eql("Account has already been created");
+        //         })
+        //     })
+        // })
 
-    //     afterEach(function () {
-    //         return Account.deleteMany({itsc : accountName});
-    //     })
+        afterEach(function () {
+            return Account.deleteMany({itsc : accountName});
+        })
 
-    // })
+    })
 
-    // describe("/account/confirm", function(){
-    //     beforeEach( async function() {
-    //         let temp = new Account({
-    //             itsc: accountName,
-    //             key : keyConf,
-    //             accountName : accountName,
-    //             created : false
-    //         });
-    //         await temp.save();
-    //     })
+    describe("/account/confirm", function(){
+        beforeEach( async function() {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            await temp.save();
+        })
 
-    //     it("should fail link via itsc", (done) => {
-    //         chai.request(app)
-    //         .post("/account/confirm")
-    //         .send({
-    //             itsc : getRandomString(7),
-    //             key : keyConf,
-    //             accname: fixedName,
-    //         })
-    //         .end((err,res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid itsc");
-    //             done()
-    //         })
-    //     });
+        it("should fail link via itsc", (done) => {
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : getRandomString(7),
+                key : keyConf,
+                accname: fixedName,
+            })
+            .end((err,res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid itsc");
+                done()
+            })
+        });
 
-    //     it("should fail link via key", (done) => {
-    //         chai.request(app)
-    //         .post("/account/confirm")
-    //         .send({
-    //             itsc : accountName,
-    //             key : getRandomString(5),
-    //             accname: fixedName,
-    //             // pkey : keypair.public
-    //         })
-    //         .end((err,res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid confirmation key");
-    //             done()
-    //         })
-    //     });
-    //     it("should reject due to invalid accname (extra char)", (done) => { //bad acc name
-    //         chai.request(app)
-    //         .post("/account/confirm")
-    //         .send({
-    //             itsc : accountName,
-    //             key : keyConf,
-    //             accname: (fixedName + "a"),
-    //             // pkey : keypair.public
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid account name");
-    //             done()
-    //         })
-    //     })
+        it("should fail link via key", (done) => {
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : accountName,
+                key : getRandomString(5),
+                accname: fixedName,
+                // pkey : keypair.public
+            })
+            .end((err,res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid confirmation key");
+                done()
+            })
+        });
+        it("should reject due to invalid accname (extra char)", (done) => { //bad acc name
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : accountName,
+                key : keyConf,
+                accname: (fixedName + "a"),
+                // pkey : keypair.public
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid account name");
+                done()
+            })
+        })
 
-    //     it("should reject due to invalid accname (invalid initial char)", (done) => { //bad acc name
-    //         chai.request(app)
-    //         .post("/account/confirm")
-    //         .send({
-    //             itsc : accountName,
-    //             key : keyConf,
-    //             accname: "." + getRandomString(11),
-    //         })
-    //         .end((err, res) => {
-    //             res.should.have.status(500);
-    //             res.body.should.have.property("error").eql(true);
-    //             res.body.should.have.property("message").eql("Invalid account name");
-    //             done()
-    //         })
-    //     })
+        it("should reject due to invalid accname (invalid initial char)", (done) => { //bad acc name
+            chai.request(app)
+            .post("/account/confirm")
+            .send({
+                itsc : accountName,
+                key : keyConf,
+                accname: "." + getRandomString(11),
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property("error").eql(true);
+                res.body.should.have.property("message").eql("Invalid account name");
+                done()
+            })
+        })
 
-    //     // it("link successfully", (done) => {
-    //     //     chai.request(app)
-    //     //     .post("/account/confirm")
-    //     //     .send({
-    //     //         itsc : process.env.REAL_NAME,
-    //     //         key : process.env.CONF_KEY,
-    //     //         accname: fixedName,
-    //     //         // pkey : keypair.public
-    //     //     })
-    //     //     .end((err,res) => {
-    //     //         res.should.have.status(200);
-    //     //         res.body.should.have.property("error").eql(false);
-    //     //         res.body.should.not.have.property("message");
-    //     //         done()
-    //     //     })
-    //     // });
+        // it("link successfully", (done) => {
+        //     chai.request(app)
+        //     .post("/account/confirm")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .end((err,res) => {
+        //         res.should.have.status(200);
+        //         res.body.should.have.property("error").eql(false);
+        //         res.body.should.not.have.property("message");
+        //         done()
+        //     })
+        // });
 
-    //     // it("should fail link via public", async () => {
-    //     //     await chai.request(app)
-    //     //     .post("/account/confirm")
-    //     //     .send({
-    //     //         itsc : process.env.REAL_NAME,
-    //     //         key : process.env.CONF_KEY,
-    //     //         accname: fixedName,
-    //     //         // pkey : keypair.public
-    //     //     })
-    //     //     .then(res => {
-    //     //         return chai.request(app)
-    //     //         .post("/account/confirm")
-    //     //         .send({
-    //     //             itsc : process.env.REAL_NAME,
-    //     //             key : process.env.CONF_KEY,
-    //     //             accname: fixedName,
-    //     //             // pkey : keypair.public
-    //     //         })
-    //     //         .then(res => {
-    //     //             res.should.have.status(500);
-    //     //             res.body.should.have.property("error").eql(true);
-    //     //             res.body.should.have.property("message").eql("Account has been linked");
-    //     //         })
-    //     //     })
-    //     // });
+        // it("should fail link via public", async () => {
+        //     await chai.request(app)
+        //     .post("/account/confirm")
+        //     .send({
+        //         itsc : process.env.REAL_NAME,
+        //         key : process.env.CONF_KEY,
+        //         accname: fixedName,
+        //         // pkey : keypair.public
+        //     })
+        //     .then(res => {
+        //         return chai.request(app)
+        //         .post("/account/confirm")
+        //         .send({
+        //             itsc : process.env.REAL_NAME,
+        //             key : process.env.CONF_KEY,
+        //             accname: fixedName,
+        //             // pkey : keypair.public
+        //         })
+        //         .then(res => {
+        //             res.should.have.status(500);
+        //             res.body.should.have.property("error").eql(true);
+        //             res.body.should.have.property("message").eql("Account has been linked");
+        //         })
+        //     })
+        // });
 
-    //     afterEach(function () {
-    //         return Account.deleteOne({itsc : accountName});
-    //     })
-    // });
+        afterEach(function () {
+            return Account.deleteOne({itsc : accountName});
+        })
+    });
 
-    // describe("/contract/login", function(){
-    //     beforeEach( async function() {
-    //         let temp = new Account({
-    //             itsc: accountName,
-    //             key : keyConf,
-    //             accountName : accountName,
-    //             created : false
-    //         });
-    //         return temp.save();
-    //     })
+    describe("/contract/login", function(){
+        beforeEach( async function() {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            return temp.save();
+        })
 
-    //     it("Should provide login", async function (){
-    //         await Account.updateOne({itsc : accountName}, {accountName: "Correct"});
+        it("Should provide login", async function (){
+            await Account.updateOne({itsc : accountName}, {accountName: "Correct"});
 
-    //         let res = await chai.request(app)
-    //         .post("/contract/login")
-    //         .send({
-    //             itsc : accountName,
-    //         })
+            let res = await chai.request(app)
+            .post("/contract/login")
+            .send({
+                itsc : accountName,
+            })
 
-    //         res.should.have.status(200);
-    //         res.body.should.have.property("error").eql(false);
-    //         res.body.should.have.property("accountName").eql("Correct");
+            res.should.have.status(200);
+            res.body.should.have.property("error").eql(false);
+            res.body.should.have.property("accountName").eql("Correct");
             
-    //     });
+        });
 
-    //     it("Should not provide login", async function (){
-    //         let res = await chai.request(app)
-    //         .post("/contract/login")
-    //         .send({
-    //             itsc : accountName,
-    //         })
+        it("Should not provide login", async function (){
+            let res = await chai.request(app)
+            .post("/contract/login")
+            .send({
+                itsc : accountName,
+            })
 
-    //         res.should.have.status(200);
-    //         res.body.should.have.property("error").eql(false);
-    //         res.body.should.have.property("accountName").eql(null);
-    //     });
+            res.should.have.status(200);
+            res.body.should.have.property("error").eql(false);
+            res.body.should.have.property("accountName").eql(null);
+        });
 
-    //     this.afterEach( async function () {
-    //         await Account.deleteOne({itsc : accountName});
-    //     })
-    // })
+        this.afterEach( async function () {
+            await Account.deleteOne({itsc : accountName});
+        })
+    })
 
-    // describe("/contract/getITSC", function(){
+    describe("/contract/getITSC", function(){
         
-    //     beforeEach( async function() {
-    //         let temp = new Account({
-    //             itsc: accountName,
-    //             key : keyConf,
-    //             accountName : accountName,
-    //             created : false
-    //         });
-    //         return temp.save();
-    //     })
+        beforeEach( async function() {
+            let temp = new Account({
+                itsc: accountName,
+                key : keyConf,
+                accountName : accountName,
+                created : false
+            });
+            return temp.save();
+        })
 
-    //     it("should provide ITSC", async function () {
-    //         await Account.updateOne({itsc : accountName}, {accountName: "Correct"});
+        it("should provide ITSC", async function () {
+            await Account.updateOne({itsc : accountName}, {accountName: "Correct"});
 
-    //         let res = await chai.request(app)
-    //         .post("/contract/getITSC")
-    //         .send({
-    //             accountName : "Correct",
-    //         })
+            let res = await chai.request(app)
+            .post("/contract/getITSC")
+            .send({
+                accountName : "Correct",
+            })
 
-    //         res.should.have.status(200);
-    //         res.body.should.have.property("error").eql(false);
-    //         res.body.should.have.property("itsc").eql(accountName);
-    //     })
+            res.should.have.status(200);
+            res.body.should.have.property("error").eql(false);
+            res.body.should.have.property("itsc").eql(accountName);
+        })
 
-    //     it("should not provide ITSC", async function () {
+        it("should not provide ITSC", async function () {
 
-    //         let res = await chai.request(app)
-    //         .post("/contract/getITSC")
-    //         .send({
-    //             accountName : accountName,
-    //         })
+            let res = await chai.request(app)
+            .post("/contract/getITSC")
+            .send({
+                accountName : accountName,
+            })
 
-    //         res.should.have.status(500);
-    //         res.body.should.have.property("error").eql(true);
-    //         res.body.should.have.property("message").eql("Account has not been created! (ITSC = AccountName)");
-    //     })
+            res.should.have.status(500);
+            res.body.should.have.property("error").eql(true);
+            res.body.should.have.property("message").eql("Account has not been created! (ITSC = AccountName)");
+        })
 
-    //     this.afterEach( async function () {
-    //         await Account.deleteOne({itsc : accountName});
-    //     })
+        this.afterEach( async function () {
+            await Account.deleteOne({itsc : accountName});
+        })
 
-    // })
+    })
 
     describe("/contract/addvoter", function() {
         let campaignId = -1;
@@ -536,7 +539,7 @@ describe("Full testing", function (){
                 owner : process.env.ACC_NAME
             })
             .end((err, res) => {
-                console.log(res.body);
+                //console.log(res.body);
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
                 done();
@@ -554,7 +557,7 @@ describe("Full testing", function (){
                 owner : process.env.ACC_NAME
             })
             .end((err, res) => {
-                console.log(res.body)
+                //console.log(res.body)
                 res.should.have.status(400);
                 res.body.should.have.property("failed").eql([temp]);
                 done();
@@ -571,7 +574,7 @@ describe("Full testing", function (){
                 owner : "__"
             })
             .end((err, res) => {
-                console.log(res.body);
+                //console.log(res.body);
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
                 res.body.should.have.property("message").eql("Cannot find specified campaignId");
@@ -589,7 +592,7 @@ describe("Full testing", function (){
                 owner : process.env.ACC_NAME
             })
             .end((err, res) => {
-                console.log(res.body);
+                //console.log(res.body);
                 res.should.have.status(200);
                 res.body.should.have.property("error").eql(false);
                 done();
@@ -629,7 +632,7 @@ describe("Full testing", function (){
         this.timeout(1000000);
 
         before(async function () {
-            console.log(accountName.toLowerCase())
+            // console.log(accountName.toLowerCase())
             await eosDriver.transact({
                 actions : [
                     {
@@ -727,7 +730,6 @@ describe("Full testing", function (){
                 owner : process.env.ACC_NAME
             })
             .end((err, res) => {
-                // console.log(res.body);
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
                 res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
@@ -746,7 +748,6 @@ describe("Full testing", function (){
                 owner : process.env.ACC_NAME
             })
             .end((err, res) => {
-                // console.log(res.body)
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
                 res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
@@ -764,7 +765,6 @@ describe("Full testing", function (){
                 owner : "__"
             })
             .end((err, res) => {
-                // console.log(res.body);
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
                 res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
@@ -782,7 +782,6 @@ describe("Full testing", function (){
                 owner : process.env.ACC_NAME
             })
             .end((err, res) => {
-                // console.log(res.body);
                 res.should.have.status(200);
                 res.body.should.have.property("error").eql(false);
                 done();
