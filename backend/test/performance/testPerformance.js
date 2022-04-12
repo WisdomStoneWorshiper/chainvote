@@ -8,6 +8,7 @@ const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch'); //node only
 const { TextDecoder, TextEncoder } = require('util'); //node only
+const { exit } = require("process");
 
 require('dotenv').config()
 
@@ -20,6 +21,12 @@ function sleep(ms) {
 
 const main = async () => {
     // Collect all account
+    let totalAccountRequired = process.argv.length >= 3 ? parseInt(process.argv[2]) : 100
+
+    if(totalAccountRequired > 100){
+        exit(1);
+    }
+
     console.log("=== PERFORMANCE TESTING STARTS ===")
     const data = getAccount("./test/performance/username.txt")
     let account = []
@@ -256,8 +263,9 @@ const main = async () => {
         let failedAccount = [];
 
         result.forEach(value => {
-            if(value.success){
+            if(value.success && totalAccountRequired > 0){
                 totalAccount++;
+                totalAccountRequired--;
                 avgTime = (avgTime * (totalAccount - 1)+ value.time) / (totalAccount)
             }
             else{

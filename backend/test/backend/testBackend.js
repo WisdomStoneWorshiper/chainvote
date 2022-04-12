@@ -452,6 +452,7 @@ describe("Full testing", function (){
         let campaignId = -1;
         const campaignName = getRandomString(8);
         this.timeout(1000000);
+
         before(async function () {
             console.log(accountName.toLowerCase())
             await eosDriver.transact({
@@ -504,7 +505,7 @@ describe("Full testing", function (){
         
                 for (let i = 0; i < table["rows"].length; i++) {
                     if (table["rows"][i]["campaign_name"] == campaignName) {
-                        console.log(`Found campaign id at ${table["rows"][i]["id"]}`)
+                        // console.log(`Found campaign id at ${table["rows"][i]["id"]}`)
                         campaignId = table["rows"][i]["id"]
                     }
                 }
@@ -536,10 +537,9 @@ describe("Full testing", function (){
             .send({
                 itsc : [accountName],
                 campaignId : 12345,
-                owner : process.env.ACC_NAME
+                owner : process.env.ITSC
             })
             .end((err, res) => {
-                //console.log(res.body);
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
                 done();
@@ -554,7 +554,7 @@ describe("Full testing", function (){
             .send({
                 itsc : [temp],
                 campaignId : campaignId,
-                owner : process.env.ACC_NAME
+                owner : process.env.ITSC
             })
             .end((err, res) => {
                 //console.log(res.body)
@@ -577,7 +577,7 @@ describe("Full testing", function (){
                 //console.log(res.body);
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Cannot find specified campaignId");
+                res.body.should.have.property("message").eql("Cannot find ITSC user");
                 done();
             })
         })
@@ -589,7 +589,7 @@ describe("Full testing", function (){
             .send({
                 itsc : [accountName],
                 campaignId : campaignId,
-                owner : process.env.ACC_NAME
+                owner : process.env.ITSC
             })
             .end((err, res) => {
                 //console.log(res.body);
@@ -629,7 +629,7 @@ describe("Full testing", function (){
     describe("/contract/delvoter", function() {
         let campaignId = -1;
         const campaignName = getRandomString(8);
-        this.timeout(1000000);
+        this.timeout(100000);
 
         before(async function () {
             // console.log(accountName.toLowerCase())
@@ -683,7 +683,7 @@ describe("Full testing", function (){
         
                 for (let i = 0; i < table["rows"].length; i++) {
                     if (table["rows"][i]["campaign_name"] == campaignName) {
-                        console.log(`Found campaign id at ${table["rows"][i]["id"]}`)
+                        //console.log(`Found campaign id at ${table["rows"][i]["id"]}`)
                         campaignId = table["rows"][i]["id"]
                     }
                 }
@@ -699,7 +699,7 @@ describe("Full testing", function (){
 
             //Add user to the campaign
 
-            eosDriver.transact({
+            await eosDriver.transact({
                 actions : [ 
                     addVoterPlaceholder(accountName.toLowerCase(), campaignId)
                 ]
@@ -727,12 +727,12 @@ describe("Full testing", function (){
             .send({
                 itsc : [accountName],
                 campaignId : 12345,
-                owner : process.env.ACC_NAME
+                owner : process.env.ITSC
             })
             .end((err, res) => {
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
+                res.body.should.have.property("message").eql("Cannot find specified campaignId");
                 done();
             })
         })
@@ -745,12 +745,12 @@ describe("Full testing", function (){
             .send({
                 itsc : [temp],
                 campaignId : campaignId,
-                owner : process.env.ACC_NAME
+                owner : process.env.ITSC
             })
             .end((err, res) => {
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
+                res.body.should.have.property("message").eql("Cannot find specified campaignId");
                 done();
             })
         })
@@ -767,7 +767,7 @@ describe("Full testing", function (){
             .end((err, res) => {
                 res.should.have.status(400);
                 res.body.should.have.property("error").eql(true);
-                res.body.should.have.property("message").eql("Cannot find specified campaignId/ ITSC");
+                res.body.should.have.property("message").eql("Cannot find ITSC user");
                 done();
             })
         })
@@ -779,9 +779,10 @@ describe("Full testing", function (){
             .send({
                 itsc : [accountName],
                 campaignId : campaignId,
-                owner : process.env.ACC_NAME
+                owner : process.env.ITSC
             })
             .end((err, res) => {
+                //console.log(res.body)
                 res.should.have.status(200);
                 res.body.should.have.property("error").eql(false);
                 done();
@@ -793,6 +794,10 @@ describe("Full testing", function (){
         })
 
     })
+
+    after(async function(){
+        await Account.deleteOne({itsc : accountName});
+    });
 
 });
 

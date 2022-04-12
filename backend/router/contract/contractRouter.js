@@ -3,11 +3,22 @@ const router = express.Router();
 
 const accModel = require("../../Helper functions/mongoose/accModel");
 const eosDriver = require("../../Helper functions/eosDriver");
-const { addVoterPlaceholder, delVoterPlaceholder } = require("../../Helper functions/eosPlaceholder")
+const { addVoterPlaceholder, delVoterPlaceholder } = require("../../Helper functions/eosPlaceholder");
+const Account = require("../../Helper functions/mongoose/accModel");
 require("dotenv").config();
 
 router.post("/addvoter", async (req, res) => {
-    const { itsc, campaignId, owner } = req.body;
+    const { itsc = [], campaignId = 0, owner = "" } = req.body;
+
+    let ownerData = await Account.findOne( {itsc : owner});
+
+    if(ownerData == null){
+        res.status(400).json({
+            error : true,
+            message : "Cannot find ITSC user"
+        });
+        return;
+    }
 
     let accountList = [];
     let errorAccount = [];
@@ -23,17 +34,17 @@ router.post("/addvoter", async (req, res) => {
         reverse: false,           // Optional: Get reversed data
         show_payer: false          // Optional: Show ram payer
     });
-    console.log(table)
+    // console.log(table)
 
     if(
         table["rows"].length == 0 || 
         table["rows"][0]["id"] != campaignId ||
-        table["rows"][0]["owner"] != owner){
+        table["rows"][0]["owner"] != ownerData.accountName){
         res.status(400).json({
             error : true,
             message : "Cannot find specified campaignId"
         })
-        return
+        return;
     }
 
 
@@ -103,7 +114,17 @@ router.post("/addvoter", async (req, res) => {
 });
 
 router.post("/delvoter", async (req, res) => {
-    const { itsc, campaignId, owner } = req.body;
+    const { itsc = [], campaignId = 0, owner = "" } = req.body;
+
+    let ownerData = await Account.findOne( {itsc : owner});
+
+    if(ownerData == null){
+        res.status(400).json({
+            error : true,
+            message : "Cannot find ITSC user"
+        });
+        return;
+    }
 
     const table = await eosDriver.rpc.get_table_rows({
         json: true,               // Get the response as json
@@ -120,14 +141,15 @@ router.post("/delvoter", async (req, res) => {
     let errorVoter = []
 
     for (let i = 0; i < table["rows"].length; i++) {
-        if (table["rows"][i]["id"] == campaignId && table["rows"][i]["owner"] == owner) {
+        if ((table["rows"][i]["id"] == campaignId) && (table["rows"][i]["owner"] == ownerData.accountName)) {
+            //console.log(`Target owner ${table["rows"][i]["owner"]}`)
+            //console.log(table["rows"][i]["voter_list"])
             for(let j = 0; j < itsc.length; j++){
                 try{
                     const data = await accModel.findOne({itsc : itsc[j]});
                     const indexData = table["rows"][i]["voter_list"].indexOf(data.accountName);
-                    // console.log(`Currently searching for voter ${data.accountName}`)
                     if(indexData >= 0){
-                        console.log(`User ${data.accountName} index found at ${indexData}`)
+                        //console.log(`User ${data.accountName} index found at ${indexData}`)
                         delvoterList.push({
                             acc : itsc[j],
                             index : indexData
@@ -148,9 +170,10 @@ router.post("/delvoter", async (req, res) => {
     }
 
     if(delvoterList.length <= 0){
+        // console.log(ownerData)
         res.status(400).json({
             error : true,
-            message : "Cannot find specified campaignId/ ITSC"
+            message : "Cannot find specified campaignId"
         });
         return;
     }
