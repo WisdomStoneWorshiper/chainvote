@@ -80,8 +80,8 @@ class CampaignListView extends StatelessWidget {
                               ),
                               //fix the total voted look
                               Container(
-                                padding: campaign.getCampaignStat() ==
-                                        CampaignStat.Ongoing
+                                padding: campaign.getCampaignStat() !=
+                                        CampaignStat.Coming
                                     ? EdgeInsets.only(
                                         top: 10.08,
                                       )
@@ -136,8 +136,8 @@ class CampaignListView extends StatelessWidget {
                                                           FontWeight.bold),
                                                 ),
                                     ),
-                                    campaign.getCampaignStat() ==
-                                            CampaignStat.Ongoing
+                                    (campaign.getCampaignStat() !=
+                                            CampaignStat.Coming)
                                         ? Row(children: [
                                             Container(
                                               height: 10,
