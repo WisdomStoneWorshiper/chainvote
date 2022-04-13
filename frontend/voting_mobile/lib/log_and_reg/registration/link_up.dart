@@ -46,6 +46,46 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
   }
 
   void _submitLinpUpRequest() async {
+    BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
+    var dio = Dio(opt);
+    try {
+      var response;
+      if (_needCreateEOSIO) {
+        print("create");
+        response = await dio.post("/account/create", data: {
+          'itsc': _itsc,
+          'key': _codeController.text,
+          'accname': _eosAccController.text,
+          'pkey': _eosPublicKeyController.text
+        });
+      } else {
+        print("confirm");
+        response = await dio.post("/account/confirm", data: {
+          'itsc': _itsc,
+          'key': _codeController.text,
+          'accname': _eosAccController.text
+        });
+      }
+
+      if (response.statusCode != 200) {
+        // errDialog(context, "Fail to create, Reason: " + response["message"]!);
+      }
+      print(response);
+    } catch (e) {
+      DioError err = e as DioError;
+
+      Map<String, dynamic> response = (err.response?.data);
+
+      errDialog(context, "Fail to create, Reason: " + response["message"]!);
+
+      return;
+    }
+    SuccessPageArg arg = SuccessPageArg(
+        message: 'Your Account Created Successfully', returnPage: 'l');
+    Navigator.pushNamed(_context, 's', arguments: arg);
+  }
+
+  void showAlertBox() async {
     if (_codeController.text.isEmpty ||
         _eosAccController.text.isEmpty ||
         (_needCreateEOSIO == true && _eosPublicKeyController.text.isEmpty)) {
@@ -58,43 +98,23 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
       );
       ScaffoldMessenger.of(_context).showSnackBar(errBar);
     } else {
-      BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
-      var dio = Dio(opt);
-      try {
-        var response;
-        if (_needCreateEOSIO) {
-          print("create");
-          response = await dio.post("/account/create", data: {
-            'itsc': _itsc,
-            'key': _codeController.text,
-            'accname': _eosAccController.text,
-            'pkey': _eosPublicKeyController.text
-          });
-        } else {
-          print("confirm");
-          response = await dio.post("/account/confirm", data: {
-            'itsc': _itsc,
-            'key': _codeController.text,
-            'accname': _eosAccController.text
-          });
-        }
-
-        if (response.statusCode != 200) {
-          // errDialog(context, "Fail to create, Reason: " + response["message"]!);
-        }
-        print(response);
-      } catch (e) {
-        DioError err = e as DioError;
-
-        Map<String, dynamic> response = (err.response?.data);
-
-        errDialog(context, "Fail to create, Reason: " + response["message"]!);
-
-        return;
-      }
-      SuccessPageArg arg = SuccessPageArg(
-          message: 'Your Account Created Successfully', returnPage: 'l');
-      Navigator.pushNamed(_context, 's', arguments: arg);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: const Text('Alert'),
+                content: const Text('Did you save your key pair successfully?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () =>
+                        {Navigator.pop(context, 'Yes'), _submitLinpUpRequest()},
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ));
     }
   }
 
@@ -121,7 +141,7 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
               child: Column(
                 children: [
                   Image(
-                    height: MediaQuery.of(context).size.height * 0.1,
+                    height: MediaQuery.of(context).size.height * 0.2,
                     image: AssetImage('assets/app_logo_transparent.png'),
                   ),
                   // Expanded(flex: 1, child: Container()),
@@ -158,6 +178,7 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                   Container(
                     margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.05,
+                      bottom: 15,
                     ),
                     child: TextField(
                       decoration: InputDecoration(
@@ -172,7 +193,13 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
 
                   Row(
                     children: [
-                      Text("I need to create EOSIO account."),
+                      Text(
+                        "I need to create EOSIO account.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          //fontWeight:
+                        ),
+                      ),
                       Switch(
                           value: _needCreateEOSIO,
                           onChanged: (bool val) {
@@ -188,15 +215,25 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                   _needCreateEOSIO
                       ? Column(
                           children: [
-                            ElevatedButton(
-                              child: Text("Get Key pair"),
-                              onPressed: _gotoKeyGen,
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                              ),
+                              child: ElevatedButton(
+                                child: Text(
+                                  "Get Key pair",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                onPressed: _gotoKeyGen,
+                              ),
                             ),
                             Container(
                               margin: EdgeInsets.only(
                                 top: MediaQuery.of(context).size.height * 0.01,
                                 bottom:
-                                    MediaQuery.of(context).size.height * 0.01,
+                                    MediaQuery.of(context).size.height * 0.02,
                               ),
                               child: TextField(
                                 decoration: InputDecoration(
@@ -208,15 +245,27 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                                 // focusNode: _focusNode,
                               ),
                             ),
-                            Text("Remember save your key pair before Register")
+                            Text(
+                              "Remember to save your key pair!",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            )
                           ],
                         )
                       : Container(),
 
-                  ElevatedButton(
-                    child: Text("Register"),
-                    onPressed: _submitLinpUpRequest,
-                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: ElevatedButton(
+                        child: Text(
+                          "Register",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w700),
+                        ),
+                        onPressed: () => showAlertBox(),
+
+                        //_submitLinpUpRequest,
+                      )),
                 ],
               ),
             ),

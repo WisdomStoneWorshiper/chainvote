@@ -113,14 +113,15 @@ class _RegisterState extends State<Register> with SharedDialog {
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.1,
+                      top: MediaQuery.of(context).size.height * 0.04,
+                      bottom: MediaQuery.of(context).size.height * 0.05,
                     ),
                     child: ElevatedButton(
                       onPressed: _registerBtnHandler,
                       child: Text(
-                        "Get verification code",
+                        "Send Code", //"Get verification code",
                         style: TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.bold),
+                            fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -128,9 +129,17 @@ class _RegisterState extends State<Register> with SharedDialog {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("I have an account. "),
+                        Text(
+                          "Already have an account?",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400),
+                        ),
                         TextButton(
-                          child: Text("Login"),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                           onPressed: () {
                             Navigator.pop(context);
                           },

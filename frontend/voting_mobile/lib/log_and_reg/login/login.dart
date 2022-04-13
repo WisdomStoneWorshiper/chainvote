@@ -131,13 +131,23 @@ class Login extends StatelessWidget {
                     ),
                   ),
                   // Expanded(flex: 2, child: Container()),
-
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("New to Chainvote? "),
+                      Text(
+                        "New to Chainvote?",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
                       TextButton(
-                        child: Text("Join us!"),
+                        child: Text(
+                          "Join us!",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                         onPressed: () {
                           Navigator.pushNamed(context, 'r');
                         },
