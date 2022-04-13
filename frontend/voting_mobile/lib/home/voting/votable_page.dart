@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:pie_chart/src/utils.dart';
@@ -24,6 +26,7 @@ class _VotablePageState extends State<VotablePage> {
   late Campaign campaign;
   int totalBallot = 0;
   List<Color> _chartColor = [];
+  int highlightedIndex = -1;
 
   void _toBallot() {
     Navigator.pushNamed(context, 'b', arguments: campaign);
@@ -39,11 +42,35 @@ class _VotablePageState extends State<VotablePage> {
 
     for (var c in campaign.getChoiceList()) {
       result[c.choiceName] = c.result.toDouble();
-      totalBallot += c.result;
+      //totalBallot += c.result;
       _chartColor
           .add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
     }
     return result;
+  }
+
+  int getTotalBallots() {
+    int totalBallots = 0;
+    for (var c in campaign.getChoiceList()) {
+      totalBallots += c.result;
+    }
+    return totalBallots;
+  }
+
+  Timer triggerResetHighlightTimer([int milliseconds = 500]) =>
+      Timer(Duration(milliseconds: milliseconds), resetHighlight);
+
+  void resetHighlight() {
+    setState(() {
+      highlightedIndex = -1;
+    });
+  }
+
+  void changeHighlightedIndex(index) {
+    setState(() {
+      highlightedIndex = index;
+    });
+    triggerResetHighlightTimer();
   }
 
   @override
@@ -51,13 +78,17 @@ class _VotablePageState extends State<VotablePage> {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
     campaign.setview(CampaignView.Voter);
+    Color highlightColor =
+        Colors.white; //Theme.of(context).colorScheme.primary;
     print("is voted: " + (campaign.isVoted.toString()));
     final theme = Theme.of(context);
     final oldTextTheme = theme.textTheme.headline3;
     List<ListItem> item = [];
+    List<Color> colors = [];
     for (var i = 0; i < campaign.getChoiceList().length; ++i) {
+      colors.add(i != highlightedIndex ? defaultColorList[i] : highlightColor);
       item.add(ListItem(
-          color: defaultColorList[i],
+          color: i != highlightedIndex ? defaultColorList[i] : highlightColor,
           choice: campaign.getChoiceList()[i].choiceName,
           vote: campaign.getChoiceList()[i].result));
     }
@@ -155,11 +186,11 @@ class _VotablePageState extends State<VotablePage> {
               ),
               child: Center(
                 child: PieChart(
-                  // colorList: _chartColor,
+                  colorList: colors,
                   chartRadius: MediaQuery.of(context).size.width * 0.5,
                   dataMap: _getVoteDistribution(),
                   chartType: ChartType.ring,
-                  centerText: "Total Ballot: " + totalBallot.toString(),
+                  centerText: "Total Ballot: " + getTotalBallots().toString(),
                   chartValuesOptions: ChartValuesOptions(
                     showChartValues: false,
                   ),
@@ -214,25 +245,27 @@ class _VotablePageState extends State<VotablePage> {
                       //   );
                       // }
                       return Container(
-                        child: ListTile(
-                          minLeadingWidth: 10,
-                          leading: Container(
-                            width: MediaQuery.of(context).size.width * 0.04,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: item[index].color),
-                          ),
-                          title: Text(
-                            item[index].choice,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
-                          trailing: Text(
-                            item[index].vote.toString(),
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.w400),
-                          ),
-                        ),
+                        child: InkWell(
+                            onTap: () => changeHighlightedIndex(index),
+                            child: ListTile(
+                              minLeadingWidth: 10,
+                              leading: Container(
+                                width: MediaQuery.of(context).size.width * 0.04,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: item[index].color),
+                              ),
+                              title: Text(
+                                item[index].choice,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                              trailing: Text(
+                                item[index].vote.toString(),
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w400),
+                              ),
+                            )),
                       );
                     }),
               ),
@@ -246,6 +279,8 @@ class _VotablePageState extends State<VotablePage> {
                     onPressed: _toBallot,
                     child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
                   )
-                : null);
+                : null
+        //null
+        );
   }
 }
