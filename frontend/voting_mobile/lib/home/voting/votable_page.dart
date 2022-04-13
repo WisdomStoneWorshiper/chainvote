@@ -31,6 +31,12 @@ class _VotablePageState extends State<VotablePage> {
 
   Map<String, double> _getVoteDistribution() {
     Map<String, double> result = {};
+    if (campaign.getChoiceList().length == 0) {
+      result["No choices given :("] = 0.0;
+      _chartColor
+          .add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
+    }
+
     for (var c in campaign.getChoiceList()) {
       result[c.choiceName] = c.result.toDouble();
       totalBallot += c.result;
@@ -64,7 +70,10 @@ class _VotablePageState extends State<VotablePage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(campaign.getCampaignName()),
+          title: Text(
+            campaign.getCampaignName(),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+          ),
         ),
         body: Column(
           children: [
@@ -114,6 +123,30 @@ class _VotablePageState extends State<VotablePage> {
                 ),
               ),
             ),
+            Stack(children: [
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Text(
+                        "Choice",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ))),
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                      padding: EdgeInsets.only(right: 30),
+                      child: Text(
+                        "Number of Votes",
+                        style: TextStyle(
+                          fontSize: 20,
+                          //fontWeight: FontWeight.bold,
+                        ),
+                      )))
+            ]),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(
@@ -121,22 +154,22 @@ class _VotablePageState extends State<VotablePage> {
                 ),
                 child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: campaign.getChoiceList().length + 1,
+                    itemCount: campaign.getChoiceList().length,
                     itemBuilder: (_, index) {
-                      if (index == 0) {
-                        return ListTile(
-                          minLeadingWidth: 10,
-                          leading: Container(
-                            width: MediaQuery.of(context).size.width * 0.04,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent,
-                            ),
-                          ),
-                          title: Text("Choice"),
-                          trailing: Text("Number of Vote"),
-                        );
-                      }
+                      // if (index == 0) {
+                      //   return ListTile(
+                      //     minLeadingWidth: 10,
+                      //     leading: Container(
+                      //       width: MediaQuery.of(context).size.width * 0.04,
+                      //       decoration: BoxDecoration(
+                      //         shape: BoxShape.circle,
+                      //         color: Colors.transparent,
+                      //       ),
+                      //     ),
+                      //     title: Text("Choice"),
+                      //     trailing: Text("Number of Vote"),
+                      //   );
+                      // }
                       return Container(
                         child: ListTile(
                           minLeadingWidth: 10,
@@ -144,10 +177,10 @@ class _VotablePageState extends State<VotablePage> {
                             width: MediaQuery.of(context).size.width * 0.04,
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: item[index - 1].color),
+                                color: item[index].color),
                           ),
-                          title: Text(item[index - 1].choice),
-                          trailing: Text(item[index - 1].vote.toString()),
+                          title: Text(item[index].choice),
+                          trailing: Text(item[index].vote.toString()),
                         ),
                       );
                     }),
