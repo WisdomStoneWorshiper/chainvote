@@ -132,7 +132,14 @@ abstract class CampaignListState extends State<CampaignList>
           SizedBox(
             height: 20,
           ),
-          Text("No campaigns to show"),
+          Text("No campaigns to show",
+              style: TextStyle(
+                fontSize: 20,
+                //fontWeight: FontWeight.bold
+              )),
+          SizedBox(
+            height: 50,
+          ),
         ]);
   }
 

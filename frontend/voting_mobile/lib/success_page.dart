@@ -17,7 +17,10 @@ class SuccessPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("SUCCESSFUL"),
+        title: Text(
+          "Confirmed",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: Align(
         alignment: Alignment.center,
@@ -32,11 +35,12 @@ class SuccessPage extends StatelessWidget {
                 size: 180,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.only(top: 16, left: 30, right: 30),
                 child: Text(
                   args.message,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

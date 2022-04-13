@@ -138,12 +138,45 @@ class CampaignListView extends StatelessWidget {
                                     ),
                                     campaign.getCampaignStat() ==
                                             CampaignStat.Ongoing
-                                        ? Container(
-                                            child: Text("Total Voted: " +
-                                                campaign
+                                        ? Row(children: [
+                                            Container(
+                                              height: 10,
+                                              width: campaign
+                                                          .getPercentVoted() ==
+                                                      0
+                                                  ? 10
+                                                  : MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.45 *
+                                                      campaign
+                                                          .getPercentVoted(),
+                                              color: Colors.green,
+                                            ),
+                                            Container(
+                                              height: 10,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.45 *
+                                                  (1.0 -
+                                                      campaign
+                                                          .getPercentVoted()),
+                                              color: Colors.red,
+                                            ),
+                                            Container(
+                                              height: 10,
+                                              width: 10,
+                                            ),
+                                            Text(campaign
                                                     .getTotalVoted()
-                                                    .toString()),
-                                          )
+                                                    .toString() +
+                                                "/" +
+                                                campaign
+                                                    .getNumberOfVoters()
+                                                    .toString() +
+                                                " Voted"),
+                                          ])
                                         : Container()
                                   ],
                                 ),

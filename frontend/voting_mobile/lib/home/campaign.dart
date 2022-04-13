@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -107,6 +109,14 @@ class Campaign extends StatelessWidget {
     return _choiceList;
   }
 
+  List<String> getChoiceListNames() {
+    List<String> choiceNames = [];
+    for (var choice in _choiceList) {
+      choiceNames.add(choice.choiceName);
+    }
+    return choiceNames;
+  }
+
   List<String> getVoterList() {
     return _voterList;
   }
@@ -125,6 +135,17 @@ class Campaign extends StatelessWidget {
       total += c.result;
     }
     return total;
+  }
+
+  int getNumberOfVoters() {
+    return _voterList.length;
+  }
+
+  double getPercentVoted() {
+    if (getNumberOfVoters() == 0) {
+      return 0.0;
+    }
+    return (getTotalVoted().toDouble() / getNumberOfVoters().toDouble());
   }
 
   CampaignStat getCampaignStat() {
