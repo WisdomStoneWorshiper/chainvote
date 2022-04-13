@@ -104,6 +104,49 @@ class _VotablePageState extends State<VotablePage> {
                 style: Theme.of(context).textTheme.headline5,
               ),
             ),
+            Padding(
+                padding: EdgeInsets.only(
+                  top: 15,
+                  left: MediaQuery.of(context).size.width * 0.04,
+                ),
+                child: Stack(children: [
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Row(children: [
+                        Container(
+                          height: 15,
+                          width: campaign.getPercentVoted() == 0
+                              ? 10
+                              : MediaQuery.of(context).size.width *
+                                  0.65 *
+                                  campaign.getPercentVoted(),
+                          color: Colors.green,
+                        ),
+                        Container(
+                          height: 15,
+                          width: MediaQuery.of(context).size.width *
+                              0.65 *
+                              (1.0 - campaign.getPercentVoted()),
+                          color: Colors.red,
+                        ),
+                      ])),
+                  Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        width: 100,
+                        color: Theme.of(context).backgroundColor,
+                        padding: EdgeInsets.only(right: 15, left: 5),
+                        child: Text(
+                            campaign.getTotalVoted().toString() +
+                                "/" +
+                                campaign.getNumberOfVoters().toString() +
+                                " Voted",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: oldTextTheme.color)),
+                      ))
+                ])),
             Container(
               padding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height * 0.03,
@@ -179,8 +222,16 @@ class _VotablePageState extends State<VotablePage> {
                                 shape: BoxShape.circle,
                                 color: item[index].color),
                           ),
-                          title: Text(item[index].choice),
-                          trailing: Text(item[index].vote.toString()),
+                          title: Text(
+                            item[index].choice,
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                          trailing: Text(
+                            item[index].vote.toString(),
+                            style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w400),
+                          ),
                         ),
                       );
                     }),
