@@ -137,8 +137,8 @@ class _ManagePageState extends State<ManagePage>
   }
 
   Widget _buildViewInsideContainer(bool isChoice) {
-    // final List<String> values =
-    //     isChoice ? campaign.getChoiceListNames() : campaign.getVoterList();
+    final List<String> values =
+        isChoice ? campaign.getChoiceListNames() : campaign.getVoterList();
 
     // late ElevatedButton button;
 
@@ -229,10 +229,10 @@ class _ManagePageState extends State<ManagePage>
     //   button
     // ]);
 
-    List<String> values = [];
-    for (int i = 0; i < 50; i++) {
-      values.add("Choice " + (i + 1).toString());
-    }
+    // List<String> values = [];
+    // for (int i = 0; i < 50; i++) {
+    //   values.add("Choice " + (i + 1).toString());
+    // }
 
     return Expanded(child: _buildListViewInsideContainer(values));
   }
@@ -407,7 +407,10 @@ class _ManagePageState extends State<ManagePage>
                           Text(
                         "Delete",
                         style: TextStyle(
-                            color: Colors.red,
+                            color: campaign.getCampaignStat() ==
+                                    CampaignStat.Coming
+                                ? Colors.red
+                                : null,
                             fontWeight: styleOfPopItems.fontWeight,
                             fontSize: styleOfPopItems.fontSize),
                       ),
