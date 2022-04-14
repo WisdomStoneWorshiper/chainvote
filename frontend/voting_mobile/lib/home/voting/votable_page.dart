@@ -87,9 +87,13 @@ class _VotablePageState extends State<VotablePage> {
     List<Color> colors =
         campaign.getChoiceList().isEmpty ? [defaultColorList[0]] : [];
     for (var i = 0; i < campaign.getChoiceList().length; ++i) {
-      colors.add(i != highlightedIndex ? defaultColorList[i] : highlightColor);
+      colors.add(i != highlightedIndex
+          ? defaultColorList[i % defaultColorList.length]
+          : highlightColor);
       item.add(ListItem(
-          color: i != highlightedIndex ? defaultColorList[i] : highlightColor,
+          color: i != highlightedIndex
+              ? defaultColorList[i % defaultColorList.length]
+              : highlightColor,
           choice: campaign.getChoiceList()[i].choiceName,
           vote: campaign.getChoiceList()[i].result));
     }
