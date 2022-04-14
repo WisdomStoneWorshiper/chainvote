@@ -136,11 +136,12 @@ class _VotablePageState extends State<VotablePage> {
               ),
             ),
             Padding(
-                padding: EdgeInsets.only(
-                  top: 15,
-                  left: MediaQuery.of(context).size.width * 0.04,
-                ),
-                child: Stack(children: [
+              padding: EdgeInsets.only(
+                top: 15,
+                left: MediaQuery.of(context).size.width * 0.04,
+              ),
+              child: Stack(
+                children: [
                   Align(
                       alignment: Alignment.topLeft,
                       child: Row(children: [
@@ -162,120 +163,150 @@ class _VotablePageState extends State<VotablePage> {
                         ),
                       ])),
                   Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        width: 100,
-                        color: Theme.of(context).backgroundColor,
-                        padding: EdgeInsets.only(right: 15, left: 5),
-                        child: Text(
-                            campaign.getTotalVoted().toString() +
-                                "/" +
-                                campaign.getNumberOfVoters().toString() +
-                                " Voted",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: oldTextTheme.color)),
-                      ))
-                ])),
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.03,
-                left: MediaQuery.of(context).size.width * 0.04,
-                bottom: MediaQuery.of(context).size.height * 0.03,
-              ),
-              child: Center(
-                child: PieChart(
-                  colorList: colors,
-                  chartRadius: MediaQuery.of(context).size.width * 0.5,
-                  dataMap: _getVoteDistribution(),
-                  chartType: ChartType.ring,
-                  centerText: "Total Ballot: " + getTotalBallots().toString(),
-                  chartValuesOptions: ChartValuesOptions(
-                    showChartValues: false,
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      width: 100,
+                      color: Theme.of(context).backgroundColor,
+                      padding: EdgeInsets.only(right: 15, left: 5),
+                      child: Text(
+                          campaign.getTotalVoted().toString() +
+                              "/" +
+                              campaign.getNumberOfVoters().toString() +
+                              " Voted",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: oldTextTheme.color)),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-            Stack(children: [
-              Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                      padding: EdgeInsets.only(left: 30),
-                      child: Text(
-                        "Choice",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
+            campaign.getChoiceList().length > 0
+                ? Expanded(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.03,
+                            left: MediaQuery.of(context).size.width * 0.04,
+                            bottom: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                          child: Center(
+                            child: PieChart(
+                              colorList: colors,
+                              chartRadius:
+                                  MediaQuery.of(context).size.width * 0.5,
+                              dataMap: _getVoteDistribution(),
+                              chartType: ChartType.ring,
+                              centerText: "Total Ballot: " +
+                                  getTotalBallots().toString(),
+                              chartValuesOptions: ChartValuesOptions(
+                                showChartValues: false,
+                              ),
+                            ),
+                          ),
                         ),
-                      ))),
-              Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                      padding: EdgeInsets.only(right: 30),
-                      child: Text(
-                        "Number of Votes",
-                        style: TextStyle(
-                          fontSize: 20,
-                          //fontWeight: FontWeight.bold,
+                        Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                padding: EdgeInsets.only(left: 30),
+                                child: Text(
+                                  "Choice",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                padding: EdgeInsets.only(right: 30),
+                                child: Text(
+                                  "Number of Votes",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    //fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      )))
-            ]),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.04,
-                ),
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: campaign.getChoiceList().length,
-                    itemBuilder: (_, index) {
-                      // if (index == 0) {
-                      //   return ListTile(
-                      //     minLeadingWidth: 10,
-                      //     leading: Container(
-                      //       width: MediaQuery.of(context).size.width * 0.04,
-                      //       decoration: BoxDecoration(
-                      //         shape: BoxShape.circle,
-                      //         color: Colors.transparent,
-                      //       ),
-                      //     ),
-                      //     title: Text("Choice"),
-                      //     trailing: Text("Number of Vote"),
-                      //   );
-                      // }
-                      return Container(
-                        color: index == highlightedIndex
-                            ? Theme.of(context).primaryColor
-                            // ? Theme.of(context)
-                            //     .colorScheme
-                            //     .primary //Theme.of(context).primaryColor
-                            : null,
-                        child: InkWell(
-                            onTap: () => changeHighlightedIndex(index),
-                            child: ListTile(
-                              minLeadingWidth: 10,
-                              leading: Container(
-                                width: MediaQuery.of(context).size.width * 0.04,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: item[index].color),
-                              ),
-                              title: Text(
-                                item[index].choice,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w600),
-                              ),
-                              trailing: Text(
-                                item[index].vote.toString(),
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w400),
-                              ),
-                            )),
-                      );
-                    }),
-              ),
-            ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.04,
+                            ),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: campaign.getChoiceList().length,
+                                itemBuilder: (_, index) {
+                                  // if (index == 0) {
+                                  //   return ListTile(
+                                  //     minLeadingWidth: 10,
+                                  //     leading: Container(
+                                  //       width: MediaQuery.of(context).size.width * 0.04,
+                                  //       decoration: BoxDecoration(
+                                  //         shape: BoxShape.circle,
+                                  //         color: Colors.transparent,
+                                  //       ),
+                                  //     ),
+                                  //     title: Text("Choice"),
+                                  //     trailing: Text("Number of Vote"),
+                                  //   );
+                                  // }
+                                  return Container(
+                                    color: index == highlightedIndex
+                                        ? Theme.of(context).primaryColor
+                                        // ? Theme.of(context)
+                                        //     .colorScheme
+                                        //     .primary //Theme.of(context).primaryColor
+                                        : null,
+                                    child: InkWell(
+                                        onTap: () =>
+                                            changeHighlightedIndex(index),
+                                        child: ListTile(
+                                          minLeadingWidth: 10,
+                                          leading: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: item[index].color),
+                                          ),
+                                          title: Text(
+                                            item[index].choice,
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          trailing: Text(
+                                            item[index].vote.toString(),
+                                            style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        )),
+                                  );
+                                }),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Expanded(
+                    child: Center(
+                      child: Text("No avalable choice!"),
+                    ),
+                  )
           ],
         ),
         floatingActionButton:
