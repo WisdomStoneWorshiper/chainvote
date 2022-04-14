@@ -245,6 +245,12 @@ class _VotablePageState extends State<VotablePage> {
                       //   );
                       // }
                       return Container(
+                        color: index == highlightedIndex
+                            ? Theme.of(context).primaryColor
+                            // ? Theme.of(context)
+                            //     .colorScheme
+                            //     .primary //Theme.of(context).primaryColor
+                            : null,
                         child: InkWell(
                             onTap: () => changeHighlightedIndex(index),
                             child: ListTile(
