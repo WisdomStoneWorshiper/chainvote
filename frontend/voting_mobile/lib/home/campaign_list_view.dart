@@ -155,13 +155,21 @@ class CampaignListView extends StatelessWidget {
                                             ),
                                             Container(
                                               height: 10,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.45 *
-                                                  (1.0 -
-                                                      campaign
-                                                          .getPercentVoted()),
+                                              width: campaign
+                                                          .getPercentVoted() ==
+                                                      0
+                                                  ? (MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.45) -
+                                                      10
+                                                  : MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.45 *
+                                                      (1.0 -
+                                                          campaign
+                                                              .getPercentVoted()),
                                               color: Colors.red,
                                             ),
                                             Container(
