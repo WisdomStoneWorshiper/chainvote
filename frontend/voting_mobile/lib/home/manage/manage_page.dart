@@ -137,96 +137,104 @@ class _ManagePageState extends State<ManagePage>
   }
 
   Widget _buildViewInsideContainer(bool isChoice) {
-    final List<String> values =
-        isChoice ? campaign.getChoiceListNames() : campaign.getVoterList();
-    late ElevatedButton button;
+    // final List<String> values =
+    //     isChoice ? campaign.getChoiceListNames() : campaign.getVoterList();
 
-    if (isChoice) {
-      button = ElevatedButton(
-        style: campaign.getCampaignStat() == CampaignStat.Coming
-            ? null
-            : ElevatedButton.styleFrom(
-                primary: Theme.of(context).colorScheme.surface,
-              ),
-        onPressed: () {
-          if (campaign.getCampaignStat() == CampaignStat.Coming) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return EditPage(
-                      campaignId: campaign.campaignId,
-                      editType: EditType.Choice,
-                      editingList: campaign
-                          .getChoiceList()
-                          .map((c) => c.choiceName)
-                          .toList());
-                },
-              ),
-            );
-          } else {
-            final wrongSnackbar = SnackBar(
-                content: Text(campaign.getCampaignStat() == CampaignStat.Ended
-                    ? "Campaign has already ended"
-                    : "Cannot make changes to ongoing campaign"),
-                action: SnackBarAction(
-                  label: 'OK',
-                  onPressed: () {},
-                ));
-            ScaffoldMessenger.of(context).showSnackBar(wrongSnackbar);
-          }
-        },
-        child: Text(
-          "Edit Choices",
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-      );
-    } else {
-      button = ElevatedButton(
-        style: campaign.getCampaignStat() == CampaignStat.Coming
-            ? null
-            : ElevatedButton.styleFrom(
-                primary: Theme.of(context).colorScheme.surface,
-              ),
-        onPressed: () {
-          if (campaign.getCampaignStat() == CampaignStat.Coming) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return EditPage(
-                      campaignId: campaign.campaignId,
-                      editType: EditType.Voter,
-                      editingList: campaign.getVoterList());
-                },
-              ),
-            );
-          } else {
-            final wrongSnackbar = SnackBar(
-                content: Text(campaign.getCampaignStat() == CampaignStat.Ended
-                    ? "Campaign has already ended"
-                    : "Cannot make changes to ongoing campaign"),
-                action: SnackBarAction(
-                  label: 'OK',
-                  onPressed: () {},
-                ));
-            ScaffoldMessenger.of(context).showSnackBar(wrongSnackbar);
-          }
-        },
-        child: Text(
-          "Edit Voters",
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-      );
+    // late ElevatedButton button;
+
+    // if (isChoice) {
+    //   button = ElevatedButton(
+    //     style: campaign.getCampaignStat() == CampaignStat.Coming
+    //         ? null
+    //         : ElevatedButton.styleFrom(
+    //             primary: Theme.of(context).colorScheme.surface,
+    //           ),
+    //     onPressed: () {
+    //       if (campaign.getCampaignStat() == CampaignStat.Coming) {
+    //         Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //             builder: (context) {
+    //               return EditPage(
+    //                   campaignId: campaign.campaignId,
+    //                   editType: EditType.Choice,
+    //                   editingList: campaign
+    //                       .getChoiceList()
+    //                       .map((c) => c.choiceName)
+    //                       .toList());
+    //             },
+    //           ),
+    //         );
+    //       } else {
+    //         final wrongSnackbar = SnackBar(
+    //             content: Text(campaign.getCampaignStat() == CampaignStat.Ended
+    //                 ? "Campaign has already ended"
+    //                 : "Cannot make changes to ongoing campaign"),
+    //             action: SnackBarAction(
+    //               label: 'OK',
+    //               onPressed: () {},
+    //             ));
+    //         ScaffoldMessenger.of(context).showSnackBar(wrongSnackbar);
+    //       }
+    //     },
+    //     child: Text(
+    //       "Edit Choices",
+    //       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+    //     ),
+    //   );
+    // } else {
+    //   button = ElevatedButton(
+    //     style: campaign.getCampaignStat() == CampaignStat.Coming
+    //         ? null
+    //         : ElevatedButton.styleFrom(
+    //             primary: Theme.of(context).colorScheme.surface,
+    //           ),
+    //     onPressed: () {
+    //       if (campaign.getCampaignStat() == CampaignStat.Coming) {
+    //         Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //             builder: (context) {
+    //               return EditPage(
+    //                   campaignId: campaign.campaignId,
+    //                   editType: EditType.Voter,
+    //                   editingList: campaign.getVoterList());
+    //             },
+    //           ),
+    //         );
+    //       } else {
+    //         final wrongSnackbar = SnackBar(
+    //             content: Text(campaign.getCampaignStat() == CampaignStat.Ended
+    //                 ? "Campaign has already ended"
+    //                 : "Cannot make changes to ongoing campaign"),
+    //             action: SnackBarAction(
+    //               label: 'OK',
+    //               onPressed: () {},
+    //             ));
+    //         ScaffoldMessenger.of(context).showSnackBar(wrongSnackbar);
+    //       }
+    //     },
+    //     child: Text(
+    //       "Edit Voters",
+    //       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+    //     ),
+    //   );
+    // }
+
+    // return Column(children: [
+    //   _buildListViewInsideContainer(values),
+    //   SizedBox(
+    //     height: 12.5,
+    //   ),
+    //   button
+    // ]);
+
+    List<String> values = [];
+    for (int i = 0; i < 50; i++) {
+      values.add("Choice " + (i + 1).toString());
     }
 
-    return Column(children: [
-      _buildListViewInsideContainer(values),
-      SizedBox(
-        height: 12.5,
-      ),
-      button
-    ]);
+    return Expanded(child: _buildListViewInsideContainer(values));
   }
 
   Widget _buildListViewInsideContainer(List<String> values) {
