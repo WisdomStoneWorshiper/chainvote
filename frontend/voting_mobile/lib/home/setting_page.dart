@@ -88,13 +88,19 @@ class _SettingPageState extends State<SettingPage> with SharedDialog {
       child: ListView(
         children: [
           ListTile(
-            title: Text("Logout"),
+            title: Text(
+              "Logout",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            ),
             onTap: () {
               _logoutHandler(context);
             },
           ),
           ListTile(
-            title: Text("Use biometric to save private key"),
+            title: Text(
+              "Use biometric to save private key",
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+            ),
             trailing: Switch(
               value: _isBio,
               onChanged: (bool) async {
