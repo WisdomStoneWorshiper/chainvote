@@ -305,86 +305,110 @@ class _ManagePageState extends State<ManagePage>
 
           final TabController _tabController =
               DefaultTabController.of(context)!;
+
+          final TextStyle styleOfPopItems =
+              TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
           return Scaffold(
             appBar: AppBar(
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (campaign.getCampaignStat() == CampaignStat.Coming) {
-                        requestKey(context, _deleteCampaign, "Deleting");
-                      }
-                    },
-                    child: Icon(
-                      Icons.delete,
-                      color: campaign.getCampaignStat() == CampaignStat.Coming
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.3),
-                    ),
-                  ),
-                ),
-              ],
               // actions: [
-
-              //   // PopupMenuButton(
-              //   //   onSelected: ((value) {
-              //   //     switch (value) {
-              //   //       case ItemType.Choice:
-              //   //         Navigator.push(
-              //   //           context,
-              //   //           MaterialPageRoute(
-              //   //             builder: (context) {
-              //   //               return EditPage(
-              //   //                   campaignId: campaign.campaignId,
-              //   //                   editType: EditType.Choice,
-              //   //                   editingList: campaign
-              //   //                       .getChoiceList()
-              //   //                       .map((c) => c.choiceName)
-              //   //                       .toList());
-              //   //             },
-              //   //           ),
-              //   //         );
-              //   //         break;
-              //   //       case ItemType.Voter:
-              //   //         Navigator.push(
-              //   //           context,
-              //   //           MaterialPageRoute(
-              //   //             builder: (context) {
-              //   //               return EditPage(
-              //   //                   campaignId: campaign.campaignId,
-              //   //                   editType: EditType.Voter,
-              //   //                   editingList: campaign.getVoterList());
-              //   //             },
-              //   //           ),
-              //   //         );
-              //   //         break;
-              //   //       case ItemType.Delete:
-              //   //         requestKey(context, _deleteCampaign, "Deleting");
-              //   //         break;
-              //   //       default:
-              //   //         break;
-              //   //     }
-              //   //   }),
-              //   //   itemBuilder: (context) => [
-              //   //     PopupMenuItem(
-              //   //       enabled: campaign.getCampaignStat() == CampaignStat.Coming,
-              //   //       value: ItemType.Choice,
-              //   //       child: Text("Edit choice"),
-              //   //     ),
-              //   //     PopupMenuItem(
-              //   //       enabled: campaign.getCampaignStat() == CampaignStat.Coming,
-              //   //       value: ItemType.Voter,
-              //   //       child: Text("Edit voter"),
-              //   //     ),
-              //   //     PopupMenuItem(
-              //   //       enabled: campaign.getCampaignStat() == CampaignStat.Coming,
-              //   //       value: ItemType.Delete,
-              //   //       child: Text("Delete"),
-              //   //     ),
-              //   //   ],
-              //   // )
+              //   Padding(
+              //     padding: EdgeInsets.only(right: 10),
+              //     child: GestureDetector(
+              //       onTap: () {
+              //         if (campaign.getCampaignStat() == CampaignStat.Coming) {
+              //           requestKey(context, _deleteCampaign, "Deleting");
+              //         }
+              //       },
+              //       child: Icon(
+              //         Icons.delete,
+              //         color: campaign.getCampaignStat() == CampaignStat.Coming
+              //             ? Colors.white
+              //             : Colors.white.withOpacity(0.3),
+              //       ),
+              //     ),
+              //   ),
               // ],
+              actions: [
+                PopupMenuButton(
+                  icon: Icon(
+                    Icons.manage_accounts,
+                    size: 37.5,
+                  ),
+                  onSelected: ((value) {
+                    switch (value) {
+                      case ItemType.Choice:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return EditPage(
+                                  campaignId: campaign.campaignId,
+                                  editType: EditType.Choice,
+                                  editingList: campaign
+                                      .getChoiceList()
+                                      .map((c) => c.choiceName)
+                                      .toList());
+                            },
+                          ),
+                        );
+                        break;
+                      case ItemType.Voter:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return EditPage(
+                                  campaignId: campaign.campaignId,
+                                  editType: EditType.Voter,
+                                  editingList: campaign.getVoterList());
+                            },
+                          ),
+                        );
+                        break;
+                      case ItemType.Delete:
+                        requestKey(context, _deleteCampaign, "Deleting");
+                        break;
+                      default:
+                        break;
+                    }
+                  }),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      enabled:
+                          campaign.getCampaignStat() == CampaignStat.Coming,
+                      value: ItemType.Choice,
+                      child: Text(
+                        "Edit Choices",
+                        style: styleOfPopItems,
+                      ),
+                    ),
+                    PopupMenuItem(
+                      enabled:
+                          campaign.getCampaignStat() == CampaignStat.Coming,
+                      value: ItemType.Voter,
+                      child: Text(
+                        "Edit Voters",
+                        style: styleOfPopItems,
+                      ),
+                    ),
+                    PopupMenuItem(
+                      enabled:
+                          campaign.getCampaignStat() == CampaignStat.Coming,
+                      value: ItemType.Delete,
+                      child: //Row(children: [
+                          Text(
+                        "Delete",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: styleOfPopItems.fontWeight,
+                            fontSize: styleOfPopItems.fontSize),
+                      ),
+                      //Icon(Icons.delete)
+                      //]),
+                    ),
+                  ],
+                )
+              ],
             ),
             body: SingleChildScrollView(
               child: Align(
