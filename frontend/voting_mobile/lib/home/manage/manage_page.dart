@@ -234,7 +234,8 @@ class _ManagePageState extends State<ManagePage>
     //   values.add("Choice " + (i + 1).toString());
     // }
 
-    return Expanded(child: _buildListViewInsideContainer(values));
+    return _buildListViewInsideContainer(
+        values); //Expanded(child: _buildListViewInsideContainer(values));
   }
 
   Widget _buildListViewInsideContainer(List<String> values) {
@@ -538,13 +539,34 @@ class _ManagePageState extends State<ManagePage>
                     //     },
                     //   ),
                     // ),
-                    SizedBox(height: 7.5),
+                    campaign.getCampaignStat() != CampaignStat.Coming
+                        ? InkWell(
+                            onTap: () => {
+                                  Navigator.pushNamed(context, 'v',
+                                      arguments: campaign)
+                                },
+                            child: Container(
+                                padding: EdgeInsets.only(top: 15, bottom: 15),
+                                child: Text(
+                                    campaign.getCampaignStat() ==
+                                            CampaignStat.Ended
+                                        ? 'View results?'
+                                        : "Check current votecount?",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        //Theme.of(context).colorScheme.primary, //Colors.blue,
+                                        fontWeight: FontWeight.bold))))
+                        : Container(
+                            height: 7.5,
+                          ),
 
                     Container(
-                        //color: Colors.blue,
+                        // color: Colors.blue,
                         height: MediaQuery.of(context).size.height * 0.65,
                         width: MediaQuery.of(context).size.width * 0.9,
-                        //color: Colors.blue,
                         child: Column(children: [
                           TabBar(controller: _tabController, tabs: [
                             Container(
@@ -570,27 +592,6 @@ class _ManagePageState extends State<ManagePage>
                                 _buildViewInsideContainer(false),
                               ])),
                         ])),
-                    campaign.getCampaignStat() != CampaignStat.Coming
-                        ? InkWell(
-                            onTap: () => {
-                                  Navigator.pushNamed(context, 'v',
-                                      arguments: campaign)
-                                },
-                            child: Container(
-                                padding: EdgeInsets.only(top: 10, bottom: 10),
-                                child: Text(
-                                    campaign.getCampaignStat() ==
-                                            CampaignStat.Ended
-                                        ? 'View results?'
-                                        : "Check current votecount?",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        //Theme.of(context).colorScheme.primary, //Colors.blue,
-                                        fontWeight: FontWeight.bold))))
-                        : Container(),
                   ],
                 ),
               ),
