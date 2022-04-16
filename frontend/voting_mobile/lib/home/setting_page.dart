@@ -16,14 +16,12 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> with SharedDialog {
-  // BiometricStorageFile? _pkStorage;
   final LocalAuthentication auth = LocalAuthentication();
   bool _isBio = false;
   final BiometricEncrypt _bio = BiometricEncrypt();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _bio.isStored("pk").then((value) {

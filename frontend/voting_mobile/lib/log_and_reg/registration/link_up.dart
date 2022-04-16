@@ -68,7 +68,7 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
       }
 
       if (response.statusCode != 200) {
-        // errDialog(context, "Fail to create, Reason: " + response["message"]!);
+        errDialog(context, "Fail to create, Reason: " + response["message"]!);
       }
       print(response);
     } catch (e) {
@@ -122,7 +122,7 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
   Widget build(BuildContext context) {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     final args = ModalRoute.of(context)!.settings.arguments as String;
-    _itsc = args; //args.itsc; UNCOMMENT LATER PLEASE ADD RIGHT EMAIL VARIABLE
+    _itsc = args;
     _itscController.text = _itsc;
     _context = context;
     return GestureDetector(
@@ -144,8 +144,6 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                     height: MediaQuery.of(context).size.height * 0.2,
                     image: AssetImage('assets/app_logo_transparent.png'),
                   ),
-                  // Expanded(flex: 1, child: Container()),
-
                   Container(
                     margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.07,
@@ -157,10 +155,8 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                         suffixIcon: Icon(Icons.person),
                       ),
                       controller: _itscController,
-                      // focusNode: _focusNode,
                     ),
                   ),
-
                   Container(
                     margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.05,
@@ -174,7 +170,6 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                       controller: _codeController,
                     ),
                   ),
-
                   Container(
                     margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.05,
@@ -187,17 +182,14 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                         suffixIcon: Icon(Icons.account_box),
                       ),
                       controller: _eosAccController,
-                      // focusNode: _focusNode,
                     ),
                   ),
-
                   Row(
                     children: [
                       Text(
                         "I need to create EOSIO account.",
                         style: TextStyle(
                           fontSize: 16,
-                          //fontWeight:
                         ),
                       ),
                       Switch(
@@ -211,7 +203,6 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                           })
                     ],
                   ),
-
                   _needCreateEOSIO
                       ? Column(
                           children: [
@@ -253,7 +244,6 @@ class _LinkUpState extends State<LinkUp> with SharedDialog {
                           ],
                         )
                       : Container(),
-
                   Padding(
                       padding: EdgeInsets.only(top: 20),
                       child: ElevatedButton(

@@ -42,7 +42,7 @@ class _VotablePageState extends State<VotablePage> {
 
     for (var c in campaign.getChoiceList()) {
       result[c.choiceName] = c.result.toDouble();
-      //totalBallot += c.result;
+
       _chartColor
           .add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
     }
@@ -78,8 +78,7 @@ class _VotablePageState extends State<VotablePage> {
     final args = ModalRoute.of(context)!.settings.arguments as Campaign;
     campaign = args;
     campaign.setview(CampaignView.Voter);
-    Color highlightColor =
-        Colors.white; //Theme.of(context).colorScheme.primary;
+    Color highlightColor = Colors.white;
     print("is voted: " + (campaign.isVoted.toString()));
     final theme = Theme.of(context);
     final oldTextTheme = theme.textTheme.headline3;
@@ -98,9 +97,7 @@ class _VotablePageState extends State<VotablePage> {
           vote: campaign.getChoiceList()[i].result));
     }
     item.sort(((a, b) => b.vote.compareTo(a.vote)));
-    // TextStyle newHeadline5 = ;
-    // newHeadline5.fontWeight = FontWeight.bold;
-    // print(oldTextTheme!.fontSize);
+
     final summaryTextTheme =
         oldTextTheme!.copyWith(fontWeight: FontWeight.bold);
 
@@ -187,8 +184,6 @@ class _VotablePageState extends State<VotablePage> {
                 ],
               ),
             ),
-            // campaign.getChoiceList().length > 0
-            //     ?
             Expanded(
               child: Column(
                 children: [
@@ -235,7 +230,6 @@ class _VotablePageState extends State<VotablePage> {
                             "Number of Votes",
                             style: TextStyle(
                               fontSize: 20,
-                              //fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -251,26 +245,9 @@ class _VotablePageState extends State<VotablePage> {
                           shrinkWrap: true,
                           itemCount: campaign.getChoiceList().length,
                           itemBuilder: (_, index) {
-                            // if (index == 0) {
-                            //   return ListTile(
-                            //     minLeadingWidth: 10,
-                            //     leading: Container(
-                            //       width: MediaQuery.of(context).size.width * 0.04,
-                            //       decoration: BoxDecoration(
-                            //         shape: BoxShape.circle,
-                            //         color: Colors.transparent,
-                            //       ),
-                            //     ),
-                            //     title: Text("Choice"),
-                            //     trailing: Text("Number of Vote"),
-                            //   );
-                            // }
                             return Container(
                               color: index == highlightedIndex
                                   ? Theme.of(context).primaryColor
-                                  // ? Theme.of(context)
-                                  //     .colorScheme
-                                  //     .primary //Theme.of(context).primaryColor
                                   : null,
                               child: InkWell(
                                   onTap: () => changeHighlightedIndex(index),
@@ -303,11 +280,6 @@ class _VotablePageState extends State<VotablePage> {
                 ],
               ),
             )
-            // : Expanded(
-            //     child: Center(
-            //       child: Text("No avalable choice!"),
-            //     ),
-            //   )
           ],
         ),
         floatingActionButton:
@@ -317,8 +289,6 @@ class _VotablePageState extends State<VotablePage> {
                     onPressed: _toBallot,
                     child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
                   )
-                : null
-        //null
-        );
+                : null);
   }
 }

@@ -40,17 +40,14 @@ class _NavBarViewState extends State<NavBarView> {
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
       label: _tabName[0],
-      //backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(IconData(0xe04e, fontFamily: 'MaterialIcons')),
       label: _tabName[1],
-      //backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.settings),
       label: _tabName[2],
-      //backgroundColor: Color.fromARGB(255, 36, 48, 65),
     ),
   ];
 
@@ -82,20 +79,6 @@ class _NavBarViewState extends State<NavBarView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_tabName[_selectedIndex]),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     Container(
-        //       padding: EdgeInsets.only(
-        //           right: MediaQuery.of(context).size.width * 0.02),
-        //       child: Image(
-        //         height: MediaQuery.of(context).size.height * 0.05,
-        //         image: AssetImage('assets/app_logo_transparent.png'),
-        //       ),
-        //     ),
-        //     Text("Chainvote")
-        //   ],
-        // ),
       ),
       body: Center(
         child: _pageOpts.elementAt(_selectedIndex),
@@ -104,10 +87,8 @@ class _NavBarViewState extends State<NavBarView> {
         items: _barItem,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor:
-            Theme.of(context).colorScheme.secondary, //Colors.amber[800],
-        backgroundColor: Theme.of(context)
-            .primaryColor, //_barItem[_selectedIndex].backgroundColor,
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       floatingActionButton: _selectedIndex == 1
           ? FloatingActionButton(

@@ -19,11 +19,6 @@ class CampaignListView extends StatelessWidget {
     final theme = Theme.of(context);
     final oldTextTheme = theme.textTheme.headline5;
 
-    // TextStyle newHeadline5 = ;
-    // newHeadline5.fontWeight = FontWeight.bold;
-    // print(oldTextTheme!.fontSize);
-    // print("h: " + MediaQuery.of(context).size.height.toString());
-    // print("w: " + MediaQuery.of(context).size.width.toString());
     final compaignTextTheme =
         oldTextTheme!.copyWith(fontWeight: FontWeight.bold, fontSize: 27);
 
@@ -32,14 +27,11 @@ class CampaignListView extends StatelessWidget {
         vertical: MediaQuery.of(context).size.height * 0.01,
       ),
       child: Container(
-        // alignment: Alignment.topLeft,
-        // width: MediaQuery.of(context).size.width,
         child: Card(
           elevation: 10,
           child: SizedBox(
             height: 101,
             child: InkWell(
-              // borderRadius: BorderRadius.circular(25.0),
               splashColor: Colors.blue.withAlpha(30),
               child: Container(
                 color: Color.fromARGB(255, 36, 48, 65),
@@ -51,12 +43,8 @@ class CampaignListView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          // alignment: Alignment.centerLeft,
                           width: 25,
-                          // height: double.infinity,
-                          // width: MediaQuery.of(context).size.width * 0.01,
                           color: campaign.getTimeColor(),
-                          // child: FractionallySizedBox(),
                         ),
                         Container(
                           padding: EdgeInsets.only(
@@ -66,10 +54,8 @@ class CampaignListView extends StatelessWidget {
                             right: 4.14,
                           ),
                           child: Column(
-                            //mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Icon(Icons.now_widgets),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.7,
                                 child: Text(
@@ -90,7 +76,6 @@ class CampaignListView extends StatelessWidget {
                                         bottom: 7.36,
                                       ),
                                 child: Column(
-                                  //mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(

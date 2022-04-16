@@ -58,9 +58,9 @@ class CreatePage extends StatelessWidget with SharedDialog {
             ..authorization = auth
             ..data = data
         ];
-        // print("on9");
+
         eos.Transaction transaction = eos.Transaction()..actions = actions;
-        // print("on99");
+
         try {
           var response =
               await voteClient.pushTransaction(transaction, broadcast: true);

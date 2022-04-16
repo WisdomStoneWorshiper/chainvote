@@ -23,9 +23,6 @@ class VotingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // theme: FlexThemeData.dark(scheme: FlexScheme.blumineBlue),
-      // darkTheme: FlexThemeData.dark(scheme: FlexScheme.blumineBlue),
-      // themeMode: ThemeMode.system,
       theme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme(
@@ -35,9 +32,8 @@ class VotingApp extends StatelessWidget {
           secondary: Color(0xAA5FD423),
           onSecondary: Colors.yellow,
           surface: Color.fromARGB(255, 27, 79, 97),
-          onSurface: Colors.white, //Color.fromARGB(255, 83, 198, 211),
-          background: Color(
-              0xFF133642), //Color.fromARGB(255, 12, 27, 53), //Color(0xFF133642),
+          onSurface: Colors.white,
+          background: Color(0xFF133642),
           onBackground: Colors.purple,
           error: Colors.red,
           onError: Colors.orange,
@@ -52,7 +48,6 @@ class VotingApp extends StatelessWidget {
           ),
         ),
       ),
-
       initialRoute: 'sp',
       routes: {
         'l': (context) => Login(),

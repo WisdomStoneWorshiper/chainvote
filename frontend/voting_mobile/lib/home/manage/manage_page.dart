@@ -24,19 +24,6 @@ class _ManagePageState extends State<ManagePage>
     with SharedDialog, SingleTickerProviderStateMixin {
   late Campaign campaign;
   final TextEditingController _pkController = TextEditingController();
-  // late TabController _tabController;
-
-  // @override
-  // void initState() {
-  //   _tabController = TabController(vsync: this, length: 2);
-  //   super.initState();
-  // }
-
-  // @override
-  // void dispose() {
-  //   _tabController.dispose();
-  //   super.dispose();
-  // }
 
   void _deleteCampaign(BuildContext context, String pk) async {
     eos.EOSClient voteClient = client;
@@ -67,9 +54,9 @@ class _ManagePageState extends State<ManagePage>
             ..authorization = auth
             ..data = data
         ];
-        // print("on9");
+
         eos.Transaction transaction = eos.Transaction()..actions = actions;
-        // print("on99");
+
         try {
           var response =
               await voteClient.pushTransaction(transaction, broadcast: true);
@@ -140,128 +127,27 @@ class _ManagePageState extends State<ManagePage>
     final List<String> values =
         isChoice ? campaign.getChoiceListNames() : campaign.getVoterList();
 
-    // late ElevatedButton button;
-
-    // if (isChoice) {
-    //   button = ElevatedButton(
-    //     style: campaign.getCampaignStat() == CampaignStat.Coming
-    //         ? null
-    //         : ElevatedButton.styleFrom(
-    //             primary: Theme.of(context).colorScheme.surface,
-    //           ),
-    //     onPressed: () {
-    //       if (campaign.getCampaignStat() == CampaignStat.Coming) {
-    //         Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //             builder: (context) {
-    //               return EditPage(
-    //                   campaignId: campaign.campaignId,
-    //                   editType: EditType.Choice,
-    //                   editingList: campaign
-    //                       .getChoiceList()
-    //                       .map((c) => c.choiceName)
-    //                       .toList());
-    //             },
-    //           ),
-    //         );
-    //       } else {
-    //         final wrongSnackbar = SnackBar(
-    //             content: Text(campaign.getCampaignStat() == CampaignStat.Ended
-    //                 ? "Campaign has already ended"
-    //                 : "Cannot make changes to ongoing campaign"),
-    //             action: SnackBarAction(
-    //               label: 'OK',
-    //               onPressed: () {},
-    //             ));
-    //         ScaffoldMessenger.of(context).showSnackBar(wrongSnackbar);
-    //       }
-    //     },
-    //     child: Text(
-    //       "Edit Choices",
-    //       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-    //     ),
-    //   );
-    // } else {
-    //   button = ElevatedButton(
-    //     style: campaign.getCampaignStat() == CampaignStat.Coming
-    //         ? null
-    //         : ElevatedButton.styleFrom(
-    //             primary: Theme.of(context).colorScheme.surface,
-    //           ),
-    //     onPressed: () {
-    //       if (campaign.getCampaignStat() == CampaignStat.Coming) {
-    //         Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //             builder: (context) {
-    //               return EditPage(
-    //                   campaignId: campaign.campaignId,
-    //                   editType: EditType.Voter,
-    //                   editingList: campaign.getVoterList());
-    //             },
-    //           ),
-    //         );
-    //       } else {
-    //         final wrongSnackbar = SnackBar(
-    //             content: Text(campaign.getCampaignStat() == CampaignStat.Ended
-    //                 ? "Campaign has already ended"
-    //                 : "Cannot make changes to ongoing campaign"),
-    //             action: SnackBarAction(
-    //               label: 'OK',
-    //               onPressed: () {},
-    //             ));
-    //         ScaffoldMessenger.of(context).showSnackBar(wrongSnackbar);
-    //       }
-    //     },
-    //     child: Text(
-    //       "Edit Voters",
-    //       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-    //     ),
-    //   );
-    // }
-
-    // return Column(children: [
-    //   _buildListViewInsideContainer(values),
-    //   SizedBox(
-    //     height: 12.5,
-    //   ),
-    //   button
-    // ]);
-
-    // List<String> values = [];
-    // for (int i = 0; i < 50; i++) {
-    //   values.add("Choice " + (i + 1).toString());
-    // }
-
-    return _buildListViewInsideContainer(
-        values); //Expanded(child: _buildListViewInsideContainer(values));
+    return _buildListViewInsideContainer(values);
   }
 
   Widget _buildListViewInsideContainer(List<String> values) {
     return Container(
-        //color: Colors.orange,
         padding: EdgeInsets.only(top: 5),
         height: MediaQuery.of(context).size.height * 0.50,
         child: Container(
             child: ListView.builder(
           shrinkWrap: true,
-          //physics: ClampingScrollPhysics(),
           itemCount: values.length,
           itemBuilder: (_, index) {
             return Container(
                 color: index % 2 == 0
-                    ? Theme.of(context).primaryColor //colorScheme.secondary
-                    : Theme.of(context)
-                        .colorScheme
-                        .surface
-                        .withOpacity(0.7), //colorScheme.primary,
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).colorScheme.surface.withOpacity(0.7),
                 child: ListTile(
                     leading: Text(
                       "   " + (index + 1).toString(),
                       style: TextStyle(
                         fontSize: 20.0,
-                        //fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
@@ -269,7 +155,6 @@ class _ManagePageState extends State<ManagePage>
                       values[index],
                       style: TextStyle(
                         fontSize: 20.0,
-                        //fontWeight: FontWeight.bold,
                       ),
                     )));
           },
@@ -278,17 +163,6 @@ class _ManagePageState extends State<ManagePage>
 
   @override
   Widget build(BuildContext context) {
-    //TabController _tabController = new TabController(length: 2, vsync: this);
-    //final horizontalScrollController = new ScrollController();
-
-    // List<Widget> bigList = [
-    //   _getList(
-    //       "Choices",
-    //       [for (Choice c in campaign.getChoiceList()) c.choiceName],
-    //       listTitleTheme),
-    //   _getList("Voters", campaign.getVoterList(), listTitleTheme),
-    // ];
-    // campaign.setview(CampaignView.Owner);
     return DefaultTabController(
         length: 2,
         child: Builder(builder: (BuildContext context) {
@@ -302,12 +176,8 @@ class _ManagePageState extends State<ManagePage>
             fontWeight: FontWeight.bold,
             color: Colors.white,
           );
-          final dataTextTheme = TextStyle(
-              fontSize: 18,
-              //color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w600
-              //
-              );
+          final dataTextTheme =
+              TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
           final listTitleTheme = oldTextTheme!.copyWith(
               fontSize: oldTextTheme.fontSize! * 0.75,
               fontWeight: FontWeight.bold);
@@ -319,24 +189,6 @@ class _ManagePageState extends State<ManagePage>
               TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
           return Scaffold(
             appBar: AppBar(
-              // actions: [
-              //   Padding(
-              //     padding: EdgeInsets.only(right: 10),
-              //     child: GestureDetector(
-              //       onTap: () {
-              //         if (campaign.getCampaignStat() == CampaignStat.Coming) {
-              //           requestKey(context, _deleteCampaign, "Deleting");
-              //         }
-              //       },
-              //       child: Icon(
-              //         Icons.delete,
-              //         color: campaign.getCampaignStat() == CampaignStat.Coming
-              //             ? Colors.white
-              //             : Colors.white.withOpacity(0.3),
-              //       ),
-              //     ),
-              //   ),
-              // ],
               actions: [
                 PopupMenuButton(
                   icon: Icon(
@@ -404,8 +256,7 @@ class _ManagePageState extends State<ManagePage>
                       enabled:
                           campaign.getCampaignStat() == CampaignStat.Coming,
                       value: ItemType.Delete,
-                      child: //Row(children: [
-                          Text(
+                      child: Text(
                         "Delete",
                         style: TextStyle(
                             color: campaign.getCampaignStat() ==
@@ -415,8 +266,6 @@ class _ManagePageState extends State<ManagePage>
                             fontWeight: styleOfPopItems.fontWeight,
                             fontSize: styleOfPopItems.fontSize),
                       ),
-                      //Icon(Icons.delete)
-                      //]),
                     ),
                   ],
                 )
@@ -432,7 +281,6 @@ class _ManagePageState extends State<ManagePage>
                       padding: EdgeInsets.symmetric(
                           horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Card(
-                        //color: Theme.of(context).colorScheme.primary,
                         color: Theme.of(context).backgroundColor,
                         child: Container(
                           padding: EdgeInsets.symmetric(
@@ -528,17 +376,6 @@ class _ManagePageState extends State<ManagePage>
                         ),
                       ),
                     ),
-                    // Expanded(
-                    //   child: Swiper(
-                    //     itemCount: 2,
-                    //     pagination: SwiperPagination(),
-                    //     control: SwiperControl(),
-                    //     loop: false,
-                    //     itemBuilder: (context, index) {
-                    //       return bigList[index];
-                    //     },
-                    //   ),
-                    // ),
                     campaign.getCampaignStat() != CampaignStat.Coming
                         ? InkWell(
                             onTap: () => {
@@ -557,14 +394,11 @@ class _ManagePageState extends State<ManagePage>
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primary,
-                                        //Theme.of(context).colorScheme.primary, //Colors.blue,
                                         fontWeight: FontWeight.bold))))
                         : Container(
                             height: 7.5,
                           ),
-
                     Container(
-                        // color: Colors.blue,
                         height: MediaQuery.of(context).size.height * 0.65,
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: Column(children: [

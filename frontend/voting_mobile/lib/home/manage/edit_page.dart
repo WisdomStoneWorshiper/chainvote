@@ -172,7 +172,6 @@ class _EditPageState extends State<EditPage> with SharedDialog {
   }
 
   void _delVoter(BuildContext context) async {
-    // List<String> failed_item = [];
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
@@ -194,7 +193,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
 
       if (response.statusCode != 200) {
         print("fail");
-        // failed_item.add(editingList[i]);
+
         errDialog(
             context, "Cannot delete, Reason: " + response.data["message"]);
         return;

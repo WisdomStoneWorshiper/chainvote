@@ -82,9 +82,6 @@ abstract class CampaignListState extends State<CampaignList>
     final theme = Theme.of(context);
     final oldTextTheme = theme.textTheme.headline5;
 
-    // TextStyle newHeadline5 = ;
-    // newHeadline5.fontWeight = FontWeight.bold;
-    // print(oldTextTheme!.fontSize);
     final newTextTheme =
         oldTextTheme!.copyWith(fontWeight: FontWeight.bold, fontSize: 30);
     return Container(
@@ -94,16 +91,11 @@ abstract class CampaignListState extends State<CampaignList>
         theme:
             ExpandableThemeData(iconColor: Color.fromARGB(185, 163, 214, 67)),
         header: Container(
-          // padding:
-          //     EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-          // alignment: Alignment.centerLeft,
           child: Text(
             title,
             style: newTextTheme,
-            // textAlign: TextAlign.center,
           ),
         ),
-        // collapsed: Text("Total campaign: " + w.length.toString()),
         collapsed: Container(),
         expanded: Column(
           children: [for (var x in w) x],
@@ -135,7 +127,6 @@ abstract class CampaignListState extends State<CampaignList>
           Text("No campaigns to show",
               style: TextStyle(
                 fontSize: 20,
-                //fontWeight: FontWeight.bold
               )),
           SizedBox(
             height: 50,
@@ -202,14 +193,6 @@ abstract class CampaignListState extends State<CampaignList>
               ],
             );
           } else {
-            // Widget loading = SizedBox(
-            //   width: 200,
-            //   height: 200,
-            //   child: CircularProgressIndicator(),
-            // );
-            // ongoing = [loading];
-            // ended = [loading];
-            // coming = [loading];
             return Container(
               alignment: Alignment.center,
               child: Center(

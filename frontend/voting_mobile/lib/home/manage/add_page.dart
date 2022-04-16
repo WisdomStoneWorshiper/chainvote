@@ -108,7 +108,6 @@ class _AddPageState extends State<AddPage> with SharedDialog {
   }
 
   void _addVoter(BuildContext context) async {
-    // List<String> failed_item = [];
     final prefs = await SharedPreferences.getInstance();
 
     final String eosName = prefs.getString('eosName') ?? "";
@@ -120,11 +119,10 @@ class _AddPageState extends State<AddPage> with SharedDialog {
       print(_addList);
       Response response = await dio.post("/contract/addvoter",
           data: {'itsc': _addList, 'campaignId': campaignId, 'owner': itsc});
-      // print(response.statusCode);
-      // print(response.data);
+
       if (response.statusCode != 200) {
         print("fail");
-        // failed_item.add(_addList[i]);
+
         errDialog(context, "Fail to add, Reason: " + response.data["message"]);
         return;
       }
@@ -132,7 +130,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
       DioError err = e as DioError;
 
       Map<String, dynamic> response = (err.response?.data);
-      // print(response['failed']);
+
       if (!response.containsKey('failed')) {
         errDialog(context, "Fail to add, Reason: " + response["message"]!);
       } else {
