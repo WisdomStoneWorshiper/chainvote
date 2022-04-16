@@ -41,4 +41,6 @@ blockchain/test-voting/node_modules
 blockchain/test-voting/test/index.js
 blockchain/test-voting/.env
 
+blockchain/votingplat/node_modules
+
 blockchain/*/node_modules
