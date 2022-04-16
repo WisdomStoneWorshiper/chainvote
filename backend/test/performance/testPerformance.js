@@ -3,22 +3,15 @@ const eosDriver = require("../../Helper functions/eosDriver")
 const {
     createVoterPlaceholder,
 } = require("../../Helper functions/eosPlaceholder")
-
+const getRandomString = require("../../Helper functions/randomStringGeneration")
 const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch'); //node only
 const { TextDecoder, TextEncoder } = require('util'); //node only
+const { exit } = require("process");
 
 require('dotenv').config()
 
-const getRandomString = (length) => {
-    var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    }
-    return result;
-}
 
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -28,6 +21,12 @@ function sleep(ms) {
 
 const main = async () => {
     // Collect all account
+    let totalAccountRequired = process.argv.length >= 3 ? parseInt(process.argv[2]) : 100
+
+    if(totalAccountRequired > 100){
+        exit(1);
+    }
+
     console.log("=== PERFORMANCE TESTING STARTS ===")
     const data = getAccount("./test/performance/username.txt")
     let account = []
@@ -78,7 +77,7 @@ const main = async () => {
 
     // Generate Campaign
     const campaignName = getRandomString(10);
-    const HALF_MINUTE = new Date(1000*15)
+    const HALF_MINUTE = new Date(1000*30)
     const MINUTE_5 = new Date(1000*60*5)
     let currentDate = new Date();
     let startTime = new Date( currentDate.getTime() + HALF_MINUTE.getTime());
@@ -264,8 +263,9 @@ const main = async () => {
         let failedAccount = [];
 
         result.forEach(value => {
-            if(value.success){
+            if(value.success && totalAccountRequired > 0){
                 totalAccount++;
+                totalAccountRequired--;
                 avgTime = (avgTime * (totalAccount - 1)+ value.time) / (totalAccount)
             }
             else{
