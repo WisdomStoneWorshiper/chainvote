@@ -113,25 +113,33 @@ abstract class CampaignListState extends State<CampaignList>
   }
 
   _noCampaignsToShow() {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image(
-            height: MediaQuery.of(context).size.height * 0.25,
-            image: AssetImage('assets/app_logo_transparent.png'),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text("No campaigns to show",
-              style: TextStyle(
-                fontSize: 20,
-              )),
-          SizedBox(
-            height: 50,
-          ),
-        ]);
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: Container(
+        alignment: Alignment.center,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Column(children: [
+              Image(
+                height: MediaQuery.of(context).size.height * 0.25,
+                image: AssetImage('assets/app_logo_transparent.png'),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text("No campaigns to show",
+                  style: TextStyle(
+                    fontSize: 20,
+                  )),
+              SizedBox(
+                height: 50,
+              ),
+            ])
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -182,14 +190,6 @@ abstract class CampaignListState extends State<CampaignList>
                     ],
                   ),
                 ),
-              ],
-            );
-
-            ListView(
-              children: [
-                _expandView("Ongoing Campaign", ongoing),
-                _expandView("Upcoming Campaign", coming),
-                _expandView("Ended Campaign", ended),
               ],
             );
           } else {
