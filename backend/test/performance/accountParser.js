@@ -3,7 +3,7 @@ const fs = require('fs')
 const extractAccountData = (filename) => {
     let accountData = [];
     try {
-    const data = fs.readFileSync(filename, 'utf8').split("\r\n");
+    const data = fs.readFileSync(filename, 'utf8').split(new RegExp("\r\n|\n|\r"));
         for(let i = 0; i < (data.length / 2) ; i++){
             accountData.push({
                 accname : data[i*2],
