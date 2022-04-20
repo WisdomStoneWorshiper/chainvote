@@ -44,3 +44,5 @@ blockchain/test-voting/.env
 blockchain/votingplat/node_modules
 
 blockchain/*/node_modules
+
+.vscode 
