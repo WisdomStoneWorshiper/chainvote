@@ -251,7 +251,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
                           )),
                 );
               },
-              child: Icon(IconData(0xe047, fontFamily: 'MaterialIcons')),
+              child: Icon(Icons.add),
             ),
           ),
         ],

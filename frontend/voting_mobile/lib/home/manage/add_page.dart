@@ -318,7 +318,7 @@ class _AddPageState extends State<AddPage> with SharedDialog {
                         _addVoter(context);
                       }
                     },
-                    child: Icon(IconData(0xe047, fontFamily: 'MaterialIcons')),
+                    child: Icon(Icons.add),
                   )
             : null);
   }
