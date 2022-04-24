@@ -1,13 +1,16 @@
 # Backend Server
 
 ## Setup
-To run the server,
+#### To run the server,
 - Install the latest Node.Js from https://nodejs.org/en/download/
 - From this ./fyp/backend folder, run
 `npm i`, followed by `npm start`. The server will run at http://localhost:3000/
 > If the server does not start due to missing variables/ API key. It is possible that the .env for the server is misplaced. For security reason, the .env is not uploaded to the GitHub and will be saved locally when submitting the project
 
 > If the server does not start due to another Port occupying the same port, you can switch the port number at .env at SERVER_PORT section
+
+#### To setup the ITSC Database,
+- Call the POST /test route with `{itsc : <itsc name>}` Body in JSON format. This will insert your ITSC name to the database so that you can register your account using the Mobile Application
 
 ## Testing
 To test the server function, run `npm test` on the root folder. The test will run itself and show the result of the coverage test for the backend
