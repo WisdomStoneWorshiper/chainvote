@@ -119,7 +119,8 @@ router.post("/addvoter", async (req, res) => {
 
 router.post("/delvoter", async (req, res) => {
     const { itsc = [], campaignId = 0, owner = "" } = req.body;
-
+	console.log("enter delvoter");
+	console.log(`${itsc} and ${campaignId} and ${owner})`);
     let ownerData = await Account.findOne( {itsc : owner});
 
     if(ownerData == null){
@@ -146,14 +147,14 @@ router.post("/delvoter", async (req, res) => {
 
     for (let i = 0; i < table["rows"].length; i++) {
         if ((table["rows"][i]["id"] == campaignId) && (table["rows"][i]["owner"] == ownerData.accountName)) {
-            //console.log(`Target owner ${table["rows"][i]["owner"]}`)
-            //console.log(table["rows"][i]["voter_list"])
+            console.log(`Target owner ${table["rows"][i]["owner"]}`)
+            console.log(table["rows"][i]["voter_list"])
             for(let j = 0; j < itsc.length; j++){
                 try{
                     const data = await accModel.findOne({itsc : itsc[j]});
                     const indexData = table["rows"][i]["voter_list"].indexOf(data.accountName);
                     if(indexData >= 0){
-                        //console.log(`User ${data.accountName} index found at ${indexData}`)
+                        console.log(`User ${data.accountName} index found at ${indexData}`)
                         delvoterList.push({
                             acc: itsc[j],
                             index: indexData
@@ -196,12 +197,12 @@ router.post("/delvoter", async (req, res) => {
                 }
             )
             .then( result => {
-                // console.log(`User ${delvoterList[i]} has been deleted`);
+                console.log(`User ${delvoterList[i]} has been deleted`);
                 resolve();
             })
             .catch( err => {
                 errorVoter.push(delvoterList[i].acc)
-                // console.log(`User ${delvoterList[i]} has faield`)
+                console.log(`User ${delvoterList[i]} has faield`)
                 resolve();
             })
         }))
