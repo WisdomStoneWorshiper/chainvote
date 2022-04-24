@@ -201,6 +201,7 @@ router.post("/delvoter", async (req, res) => {
                 resolve();
             })
             .catch( err => {
+		    console.log(err);
                 errorVoter.push(delvoterList[i].acc)
                 console.log(`User ${delvoterList[i]} has faield`)
                 resolve();
