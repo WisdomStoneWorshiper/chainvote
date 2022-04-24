@@ -55,7 +55,6 @@ describe("Full testing", function (){
         })
 
         it("Should register properly", (done) => {
-            console.log("asfjih")
             chai.request(app)
             .post("/registration")
             .send({
