@@ -53,8 +53,7 @@ router.post("/create", async (req, res) => {
                     accountPlaceholder(accname, pkey)
                 ]
                }, {
-                useLastIrreversible : true,
-                expireSeconds: 30,
+                useLastIrreversible : true
                })
             .then(result => {
                 Account.findOneAndUpdate({itsc: itsc}, {created: true})
@@ -109,8 +108,7 @@ router.post("/confirm", async (req, res) => {
                     createVoterPlaceholder(accname)
                 ]
                 }, {
-                useLastIrreversible : true,
-                expireSeconds: 30,
+                useLastIrreversible : true
                 })
             .then(result => {
                 Account.findOneAndUpdate({itsc: itsc}, {accountName : accname})

@@ -83,8 +83,7 @@ router.post("/addvoter", async (req, res) => {
                 ]
             },
                 {
-                    useLastIrreversible : true,
-                    expireSeconds: 30,
+                    useLastIrreversible : true
                 }
             )
             .then( result => {
@@ -192,8 +191,7 @@ router.post("/delvoter", async (req, res) => {
                 actions: [delVoterPlaceholder(campaignId, delvoterList[i].index)]
             },
                 {
-                    useLastIrreversible : true,
-                    expireSeconds: 30,
+                    useLastIrreversible : true
                 }
             )
             .then( result => {
