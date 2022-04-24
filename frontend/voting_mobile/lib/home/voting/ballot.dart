@@ -197,7 +197,7 @@ class _BallotState extends State<Ballot> with SharedDialog {
               onPressed: () {
                 _confirmBallot();
               },
-              child: Icon(IconData(0xf118, fontFamily: 'MaterialIcons')),
+              child: Icon(Icons.how_to_vote_outlined),
             )
           : null,
     );

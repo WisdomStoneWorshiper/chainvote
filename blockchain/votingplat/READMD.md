@@ -1,10 +1,12 @@
 # votingplat
 
-This example is to demonstrate a basic EOSIO smart contract, including
+## Smart Contract Compile Guide
 
-- Define contract actions
-- Define a table
-- Perform read/write/remove operations on the table
+To compile this contract, please follow the following instruction.
+
+1. Check out to this folder with terminal
+2. Compile the contract with
+    `eosio-cpp -abigen -I include -R resource -contract votingplat -o votingplat.wasm src/votingplat.cpp`
 
 ## Testing
 

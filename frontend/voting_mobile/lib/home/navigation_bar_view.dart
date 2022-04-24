@@ -38,11 +38,11 @@ class _NavBarViewState extends State<NavBarView> {
 
   static List<BottomNavigationBarItem> _barItem = <BottomNavigationBarItem>[
     BottomNavigationBarItem(
-      icon: Icon(IconData(0xe32c, fontFamily: 'MaterialIcons')),
+      icon: Icon(Icons.how_to_vote),
       label: _tabName[0],
     ),
     BottomNavigationBarItem(
-      icon: Icon(IconData(0xe04e, fontFamily: 'MaterialIcons')),
+      icon: Icon(Icons.add_chart),
       label: _tabName[1],
     ),
     BottomNavigationBarItem(

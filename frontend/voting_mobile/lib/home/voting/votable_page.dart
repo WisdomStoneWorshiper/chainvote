@@ -287,7 +287,7 @@ class _VotablePageState extends State<VotablePage> {
                     campaign.isVoted == CampaignVoteStat.No
                 ? FloatingActionButton(
                     onPressed: _toBallot,
-                    child: Icon(IconData(0xee93, fontFamily: 'MaterialIcons')),
+                    child: Icon(Icons.article_outlined),
                   )
                 : null);
   }
