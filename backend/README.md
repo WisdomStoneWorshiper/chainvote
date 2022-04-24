@@ -9,6 +9,8 @@
 
 > If the server does not start due to another Port occupying the same port, you can switch the port number at .env at SERVER_PORT section
 
+Currently, we hosted the server on the Google Cloud for testing at http://34.81.225.93:3000/
+
 #### To setup the ITSC Database,
 - Call the POST /test route with `{itsc : <itsc name>}` Body in JSON format. This will insert your ITSC name to the database so that you can register your account using the Mobile Application
 
