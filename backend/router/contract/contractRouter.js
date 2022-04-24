@@ -184,47 +184,89 @@ router.post("/delvoter", async (req, res) => {
         return;
     }
 
-    let promiseArray = [] //this is quite stupid no?
+    //sorting function
+    delvoterList.sort((a,b) => b.index - a.index);
+    console.log("sorted result")
+    console.log(delvoterList)
+
+    // let promiseArray = [] 
+    
 
     for(let i = 0; i < delvoterList.length; i++){
-        promiseArray.push( new Promise( (resolve, reject) => {
-            eosDriver.transact({
-                actions: [delVoterPlaceholder(campaignId, delvoterList[i].index)]
-            },
-                {
-                    useLastIrreversible : true,
-                    expireSeconds: 1000,
-                }
-            )
-            .then( result => {
-                console.log(`User ${delvoterList[i]} has been deleted`);
-                resolve();
-            })
-            .catch( err => {
-		    console.log(err);
-                errorVoter.push(delvoterList[i].acc)
-                console.log(`User ${delvoterList[i]} has faield`)
-                resolve();
-            })
-        }))
+        console.log(`Transacting ${delvoterList[i].acc} with index ${delvoterList[i].index}`)
+        await eosDriver.transact({
+            actions: [delVoterPlaceholder(campaignId, delvoterList[i].index)]
+        },
+            {
+                useLastIrreversible : true,
+                expireSeconds: 1000,
+            }
+        )
+        .then( result => {
+            console.log(`User ${delvoterList[i]} has been deleted`);
+            resolve();
+        })
+        .catch( err => {
+            errorVoter.push(delvoterList[i].acc)
+            console.log(`User ${delvoterList[i]} has faield`)
+            resolve();
+        })
     }
 
-    await Promise.all(promiseArray)
-        .then(() => {
-            if (errorVoter.length >= 1) {
-                console.log("found error acc")
-                res.status(400).json({
-                    error: true,
-                    failed: errorVoter
-                })
-            }
-            else {
-                console.log("success")
-                res.json({
-                    error: false
-                })
-            }
+    // for(let i = 0; i < delvoterList.length; i++){
+    //     promiseArray.push( new Promise( (resolve, reject) => {
+    //         eosDriver.transact({
+    //             actions: [delVoterPlaceholder(campaignId, delvoterList[i].index)]
+    //         },
+    //             {
+    //                 useLastIrreversible : true,
+    //                 expireSeconds: 1000,
+    //             }
+    //         )
+    //         .then( result => {
+    //             console.log(`User ${delvoterList[i]} has been deleted`);
+    //             resolve();
+    //         })
+    //         .catch( err => {
+    //             errorVoter.push(delvoterList[i].acc)
+    //             console.log(`User ${delvoterList[i]} has faield`)
+    //             resolve();
+    //         })
+    //     }))
+    // }
+
+    console.log("all voter processed")
+
+    if (errorVoter.length >= 1) {
+        console.log("found error acc")
+        res.status(400).json({
+            error: true,
+            failed: errorVoter
         })
+    }
+    else {
+        console.log("success")
+        res.json({
+            error: false
+        })
+    }
+
+    // await Promise.all(promiseArray)
+    //     .then(() => {
+    //         if (errorVoter.length >= 1) {
+    //             console.log("found error acc")
+    //             res.status(400).json({
+    //                 error: true,
+    //                 failed: errorVoter
+    //             })
+    //         }
+    //         else {
+    //             console.log("success")
+    //             res.json({
+    //                 error: false
+    //             })
+    //         }
+    //     })
 
 });
 
