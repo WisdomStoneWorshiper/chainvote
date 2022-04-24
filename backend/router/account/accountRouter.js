@@ -53,7 +53,7 @@ router.post("/create", async (req, res) => {
                     accountPlaceholder(accname, pkey)
                 ]
                }, {
-                blocksBehind: 3,
+                useLastIrreversible : true,
                 expireSeconds: 30,
                })
             .then(result => {
@@ -109,7 +109,7 @@ router.post("/confirm", async (req, res) => {
                     createVoterPlaceholder(accname)
                 ]
                 }, {
-                blocksBehind: 3,
+                useLastIrreversible : true,
                 expireSeconds: 30,
                 })
             .then(result => {
