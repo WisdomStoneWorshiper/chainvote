@@ -484,8 +484,8 @@ describe("Full testing", function (){
                 ]
                 },
                 {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
+                    useLastIrreversible : true,
+                expireSeconds: 1000,
                 }
             )
             .catch(err => { assert.fail(err)})
@@ -616,8 +616,8 @@ describe("Full testing", function (){
                 ]
                 },
                 {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
+                    useLastIrreversible : true,
+                expireSeconds: 1000,
                 }
             )
             .catch(err => { assert.fail(err)})
@@ -662,8 +662,8 @@ describe("Full testing", function (){
                 ]
                 },
                 {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
+                    useLastIrreversible : true,
+                expireSeconds: 1000,
                 }
             )
             .catch(err => { assert.fail(err)})
@@ -704,8 +704,8 @@ describe("Full testing", function (){
                 ]
                 },
                 {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
+                    useLastIrreversible : true,
+                expireSeconds: 1000,
                 }
             )
 
