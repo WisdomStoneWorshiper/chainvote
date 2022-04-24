@@ -204,12 +204,11 @@ router.post("/delvoter", async (req, res) => {
         )
         .then( result => {
             console.log(`User ${delvoterList[i]} has been deleted`);
-            resolve();
         })
         .catch( err => {
+            console.log(err)
             errorVoter.push(delvoterList[i].acc)
             console.log(`User ${delvoterList[i]} has faield`)
-            resolve();
         })
     }
 
