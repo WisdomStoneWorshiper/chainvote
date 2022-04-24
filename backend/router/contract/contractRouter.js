@@ -230,24 +230,12 @@ router.post("/login", async (req, res) => {
             accountName : (result.accountName != itsc) ? result.accountName : null
         });
     })
-        .then(result => {
-            res.json({
-                error: false,
-                accountName: result != null ? result.accountName : null
-            });
+    .catch(err => {
+        res.status(500).json({
+            error: true,
+            message: err.message
         })
-        .then(result => {
-            res.json({
-                error: false,
-                accountName: result != null ? result.accountName : null
-            });
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: true,
-                message: err.message
-            })
-        })
+    })
 });
 
 router.post("/getITSC", async (req, res) => {
