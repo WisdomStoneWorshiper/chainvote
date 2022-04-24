@@ -61,8 +61,8 @@ const main = async () => {
                 ]
                },
                 {
-                blocksBehind: 3,
-                expireSeconds: 30,
+                    useLastIrreversible : true,
+                    expireSeconds: 1000,
                }
             )
             .catch(err => {
@@ -101,8 +101,8 @@ const main = async () => {
         ]
        },
         {
-        blocksBehind: 3,
-        expireSeconds: 30,
+            useLastIrreversible : true,
+            expireSeconds: 1000,
        }
     )
 
@@ -155,8 +155,8 @@ const main = async () => {
         ]
        },
         {
-        blocksBehind: 3,
-        expireSeconds: 30,
+            useLastIrreversible : true,
+            expireSeconds: 1000,
        }
     )
 
@@ -179,8 +179,8 @@ const main = async () => {
             ]
            },
             {
-            blocksBehind: 3,
-            expireSeconds: 30,
+                useLastIrreversible : true,
+                expireSeconds: 1000,
            }
         )
         .catch(err => {
@@ -194,10 +194,10 @@ const main = async () => {
 
     //checking time 
     let currentTime = new Date();
-    console.log(`Delaying for ${startTime.getTime() - currentTime.getTime() + 1000} before voting`)
-    await sleep(startTime.getTime() - currentTime.getTime() + 2000);
+    console.log(`Delaying for ${startTime.getTime() - currentTime.getTime() + 5000} before voting`)
+    await sleep(startTime.getTime() - currentTime.getTime() + 10000);
 
-    console.log(`Starting to vote now at ${new Date()}`)
+    console.log(`Starting to vote now at ${new Date()} for voting time ${startTime}`)
 
     //time to vote
     let promisedVoter = []
@@ -233,8 +233,8 @@ const main = async () => {
                     ]
                    },
                     {
-                    blocksBehind: 3,
-                    expireSeconds: 30,
+                        useLastIrreversible : true,
+                        expireSeconds: 1000,
                    }
                 )
                 .then( () => {
@@ -262,6 +262,7 @@ const main = async () => {
         let avgTime = 0;
         let failedAccount = [];
 
+
         result.forEach(value => {
             if(value.success && totalAccountRequired > 0){
                 totalAccount++;
@@ -269,6 +270,7 @@ const main = async () => {
                 avgTime = (avgTime * (totalAccount - 1)+ value.time) / (totalAccount)
             }
             else{
+
                 failedAccount.push(value)
             }
         })
