@@ -258,18 +258,12 @@ router.post("/getITSC", async (req, res) => {
         }
         
     })
-        .then(result => {
-            res.json({
-                error: false,
-                itsc: result.itsc
-            });
+    .catch(err => {
+        res.status(500).json({
+            error: true,
+            message: "This account name is not linked to any ITSC"
         })
-        .catch(err => {
-            res.status(500).json({
-                error: true,
-                message: "This account name is not linked to any ITSC"
-            })
-        })
+    })
 });
 
 module.exports = router;
