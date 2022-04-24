@@ -123,7 +123,7 @@ class _EditPageState extends State<EditPage> with SharedDialog {
         };
 
         try {
-          for (int i = _isChecked.length - 1; i > 0; --i) {
+          for (int i = _isChecked.length - 1; i >= 0; --i) {
             if (_isChecked[i]) {
               print(i);
               data["choice_idx"] = i.toString();
@@ -181,13 +181,12 @@ class _EditPageState extends State<EditPage> with SharedDialog {
     BaseOptions opt = BaseOptions(baseUrl: backendServerUrl);
     var dio = Dio(opt);
 
-    for (int i = _isChecked.length - 1; i > 0; --i) {
+    for (int i = _isChecked.length - 1; i >= 0; --i) {
       if (_isChecked[i]) {
         deleteList.add(editingList[i]);
       }
     }
     try {
-      print("request");
       Response response = await dio.post("/contract/delvoter",
           data: {'itsc': deleteList, 'campaignId': campaignId, 'owner': itsc});
 
@@ -204,8 +203,15 @@ class _EditPageState extends State<EditPage> with SharedDialog {
       DioError err = e as DioError;
 
       Map<String, dynamic> response = (err.response?.data);
-
-      errDialog(context, "Cannot delete, Reason: " + response["message"]!);
+      if (!response.containsKey('failed')) {
+        errDialog(context, "Fail to add, Reason: " + response["message"]!);
+      } else {
+        String failedName = '';
+        for (var n in response['failed']) {
+          failedName += (n + '\n');
+        }
+        errDialog(context, "Fail to delete the following\n" + failedName);
+      }
 
       return;
     }
